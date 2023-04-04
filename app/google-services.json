@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "709902543860",
+    "project_id": "cocreate-b2e7c",
+    "storage_bucket": "cocreate-b2e7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709902543860:android:83d80cd0d30b0ad13327a1",
+        "android_client_info": {
+          "package_name": "com.andriybobchuk.cocreate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709902543860-gddmee3tnd8fmiugvtjf0m0ilghjpas1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTYJ52FwlP9EFZrBYKyiXIvkdiM_YYjtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709902543860-gddmee3tnd8fmiugvtjf0m0ilghjpas1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
