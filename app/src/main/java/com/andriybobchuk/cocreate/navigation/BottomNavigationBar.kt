@@ -11,15 +11,13 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.andriybobchuk.cocreate.ui.theme.accent
-import com.andriybobchuk.cocreate.ui.theme.title_black
-import com.andriybobchuk.cocreate.ui.theme.typo_gray
-import com.andriybobchuk.cocreate.ui.theme.white
+import com.andriybobchuk.cocreate.ui.theme.*
 
 @ExperimentalMaterialApi
 @Composable
@@ -40,8 +38,8 @@ fun BottomNavigationBar(
             BottomNavigationItem(
                 selected = selected,
                 onClick = { onItemClick(item) },
-                selectedContentColor = accent,
-                unselectedContentColor = title_black,
+                selectedContentColor = title_black,
+                unselectedContentColor = typo_gray,
                 icon = {
                     Column(horizontalAlignment = CenterHorizontally) {
                         if(item.badgeCount > 0) {
@@ -66,13 +64,15 @@ fun BottomNavigationBar(
                                 contentDescription = item.name
                             )
                         }
-//                        if(selected) {
-//                            Text(
-//                                text = item.name,
-//                                textAlign = TextAlign.Center,
-//                                fontSize = 10.sp
-//                            )
-//                        }
+                        if(selected) {
+                            Text(
+                                text = item.name,
+                                textAlign = TextAlign.Center,
+                                color = title_black,
+                                fontSize = 10.sp,
+                                fontFamily = poppins,
+                            )
+                        }
                     }
                 }
             )

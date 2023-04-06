@@ -37,7 +37,8 @@ fun ProfileScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp, 0.dp)
+            .verticalScroll(rememberScrollState()),
     ) {
 //        IconButton(onClick = { navController.navigate(Screens.RegisterScreen.route) }) {
 //            Icon(Icons.Default.ArrowBack, contentDescription = "Back button")
@@ -124,36 +125,61 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(30.dp))
 
         // Social network cards
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            item {
-                SocialCard(
-                    networkName = "GitHub",
-                    networkIcon = Icons.Default.Person,
-                    networkLink = "https://github.com/andriybobchuk/"
-                )
-            }
-            item {
-                SocialCard(
-                    networkName = "GitHub",
-                    networkIcon = Icons.Default.Person,
-                    networkLink = "https://github.com/andriybobchuk/"
-                )
-            }
-            item {
-                SocialCard(
-                    networkName = "GitHub",
-                    networkIcon = Icons.Default.Person,
-                    networkLink = "https://github.com/andriybobchuk/"
-                )
-            }
-            item {
-                SocialCard(
-                    networkName = "GitHub",
-                    networkIcon = Icons.Default.Person,
-                    networkLink = "https://github.com/andriybobchuk/"
-                )
-            }
-        }
+//        LazyColumn(modifier = Modifier.weight(1f)) {
+//            item {
+//                SocialCard(
+//                    networkName = "GitHub",
+//                    networkIcon = Icons.Default.Person,
+//                    networkLink = "https://github.com/andriybobchuk/"
+//                )
+//            }
+//            item {
+//                SocialCard(
+//                    networkName = "GitHub",
+//                    networkIcon = Icons.Default.Person,
+//                    networkLink = "https://github.com/andriybobchuk/"
+//                )
+//            }
+//            item {
+//                SocialCard(
+//                    networkName = "GitHub",
+//                    networkIcon = Icons.Default.Person,
+//                    networkLink = "https://github.com/andriybobchuk/"
+//                )
+//            }
+//            item {
+//                SocialCard(
+//                    networkName = "GitHub",
+//                    networkIcon = Icons.Default.Person,
+//                    networkLink = "https://github.com/andriybobchuk/"
+//                )
+//            }
+//        }
+        SocialCard(
+            networkName = "GitHub",
+            networkIcon = Icons.Default.Person,
+            networkLink = "https://github.com/andriybobchuk/"
+        )
+        SocialCard(
+            networkName = "GitHub",
+            networkIcon = Icons.Default.Person,
+            networkLink = "https://github.com/andriybobchuk/"
+        )
+        SocialCard(
+            networkName = "GitHub",
+            networkIcon = Icons.Default.Person,
+            networkLink = "https://github.com/andriybobchuk/"
+        )
+        SocialCard(
+            networkName = "GitHub",
+            networkIcon = Icons.Default.Person,
+            networkLink = "https://github.com/andriybobchuk/"
+        )
+        SocialCard(
+            networkName = "GitHub",
+            networkIcon = Icons.Default.Person,
+            networkLink = "https://github.com/andriybobchuk/"
+        )
     }
 }
 
@@ -174,7 +200,7 @@ fun SocialCard(
         Column(
             modifier = Modifier
             .clickable { /* Handle card click */ }
-            .padding(30.dp)
+            .padding(24.dp)
         ) {
             Row() {
                 Icon(
