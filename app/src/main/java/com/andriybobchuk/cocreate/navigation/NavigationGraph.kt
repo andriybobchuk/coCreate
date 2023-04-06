@@ -7,16 +7,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.login.LoginScreen
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.register.RegisterScreen
+import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
+import com.andriybobchuk.cocreate.feature.messages.presentation.MessagesScreen
+import com.andriybobchuk.cocreate.feature.my_posts.presentation.MyPostsScreen
+import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
 import com.andriybobchuk.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
+    startDestination: String
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.RegisterScreen.route
+        startDestination = startDestination
     ) {
         composable(route = Screens.LoginScreen.route) {
             LoginScreen(navController)
@@ -24,6 +29,22 @@ fun NavigationGraph(
         }
         composable(route = Screens.RegisterScreen.route) {
             RegisterScreen(navController)
+
+        }
+        composable(route = Screens.FeedScreen.route) {
+            FeedScreen(navController)
+
+        }
+        composable(route = Screens.MyPostsScreen.route) {
+            MyPostsScreen(navController)
+
+        }
+        composable(route = Screens.MessagesScreen.route) {
+            MessagesScreen(navController)
+
+        }
+        composable(route = Screens.ProfileScreen.route) {
+            ProfileScreen(navController)
 
         }
     }
