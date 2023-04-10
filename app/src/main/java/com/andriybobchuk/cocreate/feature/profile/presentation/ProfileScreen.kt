@@ -1,5 +1,6 @@
 package com.andriybobchuk.cocreate.feature.profile.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,219 +13,223 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.Top
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.coCreateApplication
+import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.login.LoginViewModel
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val profileData = viewModel.state.value
+
+    val coverHeight = 180.dp
+    val avatarSize = 120.dp
+    val roundedCornersCorrection = 30.dp // We lift card & icon up by this value
+    val shiftIconTopBy = 20.dp // The bigger this value is, the higher icon is from the middle
+
+
     Column(
         Modifier
             .fillMaxSize()
-            .padding(16.dp, 0.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(0.dp, 0.dp)
+            .verticalScroll(rememberScrollState())
+            .background(background),
     ) {
 //        IconButton(onClick = { navController.navigate(Screens.RegisterScreen.route) }) {
 //            Icon(Icons.Default.ArrowBack, contentDescription = "Back button")
 //        }
-        Spacer(modifier = Modifier.height(30.dp))
 
-        if (null != null) {
+
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Display the cover image
             Image(
-                painter = painterResource(id = R.drawable.ic_profile),
-                contentDescription = "User Profile Image",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(70.dp)
-                    .clip(CircleShape)
-                    .shadow(
-                        elevation = 4.dp,
-                        shape = CircleShape,
-                        clip = true
-                    )
-                    .align(CenterHorizontally),
+                painter = rememberAsyncImagePainter(model = profileData.avatar),
+                contentDescription = "Cover Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth()
+                    .height(coverHeight)
             )
-        } else {
+
+            // Display the white card with rounded corners
+            Card(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .padding(top = coverHeight - roundedCornersCorrection)
+                    .clip(RoundedCornerShape(25.dp))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = avatarSize / 2 + shiftIconTopBy),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = profileData.name,
+                        fontSize = 20.sp,
+                        modifier = Modifier.align(CenterHorizontally),
+                        fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
+                    )
+                    if(profileData.city != "" && profileData.position != "") {
+                        Text(
+                            text = profileData.position + ", " + profileData.city,
+                            fontSize = 14.sp,
+                            modifier = Modifier.align(CenterHorizontally),
+                            fontWeight = FontWeight.Light, color = typo_gray, fontFamily = poppins
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Button(
+                        onClick = {
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .align(CenterHorizontally),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = title_black,
+                            contentColor = white
+                        ),
+                        shape = RoundedCornerShape(11.dp)
+                    ) {
+                        Text(
+                            text = "Edit Info",
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 13.sp,
+                            color = white,
+                            fontFamily = poppins,
+                        )
+                    }
+                }
+            }
+
             Box(
-                Modifier
-                    .size(70.dp)
-                    .clip(CircleShape)
-                    .background(purple)
-//                    .shadow(
-//                        elevation = 4.dp,
-//                        //shape = CircleShape,
-//                        //clip = true
-//                    )
-                    .align(CenterHorizontally),
+                modifier = Modifier
+                    .align(TopCenter)
+                    .padding(top = coverHeight - roundedCornersCorrection - avatarSize / 2 - shiftIconTopBy)
+                    .background(Color.White, shape = CircleShape)
+                    .padding(4.dp)
+            ) {
+                // Display the avatar icon which overlaps the cover and the white card
+
+                if (profileData.avatar != "") {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = profileData.avatar),
+                        contentDescription = "Avatar",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(140.dp)
+                            .clip(CircleShape)
+                            .align(Alignment.TopCenter)
+                        //.padding(top = 100.dp)
+                    )
+                } else {
+                    Box(
+                        Modifier
+                            .size(140.dp)
+                            .clip(CircleShape)
+                            .background(purple)
+                            .align(TopCenter),
+                    ) {
+                        Text(
+                            text = profileData.name.take(1).toUpperCase(),
+                            fontSize = 30.sp,
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+            }
+        }
+
+        Card(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(25.dp)),
+        ) {
+            Column(
+                modifier = Modifier.padding(top = 18.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
             ) {
                 Text(
-                    text = "Andriy".take(1).toUpperCase(),
-                    fontSize = 19.sp,
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.Center)
+                    text = "Contact",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                SocialMediaLink(
+                    name = "Twitter",
+                    link = "https://twitter.com/yourusername"
+                )
+                SocialMediaLink(
+                    name = "Instagram",
+                    link = "https://instagram.com/yourusername"
+                )
+                SocialMediaLink(
+                    name = "LinkedIn",
+                    link = "https://linkedin.com/in/yourusername"
                 )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Andriy Bobchuk",
-            fontSize = 18.sp,
-            modifier = Modifier.align(CenterHorizontally),
-            fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
-        )
-        Text(
-            text = "Mobile Developer, California",
-            fontSize = 14.sp,
-            modifier = Modifier.align(CenterHorizontally),
-            fontWeight = FontWeight.Normal, color = typo_gray, fontFamily = poppins
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = {
-//                scope.launch {
-//                    viewModel.loginUser(email, password)
-//                }
-            },
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(20.dp, 5.dp, 20.dp, 5.dp)
-                .align(CenterHorizontally),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Black,
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(15.dp)
-        ) {
-            Text(
-                text = "Edit Info",
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp,
-                color = white,
-                fontFamily = poppins,
-                modifier = Modifier
-                    .padding(20.dp, 5.dp, 20.dp, 5.dp)
-            )
-        }
 
-        Spacer(modifier = Modifier.height(30.dp))
 
-        // Social network cards
-//        LazyColumn(modifier = Modifier.weight(1f)) {
-//            item {
-//                SocialCard(
-//                    networkName = "GitHub",
-//                    networkIcon = Icons.Default.Person,
-//                    networkLink = "https://github.com/andriybobchuk/"
-//                )
-//            }
-//            item {
-//                SocialCard(
-//                    networkName = "GitHub",
-//                    networkIcon = Icons.Default.Person,
-//                    networkLink = "https://github.com/andriybobchuk/"
-//                )
-//            }
-//            item {
-//                SocialCard(
-//                    networkName = "GitHub",
-//                    networkIcon = Icons.Default.Person,
-//                    networkLink = "https://github.com/andriybobchuk/"
-//                )
-//            }
-//            item {
-//                SocialCard(
-//                    networkName = "GitHub",
-//                    networkIcon = Icons.Default.Person,
-//                    networkLink = "https://github.com/andriybobchuk/"
-//                )
-//            }
-//        }
-        SocialCard(
-            networkName = "GitHub",
-            networkIcon = Icons.Default.Person,
-            networkLink = "https://github.com/andriybobchuk/"
-        )
-        SocialCard(
-            networkName = "GitHub",
-            networkIcon = Icons.Default.Person,
-            networkLink = "https://github.com/andriybobchuk/"
-        )
-        SocialCard(
-            networkName = "GitHub",
-            networkIcon = Icons.Default.Person,
-            networkLink = "https://github.com/andriybobchuk/"
-        )
-        SocialCard(
-            networkName = "GitHub",
-            networkIcon = Icons.Default.Person,
-            networkLink = "https://github.com/andriybobchuk/"
-        )
-        SocialCard(
-            networkName = "GitHub",
-            networkIcon = Icons.Default.Person,
-            networkLink = "https://github.com/andriybobchuk/"
-        )
+
     }
 }
 
 @Composable
-fun SocialCard(
-    networkName: String,
-    networkIcon: ImageVector,
-    networkLink: String
-) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        elevation = 0.dp,
-        backgroundColor = background,
+fun SocialMediaLink(name: String, link: String) {
+    Divider(
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.05f),
+        thickness = 0.4.dp,
+    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(vertical = 5.dp)
-            .fillMaxWidth()
+            .padding(vertical = 4.dp)
     ) {
-        Column(
+        Image(
+            painter = painterResource(R.drawable.ic_link),
+            contentDescription = null,
             modifier = Modifier
-            .clickable { /* Handle card click */ }
-            .padding(24.dp)
-        ) {
-            Row() {
-                Icon(
-                    imageVector = networkIcon,
-                    contentDescription = networkName,
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                )
-                Text(
-                    text = networkName,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }
-            Text(
-                text = networkLink,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal, color = accent, fontFamily = poppins,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-            )
-        }
+                .size(41.dp)
+                .padding(end = 15.dp)
+        )
+        Text(
+            text = name,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Normal,
+        )
     }
 }
+
+
+

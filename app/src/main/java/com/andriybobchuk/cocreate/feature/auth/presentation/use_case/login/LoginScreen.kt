@@ -120,7 +120,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 scope.launch {
-                    viewModel.loginUser(email, password)
+                    viewModel.loginUser(email, password, navController)
                 }
             },
             modifier = Modifier

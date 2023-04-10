@@ -31,6 +31,7 @@ fun RegisterScreen(
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val state = viewModel.registerState.collectAsState(initial = null)
@@ -58,6 +59,26 @@ fun RegisterScreen(
             fontFamily = poppins
         )
         Spacer(modifier = Modifier.height(50.dp))
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = name,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = input_fields,
+                cursorColor = Color.Black,
+                disabledLabelColor = input_fields,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            onValueChange = {
+                name = it
+            },
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true,
+            placeholder = {
+                Text(text = "Name")
+            }
+        )
+        Spacer(modifier = Modifier.height(15.dp))
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = email,
@@ -100,7 +121,7 @@ fun RegisterScreen(
         Button(
             onClick = {
                 scope.launch {
-                    viewModel.registerUser(email, password)
+                    viewModel.registerUser(name, email, password)
                 }
             },
             modifier = Modifier

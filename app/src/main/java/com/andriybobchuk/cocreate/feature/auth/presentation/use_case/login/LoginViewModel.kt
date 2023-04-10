@@ -4,9 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.andriybobchuk.cocreate.feature.auth.data.repository.AuthRepository
 import com.andriybobchuk.cocreate.feature.auth.data.repository.AuthRepositoryImpl
 import com.andriybobchuk.cocreate.util.Resource
+import com.andriybobchuk.navigation.Screens
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,11 +26,12 @@ class LoginViewModel @Inject constructor(
     val _loginState = Channel<LoginState>()
     val loginState = _loginState.receiveAsFlow()
 
-    fun loginUser(email: String, password: String) = viewModelScope.launch {
+    fun loginUser(email: String, password: String, navController: NavController) = viewModelScope.launch {
         repository.loginUser(email, password).collect { result ->
             when (result) {
                 is Resource.Success -> {
                     _loginState.send(LoginState(isSuccess = "Logged in successfully"))
+                    navController.navigate(Screens.ProfileScreen.route)
                 }
                 is Resource.Loading -> {
                     _loginState.send(LoginState(isLoading = true))
