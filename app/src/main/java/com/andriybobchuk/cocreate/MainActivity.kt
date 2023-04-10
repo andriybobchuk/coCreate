@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CoCreateTheme {
                 val navController = rememberNavController()
-                val startDestination = Screens.FeedScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                val startDestination = Screens.RegisterScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
                 //val currentDestination = startDestination
                 NavigationGraph(navController = navController, startDestination = startDestination)
                 //TODO("Fix this severe architectural problem with calling NavitagionGraph twice")

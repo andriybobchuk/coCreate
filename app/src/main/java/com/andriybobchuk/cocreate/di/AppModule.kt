@@ -1,8 +1,16 @@
 package com.andriybobchuk.cocreate.di
 
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
+import com.andriybobchuk.cocreate.core.data.repository.CoreRepositoryImpl
 import com.andriybobchuk.cocreate.feature.auth.data.repository.AuthRepository
 import com.andriybobchuk.cocreate.feature.auth.data.repository.AuthRepositoryImpl
+import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepository
+import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +39,43 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepositoryImpl(firebaseAuth: FirebaseAuth):AuthRepository {
-        return AuthRepositoryImpl(firebaseAuth = firebaseAuth)
+    fun provideRepositoryImpl(
+        firebaseAuth: FirebaseAuth,
+        firebaseFirestore: FirebaseFirestore,
+        coreRepository: CoreRepository
+    ):AuthRepository {
+        return AuthRepositoryImpl(
+            firebaseAuth = firebaseAuth,
+            firebaseFirestore = firebaseFirestore,
+            coreRepository = coreRepository
+        )
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestoreObject() = FirebaseFirestore.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideProfileRepositoryImpl(
+        firebaseFirestore: FirebaseFirestore,
+        coreRepository: CoreRepository
+    ):ProfileRepository {
+        return ProfileRepositoryImpl(
+            firebaseFirestore = firebaseFirestore,
+            coreRepository = coreRepository
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoreRepositoryImpl(
+        firebaseAuth: FirebaseAuth
+    ): CoreRepository {
+        return CoreRepositoryImpl(
+            firebaseAuth = firebaseAuth
+        )
+    }
+
+
 }
