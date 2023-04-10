@@ -1,10 +1,7 @@
 package com.andriybobchuk.cocreate.feature.auth.data.repository
 
-import android.util.Log
 import com.andriybobchuk.cocreate.core.Constants
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
-import com.andriybobchuk.cocreate.core.data.repository.CoreRepositoryImpl
-import com.andriybobchuk.cocreate.core.domain.model.BasicUser
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.Resource
 import com.google.firebase.auth.AuthCredential

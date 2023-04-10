@@ -1,6 +1,5 @@
 package com.andriybobchuk.cocreate.feature.auth.data.repository
 
-import com.andriybobchuk.cocreate.core.domain.model.BasicUser
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.Resource
 import com.google.firebase.auth.AuthCredential
