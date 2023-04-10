@@ -19,6 +19,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.navigation.BottomNavItem
 import com.andriybobchuk.cocreate.navigation.BottomNavigationBar
 import com.andriybobchuk.cocreate.navigation.NavigationGraph
@@ -26,9 +27,13 @@ import com.andriybobchuk.cocreate.ui.theme.CoCreateTheme
 import com.andriybobchuk.navigation.Screens
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity(): ComponentActivity() {
+
+    @Inject lateinit var coreRepository: CoreRepository
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +41,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             CoCreateTheme {
                 val navController = rememberNavController()
-                val startDestination = Screens.RegisterScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+
+                var startDestination = ""
+                if(coreRepository.getCurrentUserID() != "") {
+                    startDestination = Screens.ProfileScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                } else {
+                    startDestination = Screens.LoginScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                }
                 //val currentDestination = startDestination
                 NavigationGraph(navController = navController, startDestination = startDestination)
                 //TODO("Fix this severe architectural problem with calling NavitagionGraph twice")
