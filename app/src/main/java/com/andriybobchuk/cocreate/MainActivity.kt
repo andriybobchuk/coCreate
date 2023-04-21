@@ -67,7 +67,7 @@ class MainActivity(): ComponentActivity() {
                                         icon = ImageVector.vectorResource(id = R.drawable.ic_feed)
                                     ),
                                     BottomNavItem(
-                                        name = "Ideas",
+                                        name = "Collaborators",
                                         route = Screens.MyPostsScreen.route,
                                         icon = ImageVector.vectorResource(id = R.drawable.ic_myposts)
                                     ),

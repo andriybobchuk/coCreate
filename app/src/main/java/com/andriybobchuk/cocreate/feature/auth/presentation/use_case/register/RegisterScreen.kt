@@ -55,7 +55,7 @@ fun RegisterScreen(
             text = "Enter your credentials to register",
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
-            color = typo_gray,
+            color = typo_gray200,
             fontFamily = poppins
         )
         Spacer(modifier = Modifier.height(50.dp))
@@ -165,7 +165,7 @@ fun RegisterScreen(
                     top = 40.dp,
                 ),
             text = "Or connect with",
-            fontWeight = FontWeight.Normal, color = typo_gray, fontFamily = poppins
+            fontWeight = FontWeight.Normal, color = typo_gray200, fontFamily = poppins
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(

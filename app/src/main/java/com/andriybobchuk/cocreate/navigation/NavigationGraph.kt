@@ -4,15 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.login.LoginScreen
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.register.RegisterScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
 import com.andriybobchuk.cocreate.feature.messages.presentation.MessagesScreen
-import com.andriybobchuk.cocreate.feature.my_posts.presentation.MyPostsScreen
+import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
 import com.andriybobchuk.navigation.Screens
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun NavigationGraph(

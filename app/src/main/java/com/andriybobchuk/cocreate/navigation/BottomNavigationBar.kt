@@ -1,17 +1,11 @@
 package com.andriybobchuk.cocreate.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,15 +32,16 @@ fun BottomNavigationBar(
             BottomNavigationItem(
                 selected = selected,
                 onClick = { onItemClick(item) },
-                selectedContentColor = title_black,
-                unselectedContentColor = typo_gray,
+                selectedContentColor = accent,
+                unselectedContentColor = typo_gray200,
                 icon = {
                     Column(horizontalAlignment = CenterHorizontally) {
                         if(item.badgeCount > 0) {
                             BadgedBox(
                                 badge = {
                                     Badge(
-                                        backgroundColor = accent
+                                        modifier = Modifier.padding(top = 13.dp),
+                                        backgroundColor = red
                                     ) {
                                     Text(
                                         text = item.badgeCount.toString(),
@@ -64,15 +59,13 @@ fun BottomNavigationBar(
                                 contentDescription = item.name
                             )
                         }
-                        if(selected) {
-                            Text(
-                                text = item.name,
-                                textAlign = TextAlign.Center,
-                                color = title_black,
-                                fontSize = 10.sp,
-                                fontFamily = poppins,
-                            )
-                        }
+                        Text(
+                            text = item.name,
+                            textAlign = TextAlign.Center,
+                            color = if(selected) accent else typo_gray200,
+                            fontSize = 10.sp,
+                            fontFamily = poppins,
+                        )
                     }
                 }
             )

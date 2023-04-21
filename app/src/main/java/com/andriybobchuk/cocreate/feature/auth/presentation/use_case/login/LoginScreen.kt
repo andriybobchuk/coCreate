@@ -21,7 +21,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.feature.auth.data.data_source.Constant.SERVER_CLIENT
-import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.register.RegisterViewModel
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -74,7 +73,7 @@ fun LoginScreen(
             text = "Enter your credentials to log in",
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
-            color = typo_gray,
+            color = typo_gray200,
             fontFamily = poppins
         )
         Spacer(modifier = Modifier.height(50.dp))
@@ -164,7 +163,7 @@ fun LoginScreen(
                     top = 40.dp,
                 ),
             text = "Or connect with",
-            fontWeight = FontWeight.Normal, color = typo_gray, fontFamily = poppins
+            fontWeight = FontWeight.Normal, color = typo_gray200, fontFamily = poppins
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
