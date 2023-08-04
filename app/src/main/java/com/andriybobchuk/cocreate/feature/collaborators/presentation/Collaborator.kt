@@ -22,6 +22,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.ui.theme.typo_gray100
+import com.andriybobchuk.cocreate.ui.theme.typo_gray200
 
 @Composable
 fun Collaborator(name: String, description: String, imageUrl: String, onProfileClick:() -> Unit, onMessageClick: () -> Unit) {
@@ -40,7 +42,8 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
                 contentDescription = "Cover Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(45.dp)
+                    .clip(CircleShape)
             )
             Column(
                 modifier = Modifier
@@ -49,23 +52,26 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
             ) {
                 Text(
                     text = name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
                     color = Color.Black,
                     fontFamily = poppins
                 )
                 Text(
                     text = description,
-                    fontSize = 14.sp,
+                    fontSize = 13.sp,
                     color = Color.Gray,
                     fontFamily = poppins
                 )
             }
             IconButton(
+                modifier =
+                Modifier.width(28.dp).height(28.dp).padding(end = 10.dp),
                 onClick = { /* send message */ }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_messages),
+                    tint = typo_gray100,
                     contentDescription = "Send Message"
                 )
             }

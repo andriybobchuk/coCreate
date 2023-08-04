@@ -1,5 +1,6 @@
 package com.andriybobchuk.cocreate.feature.profile.presentation
 
+import android.view.View
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,8 +16,10 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -45,14 +48,12 @@ fun ProfileScreen(
     val roundedCornersCorrection = 30.dp // We lift card & icon up by this value
     val shiftIconTopBy = 20.dp // The bigger this value is, the higher icon is from the middle
 
-
-
     Column(
         Modifier
             .fillMaxSize()
             .padding(0.dp, 0.dp)
             .verticalScroll(rememberScrollState())
-            .background(background_gray200),
+            .background(background_gray100),
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
@@ -73,12 +74,12 @@ fun ProfileScreen(
                 onClick = { /* navigate back */ },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = background_gray200),
-                elevation = ButtonDefaults.elevation(0.dp),
+                elevation = ButtonDefaults.elevation(10.dp),
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    painter = painterResource(id = R.drawable.ic_arrow),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = accent,
                     modifier = Modifier.size(60.dp)
                 )
             }
@@ -89,12 +90,12 @@ fun ProfileScreen(
                 onClick = { /* navigate back */ },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(backgroundColor = background_gray200),
-                elevation = ButtonDefaults.elevation(0.dp),
+                elevation = ButtonDefaults.elevation(10.dp),
             ) {
                 Icon(
-                    imageVector = Icons.Default.Edit,
+                    painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = accent,
                     modifier = Modifier.size(10.dp)
                 )
             }
@@ -116,40 +117,69 @@ fun ProfileScreen(
                 ) {
                     Text(
                         text = profileData.name,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         modifier = Modifier.align(CenterHorizontally),
                         fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
                     )
                     if(profileData.city != "" && profileData.position != "") {
                         Text(
                             text = profileData.position + ", " + profileData.city,
-                            fontSize = 14.sp,
+                            fontSize = 13.sp,
                             modifier = Modifier.align(CenterHorizontally),
                             fontWeight = FontWeight.Light, color = typo_gray200, fontFamily = poppins
                         )
                     }
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Button(
-                        onClick = {
-                        },
+                    Spacer(modifier = Modifier.height(0.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                            .align(CenterHorizontally),
-                        elevation = ButtonDefaults.elevation(0.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = button_gray150,
-                            contentColor = background_gray200 // clicked state
-                        ),
-                        shape = RoundedCornerShape(11.dp)
+                            .padding(vertical = 8.dp, horizontal = 5.dp)
                     ) {
-                        Text(
-                            text = "Add Post",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
-                            color = accent,
-                            fontFamily = poppins,
-                        )
+                        Button(
+                            onClick = {
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1.0F)
+                                .padding(4.dp),
+                            elevation = ButtonDefaults.elevation(5.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = accent,
+                                contentColor = white // clicked state
+                            ),
+                            shape = RoundedCornerShape(11.dp)
+                        ) {
+                            Text(
+                                text = "Add Post",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                color = white,
+                                fontFamily = poppins,
+                            )
+                        }
+                        Button(
+                            onClick = {
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1.0F)
+                                .padding(4.dp),
+                            elevation = ButtonDefaults.elevation(0.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = button_gray150,
+                                contentColor = accent // clicked state
+                            ),
+                            shape = RoundedCornerShape(11.dp)
+                        ) {
+                            Text(
+                                text = "My Info",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp,
+                                color = accent,
+                                fontFamily = poppins,
+                            )
+                        }
                     }
                 }
             }
@@ -159,7 +189,8 @@ fun ProfileScreen(
                     .align(TopCenter)
                     .padding(top = coverHeight - roundedCornersCorrection - avatarSize / 2 - shiftIconTopBy)
                     .background(Color.White, shape = CircleShape)
-                    .padding(4.dp)
+                    .padding(0.dp)
+                    .shadow(elevation = 10.dp, shape = CircleShape)
             ) {
                 // Display the avatar icon which overlaps the cover and the white card
                 if (profileData.avatar != "") {
@@ -196,8 +227,7 @@ fun ProfileScreen(
             ownerName = "John Kekho",
             publishedTime = "5 decades ago",
             contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tools = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            skills = listOf("hardworkpaysoff", "hustle", "whatever it takes"),
+            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
             onLikeClick = { /*TODO*/ },
             onCommentClick = { /*TODO*/ }
         )
@@ -206,8 +236,7 @@ fun ProfileScreen(
             ownerName = "John Kekho",
             publishedTime = "5 decades ago",
             contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tools = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            skills = listOf("hardworkpaysoff", "hustle", "whatever it takes"),
+            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
             onLikeClick = { /*TODO*/ },
             onCommentClick = { /*TODO*/ }
         )
@@ -216,8 +245,7 @@ fun ProfileScreen(
             ownerName = "John Kekho",
             publishedTime = "5 decades ago",
             contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tools = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            skills = listOf("hardworkpaysoff", "hustle", "whatever it takes"),
+            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
             onLikeClick = { /*TODO*/ },
             onCommentClick = { /*TODO*/ }
         )

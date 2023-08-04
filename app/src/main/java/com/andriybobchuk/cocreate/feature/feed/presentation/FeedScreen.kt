@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
+import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
 import com.andriybobchuk.cocreate.ui.theme.*
 
 @Composable
@@ -86,7 +87,7 @@ fun FeedScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 54.dp)
+                .padding(top = 50.dp)
                 .verticalScroll(rememberScrollState())
                 .background(background_gray100)
         ) {
@@ -96,7 +97,7 @@ fun FeedScreen(
                 ownerName = "John Kekho",
                 publishedTime = "5 decades ago",
                 contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-                tools = listOf(
+                tags = listOf(
                     "Android Studio",
                     "Figma",
                     "Notion",
@@ -104,7 +105,6 @@ fun FeedScreen(
                     "Visual Studio",
                     "MatLab"
                 ),
-                skills = listOf("hardworkpaysoff", "hustle", "whatever it takes"),
                 onLikeClick = { /*TODO*/ },
                 onCommentClick = { /*TODO*/ }
             )
@@ -113,7 +113,7 @@ fun FeedScreen(
                 ownerName = "John Kekho",
                 publishedTime = "5 decades ago",
                 contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-                tools = listOf(
+                tags = listOf(
                     "Android Studio",
                     "Figma",
                     "Notion",
@@ -121,7 +121,6 @@ fun FeedScreen(
                     "Visual Studio",
                     "MatLab"
                 ),
-                skills = listOf("hardworkpaysoff", "hustle", "whatever it takes"),
                 onLikeClick = { /*TODO*/ },
                 onCommentClick = { /*TODO*/ }
             )
@@ -130,7 +129,7 @@ fun FeedScreen(
                 ownerName = "John Kekho",
                 publishedTime = "5 decades ago",
                 contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-                tools = listOf(
+                tags = listOf(
                     "Android Studio",
                     "Figma",
                     "Notion",
@@ -138,66 +137,8 @@ fun FeedScreen(
                     "Visual Studio",
                     "MatLab"
                 ),
-                skills = listOf("hardworkpaysoff", "hustle", "whatever it takes"),
                 onLikeClick = { /*TODO*/ },
                 onCommentClick = { /*TODO*/ }
-            )
-        }
-    }
-}
-
-@Composable
-fun SearchBar(
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
-    onCancelSearch: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .height(50.dp)
-            .background(white),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 8.dp)
-                .background(background_gray200, RoundedCornerShape(14.dp))
-                .padding(8.dp)
-                .weight(1f),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_search),
-                contentDescription = "Search",
-                tint = typo_gray100
-            )
-            if (searchQuery.isEmpty()) {
-                Text(
-                    text = "Search tools, profession, city",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            BasicTextField(
-                value = searchQuery,
-                onValueChange = { newValue -> onSearchQueryChange(newValue) },
-                textStyle = TextStyle(color = typo_gray200, fontSize = 16.sp),
-                singleLine = true,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .fillMaxWidth()
-            )
-        }
-
-        IconButton(
-            onClick = { onCancelSearch() },
-            modifier = Modifier.padding(end = 16.dp),
-        ) {
-            Text(
-                text = "Cancel",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Normal,
             )
         }
     }

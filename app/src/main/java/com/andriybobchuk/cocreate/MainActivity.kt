@@ -3,6 +3,7 @@ package com.andriybobchuk.cocreate
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -14,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.core.view.WindowCompat
@@ -40,6 +43,10 @@ class MainActivity(): ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CoCreateTheme {
+                // TODO: Fix this ugly way of setting the status bar in the future
+                window?.setStatusBarColor(Color.White.toArgb())
+                window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
                 val navController = rememberNavController()
 
                 var startDestination = ""

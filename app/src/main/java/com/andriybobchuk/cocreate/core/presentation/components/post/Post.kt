@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.FeedbackButton
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.TagSection
@@ -34,8 +36,7 @@ fun Post(
     ownerName: String,
     publishedTime: String,
     contentText: String,
-    tools: List<String>,
-    skills: List<String>,
+    tags: List<String>,
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
 ) {
@@ -85,11 +86,7 @@ fun Post(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            TagSection(sectionName = "Tools", tags = tools)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TagSection(sectionName = "Skills", tags = skills)
+            TagSection(sectionName = "Tags", tags = tags)
 
             Divider(
                 modifier = Modifier.padding(top = 10.dp),
@@ -102,8 +99,8 @@ fun Post(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
-                FeedbackButton(imageVector = Icons.Default.Favorite, isHighlighted = true, count = 12, onClick = {})
-                FeedbackButton(imageVector = Icons.Default.Edit, count = 0, onClick = {})
+                FeedbackButton(painter = painterResource(id = R.drawable.ic_like), isHighlighted = true, count = 12, onClick = {})
+                FeedbackButton(painter = painterResource(id = R.drawable.ic_messages), count = 4, onClick = {})
 
             }
         }
