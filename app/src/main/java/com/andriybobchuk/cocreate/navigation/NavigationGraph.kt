@@ -10,6 +10,7 @@ import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
 import com.andriybobchuk.cocreate.feature.messages.presentation.MessagesScreen
 import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
+import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileDetailScreen
 import com.andriybobchuk.navigation.Screens
 
 @Composable
@@ -21,29 +22,30 @@ fun NavigationGraph(
         navController = navController,
         startDestination = startDestination
     ) {
+        // Auth
         composable(route = Screens.LoginScreen.route) {
             LoginScreen(navController)
-
         }
         composable(route = Screens.RegisterScreen.route) {
             RegisterScreen(navController)
-
         }
+
         composable(route = Screens.FeedScreen.route) {
             FeedScreen(navController)
-
         }
         composable(route = Screens.MyPostsScreen.route) {
             MyPostsScreen(navController)
-
         }
         composable(route = Screens.MessagesScreen.route) {
             MessagesScreen(navController)
-
         }
+
+        // Profile
         composable(route = Screens.ProfileScreen.route) {
             ProfileScreen(navController)
-
+        }
+        composable(route = Screens.ProfileDetailScreen.route) {
+            ProfileDetailScreen(navController)
         }
     }
 

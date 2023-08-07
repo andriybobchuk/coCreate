@@ -33,7 +33,7 @@ import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.ui.theme.*
-
+import com.andriybobchuk.navigation.Screens
 
 
 @Composable
@@ -69,36 +69,44 @@ fun ProfileScreen(
             )
 
             // Back Button
-            Button(
-                modifier = Modifier.padding(16.dp).align(Alignment.TopStart).width(40.dp).height(40.dp),
-                onClick = { /* navigate back */ },
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = background_gray200),
-                elevation = ButtonDefaults.elevation(10.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow),
-                    contentDescription = null,
-                    tint = accent,
-                    modifier = Modifier.size(60.dp)
-                )
-            }
-
-            // Profile Detail Button
-            Button(
-                modifier = Modifier.padding(16.dp).align(Alignment.TopEnd).width(40.dp).height(40.dp),
-                onClick = { /* navigate back */ },
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = background_gray200),
-                elevation = ButtonDefaults.elevation(10.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_edit),
-                    contentDescription = null,
-                    tint = accent,
-                    modifier = Modifier.size(10.dp)
-                )
-            }
+//            Button(
+//                modifier = Modifier
+//                    .padding(16.dp)
+//                    .align(Alignment.TopStart)
+//                    .width(40.dp)
+//                    .height(40.dp),
+//                onClick = { /* navigate back */ },
+//                shape = CircleShape,
+//                colors = ButtonDefaults.buttonColors(backgroundColor = background_gray200),
+//                elevation = ButtonDefaults.elevation(10.dp),
+//            ) {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_arrow),
+//                    contentDescription = null,
+//                    tint = accent,
+//                    modifier = Modifier.size(60.dp)
+//                )
+//            }
+//
+//            // Profile Detail Button
+//            Button(
+//                modifier = Modifier
+//                    .padding(16.dp)
+//                    .align(Alignment.TopEnd)
+//                    .width(40.dp)
+//                    .height(40.dp),
+//                onClick = { /* navigate back */ },
+//                shape = CircleShape,
+//                colors = ButtonDefaults.buttonColors(backgroundColor = background_gray200),
+//                elevation = ButtonDefaults.elevation(10.dp),
+//            ) {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_edit),
+//                    contentDescription = null,
+//                    tint = accent,
+//                    modifier = Modifier.size(10.dp)
+//                )
+//            }
 
             // Display the white card with rounded corners
             Card(
@@ -160,6 +168,7 @@ fun ProfileScreen(
                         }
                         Button(
                             onClick = {
+                                navController.navigate(Screens.ProfileDetailScreen.route)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
