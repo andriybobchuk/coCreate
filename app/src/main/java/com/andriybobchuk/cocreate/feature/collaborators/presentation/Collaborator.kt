@@ -22,6 +22,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.ui.theme.accent
 import com.andriybobchuk.cocreate.ui.theme.typo_gray100
 import com.andriybobchuk.cocreate.ui.theme.typo_gray200
 
@@ -71,7 +72,7 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_messages),
-                    tint = typo_gray100,
+                    tint = accent,
                     contentDescription = "Send Message"
                 )
             }

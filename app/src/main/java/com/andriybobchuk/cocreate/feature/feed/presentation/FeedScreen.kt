@@ -55,8 +55,8 @@ fun FeedScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Ideas",
-                    fontSize = 24.sp,
+                    text = "Ideas \uD83D\uDCA1",
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Black,
                     color = title_black,
                     fontFamily = poppins,

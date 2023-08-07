@@ -52,8 +52,8 @@ fun MyPostsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Collaborators",
-                    fontSize = 23.sp, fontWeight = FontWeight.Black, color = title_black, fontFamily = poppins,
+                    text = "Collaborators \uD83D\uDE4B\u200D♂️",
+                    fontSize = 20.sp, fontWeight = FontWeight.Black, color = title_black, fontFamily = poppins,
                     modifier = Modifier
                         .padding(start = 16.dp)
                         .weight(1f)
