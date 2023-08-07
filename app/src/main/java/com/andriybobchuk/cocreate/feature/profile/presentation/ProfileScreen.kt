@@ -145,8 +145,7 @@ fun ProfileScreen(
                             .padding(vertical = 8.dp, horizontal = 5.dp)
                     ) {
                         Button(
-                            onClick = {
-                            },
+                            onClick = { navController.navigate(Screens.AddPostScreen.route) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1.0F)

@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 
@@ -115,7 +116,6 @@ fun ProfileDetailScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Name
             Text(
                 text = profileData.name,
                 fontWeight = FontWeight.Bold,
@@ -140,37 +140,37 @@ fun ProfileDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Editable Fields
-                GrayTextFieldWithLabel(
+                CcInputField(
                     title = "Profession",
                     value = profileData.position,
                     onValueChange = { editedName = it }
                 )
 
-                GrayTextFieldWithLabel(
+                CcInputField(
                     title = "City",
                     value = profileData.city,
                     onValueChange = { editedSurname = it }
                 )
 
-                GrayTextFieldWithLabel(
+                CcInputField(
                     title = "Profile Description",
                     value = "Hi, I'm an Android Dev at Samsung!",
                     onValueChange = { editedAboutMe = it }
                 )
 
-                GrayTextFieldWithLabel(
+                CcInputField(
                     title = "Tags",
                     value = "Figma, Clion, AS, coCreate",
                     onValueChange = { editedAboutMe = it }
                 )
 
-                GrayTextFieldWithLabel(
+                CcInputField(
                     title = "Website",
                     value = profileData.website,
                     onValueChange = { editedAboutMe = it }
                 )
 
-                GrayTextFieldWithLabel(
+                CcInputField(
                     title = "Github",
                     value = profileData.github,
                     onValueChange = { editedAboutMe = it }
@@ -203,35 +203,5 @@ fun ProfileDetailScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun GrayTextFieldWithLabel(
-    title: String,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 0.dp)
-    ) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            textStyle = TextStyle(color = typo_gray200),
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(input_fields, RoundedCornerShape(7.dp))
-                .padding(8.dp)
-        )
     }
 }

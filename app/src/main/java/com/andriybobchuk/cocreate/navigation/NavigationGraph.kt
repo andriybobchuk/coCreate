@@ -9,6 +9,7 @@ import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.register.Re
 import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
 import com.andriybobchuk.cocreate.feature.messages.presentation.MessagesScreen
 import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScreen
+import com.andriybobchuk.cocreate.feature.feed.presentation.AddPostScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileDetailScreen
 import com.andriybobchuk.navigation.Screens
@@ -30,9 +31,14 @@ fun NavigationGraph(
             RegisterScreen(navController)
         }
 
+        // Feed
         composable(route = Screens.FeedScreen.route) {
             FeedScreen(navController)
         }
+        composable(route = Screens.AddPostScreen.route) {
+            AddPostScreen(navController)
+        }
+
         composable(route = Screens.MyPostsScreen.route) {
             MyPostsScreen(navController)
         }

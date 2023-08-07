@@ -25,6 +25,7 @@ import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun FeedScreen(
@@ -64,7 +65,7 @@ fun FeedScreen(
                         .weight(1f)
                 )
                 IconButton(
-                    onClick = { /* navigate to add post screen */ },
+                    onClick = { navController.navigate(Screens.AddPostScreen.route) },
                     modifier = Modifier.padding(end = 0.dp),
                 ) {
                     Icon(
