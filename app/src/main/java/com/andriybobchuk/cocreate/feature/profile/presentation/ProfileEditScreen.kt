@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -17,7 +16,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,18 +25,20 @@ import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
-import com.andriybobchuk.navigation.Screens
 
 @Composable
-fun ProfileDetailScreen(
+fun ProfileEditScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val profileData = viewModel.state.value
 
-    var editedName by remember { mutableStateOf(profileData.name) }
-    var editedSurname by remember { mutableStateOf(profileData.position) }
-    var editedAboutMe by remember { mutableStateOf(profileData.city) }
+    var editedProfession by remember { mutableStateOf(profileData.position) }
+    var editedCity by remember { mutableStateOf(profileData.city) }
+    var editedDescription by remember { mutableStateOf(profileData.programmingLanguages) }
+    var editedTags by remember { mutableStateOf(profileData.tools) }
+    var editedWebsite by remember { mutableStateOf(profileData.website) }
+    var editedGithub by remember { mutableStateOf(profileData.github) }
 
     // Add more fields as needed for links to GitHub, etc.
 
@@ -120,6 +120,7 @@ fun ProfileDetailScreen(
                 text = profileData.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
+                fontFamily = poppins,
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(1.dp))
@@ -127,6 +128,7 @@ fun ProfileDetailScreen(
                 text = profileData.email,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
+                fontFamily = poppins,
                 color = typo_gray200
             )
 
@@ -143,37 +145,45 @@ fun ProfileDetailScreen(
                 CcInputField(
                     title = "Profession",
                     value = profileData.position,
-                    onValueChange = { editedName = it }
+                    isSingleLine = true,
+                    onValueChange = { newValue -> editedProfession = newValue }
                 )
 
                 CcInputField(
                     title = "City",
                     value = profileData.city,
-                    onValueChange = { editedSurname = it }
+                    isSingleLine = true,
+                    onValueChange = { newValue -> editedCity = newValue }
                 )
 
                 CcInputField(
                     title = "Profile Description",
                     value = "Hi, I'm an Android Dev at Samsung!",
-                    onValueChange = { editedAboutMe = it }
+                    isSingleLine = false,
+                    {}
+//                    onValueChange = { newValue -> editedDescription = newValue }
                 )
 
                 CcInputField(
                     title = "Tags",
                     value = "Figma, Clion, AS, coCreate",
-                    onValueChange = { editedAboutMe = it }
+                    isSingleLine = false,
+                    {}
+//                    onValueChange = { newValue -> editedTags = newValue }
                 )
 
                 CcInputField(
                     title = "Website",
                     value = profileData.website,
-                    onValueChange = { editedAboutMe = it }
+                    isSingleLine = true,
+                    onValueChange = { newValue -> editedWebsite = newValue }
                 )
 
                 CcInputField(
                     title = "Github",
                     value = profileData.github,
-                    onValueChange = { editedAboutMe = it }
+                    isSingleLine = true,
+                    onValueChange = { newValue -> editedGithub = newValue }
                 )
 
                 // Add more GrayTextFieldWithLabel for links to GitHub, etc.

@@ -6,14 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,13 +20,16 @@ import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
-import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun AddPostScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    var title by remember { mutableStateOf("Develop a Task Management App") }
+    var description by remember { mutableStateOf("I'm working on a task management app that helps users organize their tasks and to-do lists effectively. The app will have features like creating tasks, setting due dates, prioritizing tasks, and categorizing them into different projects. Users can also collaborate and share tasks with team members, making it ideal for both personal and team productivity") }
+    var tags by remember { mutableStateOf("Android, App Development, Productivity, Task Management") }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -55,7 +56,7 @@ fun AddPostScreen(
                 fontFamily = poppins,
                 modifier = Modifier
                     .padding(start = 16.dp)
-                    //.weight(1f)
+                //.weight(1f)
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
@@ -72,7 +73,7 @@ fun AddPostScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = (50+5).dp)
+                .padding(top = (50 + 5).dp)
                 .verticalScroll(rememberScrollState())
                 .background(white),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -87,20 +88,23 @@ fun AddPostScreen(
                 // Editable Fields
                 CcInputField(
                     title = "Proposal Title",
-                    value = "Nano Zabka",
-                    onValueChange = { }
+                    value = title,
+                    isSingleLine = true,
+                    onValueChange = { newValue -> title = newValue }
                 )
 
                 CcInputField(
                     title = "Description",
-                    value = "We make zabka, but without any cashiers. No salary, no vacation, only pure enthusiasm, send your CVs!",
-                    onValueChange = { }
+                    value = description,
+                    isSingleLine = false,
+                    onValueChange = { newValue -> description = newValue }
                 )
 
                 CcInputField(
                     title = "Tags",
-                    value = "UI Designer, Technical Writer, Senior Kotlin Developer",
-                    onValueChange = { }
+                    value = tags,
+                    isSingleLine = false,
+                    onValueChange = { newValue -> tags = newValue }
                 )
 
                 Button(

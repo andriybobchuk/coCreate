@@ -8,6 +8,8 @@ import android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -97,8 +100,11 @@ class MainActivity(): ComponentActivity() {
                             )
                         }
                     }
-                ) {
-                    NavigationGraph(navController = navController, startDestination = startDestination)
+                ) { innerPadding ->
+                    // Apply the padding globally to the whole BottomNavScreensController, so that bottom nav bar does not overlap the content
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        NavigationGraph(navController = navController, startDestination = startDestination)
+                    }
                 }
             }
         }

@@ -12,7 +12,7 @@ import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScre
 import com.andriybobchuk.cocreate.feature.feed.presentation.AddPostScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.PostDetailScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
-import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileDetailScreen
+import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileEditScreen
 import com.andriybobchuk.navigation.Screens
 
 @Composable
@@ -55,7 +55,7 @@ fun NavigationGraph(
             ProfileScreen(navController)
         }
         composable(route = Screens.ProfileDetailScreen.route) {
-            ProfileDetailScreen(navController)
+            ProfileEditScreen(navController)
         }
     }
 

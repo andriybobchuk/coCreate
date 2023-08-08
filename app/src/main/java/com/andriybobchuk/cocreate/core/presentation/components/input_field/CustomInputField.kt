@@ -12,12 +12,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.andriybobchuk.cocreate.ui.theme.input_fields
+import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.ui.theme.typo_gray200
 
 @Composable
 fun CcInputField(
     title: String,
     value: String,
+    isSingleLine: Boolean,
     onValueChange: (String) -> Unit
 ) {
     Column(
@@ -29,13 +31,14 @@ fun CcInputField(
             text = title,
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
+            fontFamily = poppins,
         )
         Spacer(modifier = Modifier.height(2.dp))
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle = TextStyle(color = typo_gray200),
-            singleLine = true,
+            textStyle = TextStyle(color = typo_gray200, fontFamily = poppins),
+            singleLine = isSingleLine,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(input_fields, RoundedCornerShape(7.dp))
