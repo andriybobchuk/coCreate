@@ -25,6 +25,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun ProfileEditScreen(
@@ -35,8 +36,8 @@ fun ProfileEditScreen(
 
     var editedProfession by remember { mutableStateOf(profileData.position) }
     var editedCity by remember { mutableStateOf(profileData.city) }
-    var editedDescription by remember { mutableStateOf(profileData.programmingLanguages) }
-    var editedTags by remember { mutableStateOf(profileData.tools) }
+//    var editedDescription by remember { mutableStateOf(profileData.programmingLanguages) }
+//    var editedTags by remember { mutableStateOf(profileData.tools) }
     var editedWebsite by remember { mutableStateOf(profileData.website) }
     var editedGithub by remember { mutableStateOf(profileData.github) }
 
@@ -62,7 +63,10 @@ fun ProfileEditScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
-                onClick = { },
+                onClick = {
+                    viewModel.logOut()
+                    navController.navigate(Screens.LoginScreen.route)
+                          },
                 modifier = Modifier.padding(end = 10.dp),
             ) {
                 Icon(

@@ -57,7 +57,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepositoryImpl(
+    fun provideCollaboratorsRepositoryImpl(
         firebaseFirestore: FirebaseFirestore,
         coreRepository: CoreRepository
     ):ProfileRepository {
@@ -70,9 +70,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCoreRepositoryImpl(
+        firebaseFirestore: FirebaseFirestore,
         firebaseAuth: FirebaseAuth
     ): CoreRepository {
         return CoreRepositoryImpl(
+            firebaseFirestore = firebaseFirestore,
             firebaseAuth = firebaseAuth
         )
     }

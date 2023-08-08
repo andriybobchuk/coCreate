@@ -8,8 +8,5 @@ data class ProfileData(
     val email: String = "",
     val github: String = "",
     val website: String = "",
-    val linkedin: String = "",
-    val tools: List<String> = listOf(),
-    val programmingLanguages: List<String> = listOf(),
-    val languages: List<String> = listOf(),
+    val tags: List<String> = listOf(),
 )

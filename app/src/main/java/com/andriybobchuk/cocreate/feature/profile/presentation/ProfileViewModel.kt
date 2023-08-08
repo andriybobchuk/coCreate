@@ -5,13 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepository
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val repository: ProfileRepository
+    private val repository: ProfileRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
     val state = mutableStateOf(ProfileData())
 
@@ -23,5 +25,9 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             state.value = repository.getProfileData()
         }
+    }
+
+    fun logOut() {
+        auth.signOut()
     }
 }

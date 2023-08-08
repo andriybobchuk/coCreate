@@ -2,6 +2,8 @@ package com.andriybobchuk.cocreate.feature.collaborators.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -14,11 +16,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.core.domain.model.Person
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
+import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileViewModel
 import com.andriybobchuk.cocreate.ui.theme.background_gray100
 import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.ui.theme.title_black
@@ -26,8 +31,12 @@ import com.andriybobchuk.cocreate.ui.theme.white
 
 @Composable
 fun MyPostsScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: CollaboratorsViewModel = hiltViewModel()
 ) {
+    val friendsList = viewModel.state.value
+    //System.out.println(friendsList)
+
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -69,27 +78,20 @@ fun MyPostsScreen(
                 }
             }
         }
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 50.dp)
-                .verticalScroll(rememberScrollState())
                 .background(background_gray100)
         ) {
-            // List of people can be added here
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-            Collaborator(name = "Andrew Berntal", description = "Actor, Atlanta", imageUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Flicensed-image%3Fq%3Dtbn%3AANd9GcRmyqPeGNmHcItdNfp1tzxjPCQEUqjy8-HGMNCdn4IsZ30dwaWvwfHs8bZe8hqD940deEx6sx1rboYtNTY&psig=AOvVaw10xSDiBzac0hD6NDxVcDY1&ust=1691160273305000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLj1247dwIADFQAAAAAdAAAAABAE", {}, {})
-
+            items(friendsList) { friend ->
+                Collaborator(
+                    name = friend.name,
+                    description = "",
+                    imageUrl = friend.avatar,
+                    onProfileClick = { /*TODO*/ }) {
+                }
+            }
         }
     }
 }

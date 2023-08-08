@@ -11,8 +11,8 @@ interface AuthRepository {
     fun loginUser(email: String, password: String): Flow<Resource<AuthResult>>
     fun registerUser(name: String, email: String, password: String): Flow<Resource<AuthResult>>
     fun createBasicProfileInFirestore(profileData: ProfileData)
-
     fun googleLogin(credential: AuthCredential): Flow<Resource<AuthResult>>
     fun facebookLogin(credential: AuthCredential): Flow<Resource<AuthResult>>
+    fun logOut()
 
 }
