@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.FeedbackButton
@@ -29,9 +30,11 @@ import com.andriybobchuk.cocreate.ui.theme.accent
 import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.ui.theme.typo_gray100
 import com.andriybobchuk.cocreate.ui.theme.typo_gray200
+import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun Post(
+    navController: NavController,
     ownerAvatar: Painter,
     ownerName: String,
     publishedTime: String,
@@ -115,7 +118,8 @@ fun Post(
                 fontFamily = poppins,
                 color = accent,
                 modifier = Modifier
-                    .clickable(onClick = {})
+                    .clickable(onClick = { navController.navigate(
+                        Screens.PostDetailScreen.route) })
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -133,7 +137,8 @@ fun Post(
                     .padding(vertical = 8.dp)
             ) {
                 FeedbackButton(painter = painterResource(id = R.drawable.ic_like), isHighlighted = true, count = 12, onClick = {})
-                FeedbackButton(painter = painterResource(id = R.drawable.ic_messages), count = 4, onClick = {})
+                FeedbackButton(painter = painterResource(id = R.drawable.ic_messages), count = 4, onClick = { navController.navigate(
+                    Screens.PostDetailScreen.route) })
 
             }
         }

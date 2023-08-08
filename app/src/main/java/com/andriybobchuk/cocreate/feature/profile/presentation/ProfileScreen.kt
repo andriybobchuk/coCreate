@@ -231,6 +231,7 @@ fun ProfileScreen(
         }
 
         Post(
+            navController = navController,
             ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
             ownerName = "John Kekho",
             publishedTime = "5 decades ago",
@@ -240,6 +241,7 @@ fun ProfileScreen(
             onCommentClick = { /*TODO*/ }
         )
         Post(
+            navController = navController,
             ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
             ownerName = "John Kekho",
             publishedTime = "5 decades ago",
@@ -249,6 +251,7 @@ fun ProfileScreen(
             onCommentClick = { /*TODO*/ }
         )
         Post(
+            navController = navController,
             ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
             ownerName = "John Kekho",
             publishedTime = "5 decades ago",

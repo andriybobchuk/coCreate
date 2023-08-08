@@ -94,6 +94,7 @@ fun FeedScreen(
         ) {
             // List of posts can be added here
             Post(
+                navController = navController,
                 ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
                 ownerName = "John Kekho",
                 publishedTime = "5 decades ago",
@@ -110,6 +111,7 @@ fun FeedScreen(
                 onCommentClick = { /*TODO*/ }
             )
             Post(
+                navController = navController,
                 ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
                 ownerName = "John Kekho",
                 publishedTime = "5 decades ago",
@@ -126,6 +128,7 @@ fun FeedScreen(
                 onCommentClick = { /*TODO*/ }
             )
             Post(
+                navController = navController,
                 ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
                 ownerName = "John Kekho",
                 publishedTime = "5 decades ago",

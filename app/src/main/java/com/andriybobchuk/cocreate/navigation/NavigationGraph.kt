@@ -10,6 +10,7 @@ import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
 import com.andriybobchuk.cocreate.feature.messages.presentation.MessagesScreen
 import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.AddPostScreen
+import com.andriybobchuk.cocreate.feature.feed.presentation.PostDetailScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileDetailScreen
 import com.andriybobchuk.navigation.Screens
@@ -37,6 +38,9 @@ fun NavigationGraph(
         }
         composable(route = Screens.AddPostScreen.route) {
             AddPostScreen(navController)
+        }
+        composable(route = Screens.PostDetailScreen.route) {
+            PostDetailScreen(navController)
         }
 
         composable(route = Screens.MyPostsScreen.route) {

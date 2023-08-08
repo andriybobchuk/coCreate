@@ -52,7 +52,7 @@ fun ProfileDetailScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.navigate(Screens.ProfileScreen.route) },
+                onClick = { navController.popBackStack() },
                 modifier = Modifier.padding(start = 10.dp),
             ) {
                 Icon(
