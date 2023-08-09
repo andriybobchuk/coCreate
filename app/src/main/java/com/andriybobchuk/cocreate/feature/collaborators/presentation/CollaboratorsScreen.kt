@@ -28,6 +28,7 @@ import com.andriybobchuk.cocreate.ui.theme.background_gray100
 import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.ui.theme.title_black
 import com.andriybobchuk.cocreate.ui.theme.white
+import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun MyPostsScreen(
@@ -88,7 +89,7 @@ fun MyPostsScreen(
                     name = friend.name,
                     description = friend.position + " " + friend.city,
                     imageUrl = friend.avatar,
-                    onProfileClick = { /*TODO*/ }) {
+                    onProfileClick = { navController.navigate(Screens.SomeonesProfileScreen.route) }) {
                 }
             }
         }

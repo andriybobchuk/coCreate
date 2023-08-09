@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileScreen
+import com.andriybobchuk.cocreate.core.presentation.screens.ProfileDetailScreen
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.login.LoginScreen
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.register.RegisterScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
@@ -54,8 +56,14 @@ fun NavigationGraph(
         composable(route = Screens.ProfileScreen.route) {
             ProfileScreen(navController)
         }
-        composable(route = Screens.ProfileDetailScreen.route) {
+        composable(route = Screens.ProfileEditScreen.route) {
             ProfileEditScreen(navController)
+        }
+        composable(route = Screens.SomeonesProfileScreen.route) {
+            SomeonesProfileScreen(navController)
+        }
+        composable(route = Screens.ProfileDetailScreen.route) {
+            ProfileDetailScreen(navController)
         }
     }
 

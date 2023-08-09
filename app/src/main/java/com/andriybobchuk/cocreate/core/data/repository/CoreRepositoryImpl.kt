@@ -60,13 +60,33 @@ class CoreRepositoryImpl @Inject constructor(
         return emptyList()
     }
 
-    override suspend fun getPersonByID(Id: String): ProfileData {
+    // To be removed
+    override suspend fun getPersonByID(id: String): ProfileData {
         var profileData = ProfileData()
 
         try {
             profileData = firebaseFirestore
                 .collection(Constants.PROFILE_DATA)
-                .document(Id)
+                .document(id)
+                .get()
+                .await()
+                .toObject(ProfileData::class.java)!!
+
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("error", e.toString())
+        }
+
+        return profileData
+    }
+
+    override suspend fun getProfileDataById(id: String): ProfileData {
+
+        var profileData = ProfileData()
+
+        try {
+            profileData = firebaseFirestore
+                .collection(Constants.PROFILE_DATA)
+                .document(id)
                 .get()
                 .await()
                 .toObject(ProfileData::class.java)!!

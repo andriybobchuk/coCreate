@@ -6,6 +6,6 @@ interface CoreRepository {
 
     fun getCurrentUserID(): String
     suspend fun getCurrentUserFriends(): List<String>
-    suspend fun getPersonByID(Id: String): ProfileData
-
+    suspend fun getPersonByID(id: String): ProfileData
+    suspend fun getProfileDataById(id: String): ProfileData
 }

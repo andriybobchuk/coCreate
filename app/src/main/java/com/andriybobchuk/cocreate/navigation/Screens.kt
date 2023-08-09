@@ -7,9 +7,11 @@ sealed class Screens(val route: String) {
     object MyPostsScreen : Screens(route = "MyPosts_Screen")
     object MessagesScreen : Screens(route = "Messages_Screen")
     object ProfileScreen : Screens(route = "Profile_Screen")
+    object ProfileEditScreen : Screens(route = "Profile_Edit_Screen")
     object ProfileDetailScreen : Screens(route = "Profile_Detail_Screen")
     object AddPostScreen : Screens(route = "Add_Post_Screen")
     object PostDetailScreen : Screens(route = "Post_Detail_Screen")
+    object SomeonesProfileScreen : Screens(route = "Someones_Profile_Screen")
 
 
 }
