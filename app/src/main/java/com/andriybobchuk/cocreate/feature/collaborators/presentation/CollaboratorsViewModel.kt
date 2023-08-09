@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.Person
+import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ class CollaboratorsViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
-    var friendsList = listOf<Person>()
+    var friendsList = listOf<ProfileData>()
     var state = mutableStateOf(friendsList)
 
     init {

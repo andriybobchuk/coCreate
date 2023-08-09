@@ -35,7 +35,6 @@ fun MyPostsScreen(
     viewModel: CollaboratorsViewModel = hiltViewModel()
 ) {
     val friendsList = viewModel.state.value
-    //System.out.println(friendsList)
 
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -87,7 +86,7 @@ fun MyPostsScreen(
             items(friendsList) { friend ->
                 Collaborator(
                     name = friend.name,
-                    description = "",
+                    description = friend.position + " " + friend.city,
                     imageUrl = friend.avatar,
                     onProfileClick = { /*TODO*/ }) {
                 }

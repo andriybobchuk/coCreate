@@ -60,21 +60,21 @@ class CoreRepositoryImpl @Inject constructor(
         return emptyList()
     }
 
-    override suspend fun getPersonByID(Id: String): Person {
-        var person = Person()
+    override suspend fun getPersonByID(Id: String): ProfileData {
+        var profileData = ProfileData()
 
         try {
-            person = firebaseFirestore
+            profileData = firebaseFirestore
                 .collection(Constants.PROFILE_DATA)
                 .document(Id)
                 .get()
                 .await()
-                .toObject(Person::class.java)!!
+                .toObject(ProfileData::class.java)!!
 
         } catch (e: FirebaseFirestoreException) {
             Log.d("error", e.toString())
         }
 
-        return person
+        return profileData
     }
 }

@@ -1,6 +1,7 @@
 package com.andriybobchuk.cocreate.feature.collaborators.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -20,11 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
-import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.R
-import com.andriybobchuk.cocreate.ui.theme.accent
-import com.andriybobchuk.cocreate.ui.theme.typo_gray100
-import com.andriybobchuk.cocreate.ui.theme.typo_gray200
+import com.andriybobchuk.cocreate.ui.theme.*
 
 @Composable
 fun Collaborator(name: String, description: String, imageUrl: String, onProfileClick:() -> Unit, onMessageClick: () -> Unit) {
@@ -38,14 +36,30 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = "Cover Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(45.dp)
-                    .clip(CircleShape)
-            )
+            if (imageUrl != "") {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUrl),
+                    contentDescription = "Cover Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                Box(
+                    Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
+                        .background(purple),
+                ) {
+                    Text(
+                        text = name.take(1).toUpperCase(),
+                        fontSize = 16.sp,
+                        color = Color.White,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
             Column(
                 modifier = Modifier
                     .padding(start = 16.dp)
