@@ -13,16 +13,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SomeonesProfileViewModel @Inject constructor(
-    private val repository: CoreRepository,
-    private val auth: FirebaseAuth
+    private val repository: CoreRepository
 ) : ViewModel() {
     val state = mutableStateOf(ProfileData())
 
-    init {
-        //getProfileDataById("")
-    }
-
-    private fun getProfileDataById(id: String) {
+    fun getProfileDataById(id: String) {
         viewModelScope.launch {
             state.value = repository.getProfileDataById(id)
         }

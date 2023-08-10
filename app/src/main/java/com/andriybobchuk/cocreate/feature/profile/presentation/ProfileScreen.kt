@@ -167,7 +167,7 @@ fun ProfileScreen(
                         }
                         Button(
                             onClick = {
-                                navController.navigate(Screens.ProfileDetailScreen.route)
+                                navController.navigate(Screens.ProfileEditScreen.route)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -230,36 +230,36 @@ fun ProfileScreen(
             }
         }
 
-        Post(
-            navController = navController,
-            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-            ownerName = "John Kekho",
-            publishedTime = "5 decades ago",
-            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            onLikeClick = { /*TODO*/ },
-            onCommentClick = { /*TODO*/ }
-        )
-        Post(
-            navController = navController,
-            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-            ownerName = "John Kekho",
-            publishedTime = "5 decades ago",
-            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            onLikeClick = { /*TODO*/ },
-            onCommentClick = { /*TODO*/ }
-        )
-        Post(
-            navController = navController,
-            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-            ownerName = "John Kekho",
-            publishedTime = "5 decades ago",
-            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            onLikeClick = { /*TODO*/ },
-            onCommentClick = { /*TODO*/ }
-        )
+//        Post(
+//            navController = navController,
+//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
+//            ownerName = "John Kekho",
+//            publishedTime = "5 decades ago",
+//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
+//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
+//            onLikeClick = { /*TODO*/ },
+//            onCommentClick = { /*TODO*/ }
+//        )
+//        Post(
+//            navController = navController,
+//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
+//            ownerName = "John Kekho",
+//            publishedTime = "5 decades ago",
+//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
+//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
+//            onLikeClick = { /*TODO*/ },
+//            onCommentClick = { /*TODO*/ }
+//        )
+//        Post(
+//            navController = navController,
+//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
+//            ownerName = "John Kekho",
+//            publishedTime = "5 decades ago",
+//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
+//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
+//            onLikeClick = { /*TODO*/ },
+//            onCommentClick = { /*TODO*/ }
+//        )
 
 //        Card(
 //            modifier = Modifier

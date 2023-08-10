@@ -38,6 +38,7 @@ fun Post(
     ownerAvatar: Painter,
     ownerName: String,
     publishedTime: String,
+    title: String,
     contentText: String,
     tags: List<String>,
     onLikeClick: () -> Unit,
@@ -96,7 +97,7 @@ fun Post(
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "AI based recommender system",
+                text = title,
                 fontSize = 14.sp,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Bold,
@@ -105,7 +106,7 @@ fun Post(
             )
             Spacer(modifier = Modifier.height(5.dp))
             Text(
-                text = contentText,
+                text = contentText.substring(0, minOf(300, contentText.length)),
                 fontSize = 14.sp,
                 fontFamily = poppins,
                 modifier = Modifier

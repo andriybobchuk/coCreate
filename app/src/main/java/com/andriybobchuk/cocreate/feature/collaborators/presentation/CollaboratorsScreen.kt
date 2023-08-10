@@ -89,7 +89,15 @@ fun MyPostsScreen(
                     name = friend.name,
                     description = friend.position + " " + friend.city,
                     imageUrl = friend.avatar,
-                    onProfileClick = { navController.navigate(Screens.SomeonesProfileScreen.route) }) {
+                    onProfileClick = {
+                        navController.navigate(
+                            "detail/{user}"
+                                .replace(
+                                    oldValue = "{user}",
+                                    newValue = friend.uid
+                                )
+                        )
+                    }) {
                 }
             }
         }

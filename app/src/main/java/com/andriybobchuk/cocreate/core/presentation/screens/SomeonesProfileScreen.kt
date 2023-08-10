@@ -40,9 +40,9 @@ import com.andriybobchuk.navigation.Screens
 fun SomeonesProfileScreen(
     navController: NavController,
     viewModel: SomeonesProfileViewModel = hiltViewModel(),
-    //sourceViewModel:
+    id: String
 ) {
-    //viewModel.userId = userId
+    viewModel.getProfileDataById(id)
     val profileData = viewModel.state.value
 
     val coverHeight = 180.dp
@@ -111,9 +111,9 @@ fun SomeonesProfileScreen(
                         modifier = Modifier.align(CenterHorizontally),
                         fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
                     )
-                    if(profileData.city != "" && profileData.position != "") {
+                    if(profileData.city != "" || profileData.position != "") {
                         Text(
-                            text = profileData.position + ", " + profileData.city,
+                            text = profileData.position + " " + profileData.city,
                             fontSize = 13.sp,
                             modifier = Modifier.align(CenterHorizontally),
                             fontWeight = FontWeight.Light, color = typo_gray200, fontFamily = poppins
@@ -233,36 +233,36 @@ fun SomeonesProfileScreen(
             }
         }
 
-        Post(
-            navController = navController,
-            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-            ownerName = "John Kekho",
-            publishedTime = "5 decades ago",
-            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            onLikeClick = { /*TODO*/ },
-            onCommentClick = { /*TODO*/ }
-        )
-        Post(
-            navController = navController,
-            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-            ownerName = "John Kekho",
-            publishedTime = "5 decades ago",
-            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            onLikeClick = { /*TODO*/ },
-            onCommentClick = { /*TODO*/ }
-        )
-        Post(
-            navController = navController,
-            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-            ownerName = "John Kekho",
-            publishedTime = "5 decades ago",
-            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-            onLikeClick = { /*TODO*/ },
-            onCommentClick = { /*TODO*/ }
-        )
+//        Post(
+//            navController = navController,
+//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
+//            ownerName = "John Kekho",
+//            publishedTime = "5 decades ago",
+//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
+//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
+//            onLikeClick = { /*TODO*/ },
+//            onCommentClick = { /*TODO*/ }
+//        )
+//        Post(
+//            navController = navController,
+//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
+//            ownerName = "John Kekho",
+//            publishedTime = "5 decades ago",
+//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
+//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
+//            onLikeClick = { /*TODO*/ },
+//            onCommentClick = { /*TODO*/ }
+//        )
+//        Post(
+//            navController = navController,
+//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
+//            ownerName = "John Kekho",
+//            publishedTime = "5 decades ago",
+//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
+//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
+//            onLikeClick = { /*TODO*/ },
+//            onCommentClick = { /*TODO*/ }
+//        )
 
 //        Card(
 //            modifier = Modifier

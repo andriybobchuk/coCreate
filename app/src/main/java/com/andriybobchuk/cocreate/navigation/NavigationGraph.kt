@@ -59,12 +59,20 @@ fun NavigationGraph(
         composable(route = Screens.ProfileEditScreen.route) {
             ProfileEditScreen(navController)
         }
-        composable(route = Screens.SomeonesProfileScreen.route) {
-            SomeonesProfileScreen(navController)
+        composable(route = "detail/{id}") { navBackStackEntry ->
+            /* Extracting the id from the route */
+            val id = navBackStackEntry.arguments?.getString("id")
+            /* We check if it's not null */
+            id?.let { it->
+                SomeonesProfileScreen(navController, id = id)
+            }
         }
-        composable(route = Screens.ProfileDetailScreen.route) {
-            ProfileDetailScreen(navController)
-        }
+//        composable(route = "someonesProfileDetail/{id}") { navBackStackEntry ->
+//            val id = navBackStackEntry.arguments?.getString("id")
+//            id?.let { it->
+//                ProfileDetailScreen(navController, id = id)
+//            }
+//        }
     }
 
 }

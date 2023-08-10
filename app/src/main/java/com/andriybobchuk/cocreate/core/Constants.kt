@@ -8,6 +8,7 @@ object Constants {
     // This  is used for the collection name for USERS.
     const val PROFILE_DATA: String = "profileData"
     const val FRIENDS: String = "friends"
+    const val POSTS: String = "post"
 
 
 

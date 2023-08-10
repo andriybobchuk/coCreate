@@ -3,11 +3,17 @@ package com.andriybobchuk.cocreate.core.data.repository
 import android.util.Log
 import com.andriybobchuk.cocreate.core.Constants
 import com.andriybobchuk.cocreate.core.domain.model.Person
+import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CoreRepositoryImpl @Inject constructor(
@@ -58,6 +64,19 @@ class CoreRepositoryImpl @Inject constructor(
             return friendUidsSet.toList() // Convert the set back to a list
         }
         return emptyList()
+    }
+
+    override suspend fun getAllPosts(): List<Post> = withContext(Dispatchers.IO) {
+        try {
+            val postsCollection = firebaseFirestore.collection(Constants.POSTS).get().await()
+            val postsList = postsCollection.documents.mapNotNull { document ->
+                document.toObject(Post::class.java)
+            }
+            postsList
+        } catch (e: Exception) {
+            // Handle exceptions here
+            emptyList()
+        }
     }
 
     // To be removed

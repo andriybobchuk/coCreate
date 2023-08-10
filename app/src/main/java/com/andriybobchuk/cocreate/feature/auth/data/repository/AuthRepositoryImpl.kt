@@ -37,6 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             createBasicProfileInFirestore(
                 ProfileData(
+                    uid = coreRepository.getCurrentUserID(),
                     name = name,
                     email = email,
                     avatar = ""

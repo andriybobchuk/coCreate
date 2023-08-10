@@ -2,6 +2,8 @@ package com.andriybobchuk.cocreate.feature.feed.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -19,18 +21,24 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
+import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileViewModel
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun FeedScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: FeedViewModel = hiltViewModel(),
+   // id: String
 ) {
+    val posts = viewModel.state.value
+
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -84,66 +92,25 @@ fun FeedScreen(
                 }
             }
         }
-
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 50.dp)
-                .verticalScroll(rememberScrollState())
                 .background(background_gray100)
         ) {
-            // List of posts can be added here
-            Post(
-                navController = navController,
-                ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-                ownerName = "John Kekho",
-                publishedTime = "5 decades ago",
-                contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-                tags = listOf(
-                    "Android Studio",
-                    "Figma",
-                    "Notion",
-                    "Clion",
-                    "Visual Studio",
-                    "MatLab"
-                ),
-                onLikeClick = { /*TODO*/ },
-                onCommentClick = { /*TODO*/ }
-            )
-            Post(
-                navController = navController,
-                ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-                ownerName = "John Kekho",
-                publishedTime = "5 decades ago",
-                contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-                tags = listOf(
-                    "Android Studio",
-                    "Figma",
-                    "Notion",
-                    "Clion",
-                    "Visual Studio",
-                    "MatLab"
-                ),
-                onLikeClick = { /*TODO*/ },
-                onCommentClick = { /*TODO*/ }
-            )
-            Post(
-                navController = navController,
-                ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-                ownerName = "John Kekho",
-                publishedTime = "5 decades ago",
-                contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-                tags = listOf(
-                    "Android Studio",
-                    "Figma",
-                    "Notion",
-                    "Clion",
-                    "Visual Studio",
-                    "MatLab"
-                ),
-                onLikeClick = { /*TODO*/ },
-                onCommentClick = { /*TODO*/ }
-            )
+            items(posts) { post ->
+                Post(
+                    navController = navController,
+                    ownerAvatar = rememberAsyncImagePainter(model = post.postAuthor.avatar),
+                    ownerName = post.postAuthor.name,
+                    publishedTime = post.postBody.published,
+                    title = post.postBody.title,
+                    contentText = post.postBody.desc,
+                    tags = post.postBody.tags,
+                    onLikeClick = { /*TODO*/ },
+                    onCommentClick = {},
+                )
+            }
         }
     }
 }

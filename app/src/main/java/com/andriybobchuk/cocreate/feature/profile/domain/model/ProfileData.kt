@@ -1,6 +1,7 @@
 package com.andriybobchuk.cocreate.feature.profile.domain.model
 
 data class ProfileData(
+    val uid: String = "",
     val name: String = "",
     val position: String = "",
     val city: String = "",

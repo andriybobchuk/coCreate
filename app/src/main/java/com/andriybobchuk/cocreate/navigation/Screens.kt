@@ -11,7 +11,4 @@ sealed class Screens(val route: String) {
     object ProfileDetailScreen : Screens(route = "Profile_Detail_Screen")
     object AddPostScreen : Screens(route = "Add_Post_Screen")
     object PostDetailScreen : Screens(route = "Post_Detail_Screen")
-    object SomeonesProfileScreen : Screens(route = "Someones_Profile_Screen")
-
-
 }
