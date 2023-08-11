@@ -101,12 +101,15 @@ fun FeedScreen(
             items(posts) { post ->
                 Post(
                     navController = navController,
-                    ownerAvatar = rememberAsyncImagePainter(model = post.postAuthor.avatar),
+                    ownerAvatar = post.postAuthor.avatar,
                     ownerName = post.postAuthor.name,
                     publishedTime = post.postBody.published,
                     title = post.postBody.title,
                     contentText = post.postBody.desc,
                     tags = post.postBody.tags,
+                    likes = post.postBody.likes,
+                    comments = post.postBody.comments,
+                    isLiked = false,
                     onLikeClick = { /*TODO*/ },
                     onCommentClick = {},
                 )
