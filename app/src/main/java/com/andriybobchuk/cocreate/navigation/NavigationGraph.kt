@@ -41,8 +41,13 @@ fun NavigationGraph(
         composable(route = Screens.AddPostScreen.route) {
             AddPostScreen(navController)
         }
-        composable(route = Screens.PostDetailScreen.route) {
-            PostDetailScreen(navController)
+        composable(route = "postDetail/{id}") { navBackStackEntry ->
+            /* Extracting the id from the route */
+            val id = navBackStackEntry.arguments?.getString("id")
+            /* We check if it's not null */
+            id?.let { it->
+                PostDetailScreen(navController, id = id)
+            }
         }
 
         composable(route = Screens.MyPostsScreen.route) {

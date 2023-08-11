@@ -2,6 +2,8 @@ package com.andriybobchuk.cocreate.core.data.repository
 
 import android.util.Log
 import com.andriybobchuk.cocreate.core.Constants
+import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
+import com.andriybobchuk.cocreate.core.domain.model.Comment
 import com.andriybobchuk.cocreate.core.domain.model.Person
 import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
@@ -79,6 +81,21 @@ class CoreRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCommentsByPostId(id: String): List<Comment> {
+        try {
+            val commentsCollection = firebaseFirestore.collection(Constants.COMMENTS)
+                .whereEqualTo("postUid", id)
+                .get()
+                .await()
+            val commentList = commentsCollection.documents.mapNotNull { document ->
+                document.toObject(Comment::class.java)
+            }
+            return commentList
+        } catch (e: Exception) {
+            return emptyList()
+        }
+    }
+
     // To be removed
     override suspend fun getPersonByID(id: String): ProfileData {
         var profileData = ProfileData()
@@ -115,5 +132,24 @@ class CoreRepositoryImpl @Inject constructor(
         }
 
         return profileData
+    }
+
+    override suspend fun getPostDataById(id: String): Post {
+
+        var postData = Post()
+
+        try {
+            postData = firebaseFirestore
+                .collection(Constants.POSTS)
+                .document(id)
+                .get()
+                .await()
+                .toObject(Post::class.java)!!
+
+        } catch (e: FirebaseFirestoreException) {
+            Log.d("error", e.toString())
+        }
+
+        return postData
     }
 }

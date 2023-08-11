@@ -9,6 +9,7 @@ object Constants {
     const val PROFILE_DATA: String = "profileData"
     const val FRIENDS: String = "friends"
     const val POSTS: String = "post"
+    const val COMMENTS: String = "comment"
 
 
 

@@ -35,7 +35,6 @@ import com.andriybobchuk.navigation.Screens
 fun FeedScreen(
     navController: NavController,
     viewModel: FeedViewModel = hiltViewModel(),
-   // id: String
 ) {
     val posts = viewModel.state.value
 
@@ -100,7 +99,6 @@ fun FeedScreen(
         ) {
             items(posts) { post ->
                 Post(
-                    navController = navController,
                     ownerAvatar = post.postAuthor.avatar,
                     ownerName = post.postAuthor.name,
                     publishedTime = post.postBody.published,
@@ -110,8 +108,28 @@ fun FeedScreen(
                     likes = post.postBody.likes,
                     comments = post.postBody.comments,
                     isLiked = false,
-                    onLikeClick = { /*TODO*/ },
-                    onCommentClick = {},
+                    onLikeClick = {
+
+                    },
+                    onCommentClick = {
+                        System.out.println("Comment clicked")
+                        navController.navigate(
+                            "postDetail/{user}"
+                                .replace(
+                                    oldValue = "{user}",
+                                    newValue = post.postBody.uid
+                                )
+                        )
+                    },
+                    onReadMoreClick = {
+                        navController.navigate(
+                            "postDetail/{user}"
+                                .replace(
+                                    oldValue = "{user}",
+                                    newValue = post.postBody.uid
+                                )
+                        )
+                    }
                 )
             }
         }

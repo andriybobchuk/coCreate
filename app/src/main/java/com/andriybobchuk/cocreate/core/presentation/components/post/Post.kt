@@ -35,7 +35,6 @@ import com.andriybobchuk.navigation.Screens
 const val POST_TRIM_LENGTH = 300;
 @Composable
 fun Post(
-    navController: NavController,
     ownerAvatar: String,
     ownerName: String,
     publishedTime: String,
@@ -47,6 +46,7 @@ fun Post(
     isLiked: Boolean,
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
+    onReadMoreClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -148,13 +148,21 @@ fun Post(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
-                FeedbackButton(painter = painterResource(id = R.drawable.ic_like), isHighlighted = isLiked, count = likes, onClick = {})
-                FeedbackButton(painter = painterResource(id = R.drawable.ic_messages), count = comments, onClick = { navController.navigate(
-                    Screens.PostDetailScreen.route) })
-                
+                FeedbackButton(
+                    painter = painterResource(id = R.drawable.ic_like),
+                    isHighlighted = isLiked,
+                    count = likes,
+                    onClick = { onLikeClick() }
+                )
+                FeedbackButton(
+                    painter = painterResource(id = R.drawable.ic_messages),
+                    count = comments,
+                    onClick = { onCommentClick() })
+
+                // Read More button
                 if (contentText.length > POST_TRIM_LENGTH) {
                     Button(
-                        onClick = { navController.navigate(Screens.PostDetailScreen.route) },
+                        onClick = { onReadMoreClick() },
                         colors = ButtonDefaults.buttonColors(backgroundColor = background_gray100),
                         shape = CircleShape,
                         elevation = ButtonDefaults.elevation(0.dp),

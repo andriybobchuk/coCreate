@@ -151,7 +151,7 @@ fun SomeonesProfileScreen(
                         }
                         Button(
                             onClick = {
-                                navController.navigate(Screens.ProfileDetailScreen.route)
+
                             },
                             modifier = Modifier
                                 .wrapContentWidth()
@@ -172,7 +172,7 @@ fun SomeonesProfileScreen(
                         }
                         Button(
                             onClick = {
-                                navController.navigate(Screens.ProfileDetailScreen.route)
+
                             },
                             modifier = Modifier
                                 .wrapContentWidth()
