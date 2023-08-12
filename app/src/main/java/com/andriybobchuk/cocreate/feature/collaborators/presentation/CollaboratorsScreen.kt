@@ -39,6 +39,8 @@ fun MyPostsScreen(
 ) {
     val friendsList = viewModel.state.value
 
+    val exploreList = viewModel.exploreState.value
+
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -122,20 +124,41 @@ fun MyPostsScreen(
                 .fillMaxSize()
                 .background(background_gray100)
         ) {
-            items(friendsList) { friend ->
-                Collaborator(
-                    name = friend.name,
-                    description = friend.position + " " + friend.city,
-                    imageUrl = friend.avatar,
-                    onProfileClick = {
-                        navController.navigate(
-                            "detail/{user}"
-                                .replace(
-                                    oldValue = "{user}",
-                                    newValue = friend.uid
-                                )
-                        )
-                    }) {
+            if(selectedTab == TabItem.TAB_1) {
+                items(friendsList) { friend ->
+                    Collaborator(
+                        name = friend.name,
+                        description = friend.position + " " + friend.city,
+                        imageUrl = friend.avatar,
+                        onProfileClick = {
+                            navController.navigate(
+                                "detail/{user}"
+                                    .replace(
+                                        oldValue = "{user}",
+                                        newValue = friend.uid
+                                    )
+                            )
+                        }) {
+                    }
+                }
+            } else if(selectedTab == TabItem.TAB_2) {
+
+            } else {
+                items(exploreList) { friend ->
+                    Collaborator(
+                        name = friend.name,
+                        description = friend.position + " " + friend.city,
+                        imageUrl = friend.avatar,
+                        onProfileClick = {
+                            navController.navigate(
+                                "detail/{user}"
+                                    .replace(
+                                        oldValue = "{user}",
+                                        newValue = friend.uid
+                                    )
+                            )
+                        }) {
+                    }
                 }
             }
         }

@@ -81,6 +81,19 @@ class CoreRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllPeople(): List<ProfileData> = withContext(Dispatchers.IO) {
+        try {
+            val peopleCollection = firebaseFirestore.collection(Constants.PROFILE_DATA).get().await()
+            val peopleList = peopleCollection.documents.mapNotNull { document ->
+                document.toObject(ProfileData::class.java)
+            }
+            peopleList
+        } catch (e: Exception) {
+            // Handle exceptions here
+            emptyList()
+        }
+    }
+
     override suspend fun getCommentsByPostId(id: String): List<Comment> {
         try {
             val commentsCollection = firebaseFirestore.collection(Constants.COMMENTS)
@@ -151,5 +164,15 @@ class CoreRepositoryImpl @Inject constructor(
         }
 
         return postData
+    }
+
+    // Create
+    override suspend fun addNewPost(post: Post): Boolean {
+        try {
+            firebaseFirestore.collection(Constants.POSTS).add(post).await()
+            return true
+        } catch (e: Exception) {
+            return false
+        }
     }
 }

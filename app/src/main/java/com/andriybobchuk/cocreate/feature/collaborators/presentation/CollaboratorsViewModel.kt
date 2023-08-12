@@ -20,8 +20,12 @@ class CollaboratorsViewModel @Inject constructor(
     var friendsList = listOf<ProfileData>()
     var state = mutableStateOf(friendsList)
 
+    var exploreList = listOf<ProfileData>()
+    var exploreState = mutableStateOf(exploreList)
+
     init {
         getFriendsList()
+        getExploreList()
     }
 
     private fun getFriendsList() {
@@ -31,6 +35,13 @@ class CollaboratorsViewModel @Inject constructor(
                 friendsList += repository.getPersonByID(friend)
             }
             state.value = friendsList
+        }
+    }
+
+    private fun getExploreList() {
+        viewModelScope.launch {
+            val people = repository.getAllPeople()
+            exploreState.value = people
         }
     }
 }

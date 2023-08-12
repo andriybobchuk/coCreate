@@ -7,11 +7,16 @@ import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 
 interface CoreRepository {
 
+    // Read
     fun getCurrentUserID(): String
     suspend fun getCurrentUserFriends(): List<String>
     suspend fun getAllPosts(): List<Post>
+    suspend fun getAllPeople(): List<ProfileData>
     suspend fun getCommentsByPostId(id: String): List<Comment>
     suspend fun getPersonByID(id: String): ProfileData
     suspend fun getProfileDataById(id: String): ProfileData
     suspend fun getPostDataById(id: String): Post
+
+    // Create
+    suspend fun addNewPost(post: Post): Boolean
 }
