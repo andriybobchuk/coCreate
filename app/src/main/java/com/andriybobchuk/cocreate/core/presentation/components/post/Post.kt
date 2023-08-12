@@ -59,6 +59,9 @@ fun Post(
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 6.dp)
         ) {
             Row(
+                modifier = Modifier.clickable {
+
+                }
                 //verticalAlignment = Alignment.CenterVertically
             ) {
                 if (ownerAvatar != "") {

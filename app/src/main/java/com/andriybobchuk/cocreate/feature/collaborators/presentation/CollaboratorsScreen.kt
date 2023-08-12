@@ -6,9 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,11 +23,14 @@ import com.andriybobchuk.cocreate.core.domain.model.Person
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileViewModel
-import com.andriybobchuk.cocreate.ui.theme.background_gray100
-import com.andriybobchuk.cocreate.ui.theme.poppins
-import com.andriybobchuk.cocreate.ui.theme.title_black
-import com.andriybobchuk.cocreate.ui.theme.white
+import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
+
+enum class TabItem(val title: String) {
+    TAB_1("Friends"),
+    TAB_2("Requests"),
+    TAB_3("Explore")
+}
 
 @Composable
 fun MyPostsScreen(
@@ -40,7 +42,9 @@ fun MyPostsScreen(
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
-    Box(
+    var selectedTab by remember { mutableStateOf(TabItem.TAB_1) }
+
+    Column(
         modifier = Modifier.fillMaxSize()
     ) {
         if (isSearchBarActive) {
@@ -61,7 +65,7 @@ fun MyPostsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Collaborators \uD83D\uDE4B\u200D♂️",
+                    text = "Collaborators",
                     fontSize = 20.sp, fontWeight = FontWeight.Black, color = title_black, fontFamily = poppins,
                     modifier = Modifier
                         .padding(start = 16.dp)
@@ -78,10 +82,44 @@ fun MyPostsScreen(
                 }
             }
         }
+        TabRow(
+            selectedTabIndex = selectedTab.ordinal,
+            modifier = Modifier.fillMaxWidth().padding(0.dp).background(white),
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    color = accent,
+                    height = 2.dp,
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                )
+            }
+        ) {
+            TabItem.values().forEachIndexed { index, tabItem ->
+                Tab(
+                    modifier = Modifier.background(white),
+                    selected = selectedTab == tabItem,
+                    onClick = {
+                        selectedTab = tabItem
+                        // Handle navigation or content update based on the selected tab
+                    },
+                    text = {
+                        Text(
+                            fontFamily = poppins,
+                            fontSize = 14.sp,
+                            text = tabItem.title,
+                            color = if (selectedTab == tabItem) accent else typo_gray100
+                        )
+                    }
+                )
+            }
+        }
+        Divider(
+            modifier = Modifier.padding(),
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.09f),
+            thickness = 0.5.dp
+        )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 50.dp)
                 .background(background_gray100)
         ) {
             items(friendsList) { friend ->

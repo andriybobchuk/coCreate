@@ -74,12 +74,12 @@ class MainActivity(): ComponentActivity() {
                                     BottomNavItem(
                                         name = "Feed",
                                         route = Screens.FeedScreen.route,
-                                        icon = ImageVector.vectorResource(id = R.drawable.ic_feed)
+                                        icon = ImageVector.vectorResource(id = R.drawable.ic_myposts)
                                     ),
                                     BottomNavItem(
                                         name = "Collaborators",
                                         route = Screens.MyPostsScreen.route,
-                                        icon = ImageVector.vectorResource(id = R.drawable.ic_myposts)
+                                        icon = ImageVector.vectorResource(id = R.drawable.ic_people)
                                     ),
                                     BottomNavItem(
                                         name = "Messages",
@@ -90,7 +90,7 @@ class MainActivity(): ComponentActivity() {
                                     BottomNavItem(
                                         name = "Profile",
                                         route = Screens.ProfileScreen.route,
-                                        icon = ImageVector.vectorResource(id = R.drawable.ic_profile)
+                                        icon = ImageVector.vectorResource(id = R.drawable.ic_profile1)
                                     ),
                                 ),
                                 navController = navController,

@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
+import com.andriybobchuk.cocreate.core.presentation.components.post.components.TagSection
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import kotlinx.coroutines.launch
@@ -86,9 +87,10 @@ fun SomeonesProfileScreen(
                             .padding(end = 0.dp) // Add some spacing to the right of the title
                     )
                     Icon(
-                        modifier = Modifier.clickable{
-                            coroutineScope.launch { modalSheetState.hide() }
-                        }
+                        modifier = Modifier
+                            .clickable {
+                                coroutineScope.launch { modalSheetState.hide() }
+                            }
                             .size(36.dp)
                             .padding(end = 16.dp),
                         painter = painterResource(id = R.drawable.ic_close),
@@ -121,13 +123,26 @@ fun SomeonesProfileScreen(
                 )
 
                 // City and Profession Rows
-                UserInfoItem(icon = painterResource(id = R.drawable.ic_home), text ="City: " + profileData.city)
-                UserInfoItem(icon = painterResource(id = R.drawable.ic_profile1), text = "Specialization: " + profileData.position)
+                if(profileData.city != "") {
+                    UserInfoItem(icon = painterResource(id = R.drawable.ic_home), text ="City: " + profileData.city)
+                }
+                if(profileData.position != "") {
+                    UserInfoItem(icon = painterResource(id = R.drawable.ic_profile1), text = "Specialization: " + profileData.position)
+                }
+
                 // Description Row
-                UserInfoItem(
-                    icon = painterResource(id = R.drawable.ic_book),
-                    text = profileData.desc
-                )
+                if(profileData.desc != "") {
+                    UserInfoItem(
+                        icon = painterResource(id = R.drawable.ic_book),
+                        text = profileData.desc
+                    )
+                }
+
+                if(profileData.tags.isNotEmpty()) {
+                    Column(Modifier.padding(start = 16.dp)) {
+                        TagSection(sectionName = "Tags", tags = profileData.tags)
+                    }
+                }
 
                 Divider(
                     modifier = Modifier.padding(
@@ -140,9 +155,12 @@ fun SomeonesProfileScreen(
                 )
 
                 // Website and GitHub Rows
-                UserInfoLink(icon = painterResource(id = R.drawable.ic_link), text = "Personal Website", url = profileData.website)
-                UserInfoLink(icon = painterResource(id = R.drawable.ic_link), text = "GitHub Profile", url = profileData.github)
-
+                if(profileData.website != "") {
+                    UserInfoLink(icon = painterResource(id = R.drawable.ic_link), text = "Personal Website", url = profileData.website)
+                }
+                if(profileData.github != "") {
+                    UserInfoLink(icon = painterResource(id = R.drawable.ic_link), text = "GitHub Profile", url = profileData.github)
+                }
             }
         }
     ) {
