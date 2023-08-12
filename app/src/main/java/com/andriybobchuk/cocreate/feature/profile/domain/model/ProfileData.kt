@@ -5,6 +5,7 @@ data class ProfileData(
     val name: String = "",
     val position: String = "",
     val city: String = "",
+    val desc: String = "",
     val avatar: String = "",
     val email: String = "",
     val github: String = "",

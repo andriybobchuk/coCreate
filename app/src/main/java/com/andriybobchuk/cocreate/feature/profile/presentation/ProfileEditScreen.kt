@@ -36,8 +36,8 @@ fun ProfileEditScreen(
 
     var editedProfession by remember { mutableStateOf(profileData.position) }
     var editedCity by remember { mutableStateOf(profileData.city) }
-//    var editedDescription by remember { mutableStateOf(profileData.programmingLanguages) }
-//    var editedTags by remember { mutableStateOf(profileData.tools) }
+    var editedDescription by remember { mutableStateOf(profileData.desc) }
+    var editedTags by remember { mutableStateOf(profileData.tags) }
     var editedWebsite by remember { mutableStateOf(profileData.website) }
     var editedGithub by remember { mutableStateOf(profileData.github) }
 
@@ -162,18 +162,19 @@ fun ProfileEditScreen(
 
                 CcInputField(
                     title = "Profile Description",
-                    value = "Hi, I'm an Android Dev at Samsung!",
+                    value = profileData.desc,
                     isSingleLine = false,
-                    {}
-//                    onValueChange = { newValue -> editedDescription = newValue }
+                    onValueChange = { newValue -> editedDescription = newValue }
                 )
 
                 CcInputField(
                     title = "Tags",
-                    value = "Figma, Clion, AS, coCreate",
+                    value = profileData.tags.joinToString(", "),
                     isSingleLine = false,
-                    {}
-//                    onValueChange = { newValue -> editedTags = newValue }
+                    onValueChange = { newValue ->
+                        newValue.replace(",", ", ")
+                        editedTags = newValue.split(", |,").toList()
+                    }
                 )
 
                 CcInputField(
@@ -189,8 +190,6 @@ fun ProfileEditScreen(
                     isSingleLine = true,
                     onValueChange = { newValue -> editedGithub = newValue }
                 )
-
-                // Add more GrayTextFieldWithLabel for links to GitHub, etc.
 
                 Button(
                     onClick = {

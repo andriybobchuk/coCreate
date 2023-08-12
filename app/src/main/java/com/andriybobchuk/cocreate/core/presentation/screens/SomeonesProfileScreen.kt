@@ -1,16 +1,14 @@
 package com.andriybobchuk.cocreate.core.presentation.screens
 
-import android.view.View
+import android.annotation.SuppressLint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.TopCenter
@@ -19,8 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,11 +27,13 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
-import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SomeonesProfileScreen(
     navController: NavController,
@@ -50,287 +48,358 @@ fun SomeonesProfileScreen(
     val roundedCornersCorrection = 30.dp // We lift card & icon up by this value
     val shiftIconTopBy = 20.dp // The bigger this value is, the higher icon is from the middle
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(0.dp, 0.dp)
-            .verticalScroll(rememberScrollState())
-            .background(background_gray100),
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            // Display the cover image
-            Image(
-                painter = rememberAsyncImagePainter(model = profileData.avatar),
-                contentDescription = "Cover Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(coverHeight)
-            )
+    ///
 
-            // Back Button
-            Button(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopStart)
-                    .width(40.dp)
-                    .height(40.dp),
-                onClick = { navController.popBackStack() },
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(backgroundColor = white),
-                elevation = ButtonDefaults.elevation(10.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow),
-                    contentDescription = null,
-                    tint = accent,
-                    modifier = Modifier.size(60.dp)
-                )
-            }
+    val coroutineScope = rememberCoroutineScope()
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
 
-            // Display the white card with rounded corners
-            Card(
+    ModalBottomSheetLayout(
+        sheetState = modalSheetState,
+        sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp), // Rounded corners at the top
+        sheetContent = {
+            Column(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
+                    //.padding(16.dp)
                     .fillMaxWidth()
-                    .padding(top = coverHeight - roundedCornersCorrection, bottom = 4.dp)
-                    .clip(RoundedCornerShape(Constants.CARD_ROUNDED_CORNERS))
             ) {
-                Column(
+                Row(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = avatarSize / 2),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            top = 10.dp,
+                            end = 0.dp,
+                            bottom = 0.dp
+                        ), // Add horizontal padding for spacing
+                    horizontalArrangement = Arrangement.SpaceBetween, // Spread items apart horizontally
                 ) {
                     Text(
-                        text = profileData.name,
+                        text = "Information",
                         fontSize = 18.sp,
-                        modifier = Modifier.align(CenterHorizontally),
-                        fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
-                    )
-                    if(profileData.city != "" || profileData.position != "") {
-                        Text(
-                            text = profileData.position + " " + profileData.city,
-                            fontSize = 13.sp,
-                            modifier = Modifier.align(CenterHorizontally),
-                            fontWeight = FontWeight.Light, color = typo_gray200, fontFamily = poppins
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(0.dp))
-                    
-                    // Row with buttons
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 5.dp)
-                    ) {
-                        Button(
-                            onClick = { navController.navigate(Screens.AddPostScreen.route) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1.0F)
-                                .padding(4.dp),
-                            elevation = ButtonDefaults.elevation(5.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = accent,
-                                contentColor = white // clicked state
-                            ),
-                            shape = RoundedCornerShape(11.dp)
-                        ) {
-                            Text(
-                                text = "Message",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                color = white,
-                                fontFamily = poppins,
-                            )
+                            .padding(end = 0.dp) // Add some spacing to the right of the title
+                    )
+                    Icon(
+                        modifier = Modifier.clickable{
+                            coroutineScope.launch { modalSheetState.hide() }
                         }
-                        Button(
-                            onClick = {
-
-                            },
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .padding(4.dp),
-                            elevation = ButtonDefaults.elevation(0.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = button_gray150,
-                                contentColor = accent // clicked state
-                            ),
-                            shape = RoundedCornerShape(11.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_info),
-                                contentDescription = null,
-                                tint = accent,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        Button(
-                            onClick = {
-
-                            },
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .padding(2.dp),
-                            elevation = ButtonDefaults.elevation(0.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = button_gray150,
-                                contentColor = accent // clicked state
-                            ),
-                            shape = RoundedCornerShape(11.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_add_user),
-                                contentDescription = null,
-                                tint = accent,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
+                            .size(36.dp)
+                            .padding(end = 16.dp),
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = null,
+                        tint = typo_gray100,
+                    )
                 }
-            }
 
+                Divider(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 5.dp,
+                        end = 16.dp,
+                        bottom = 5.dp),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.05f),
+                    thickness = 0.4.dp
+                )
+
+                // Email Row
+                UserInfoItem(icon = painterResource(id = R.drawable.ic_email), text = "Email: " + profileData.email)
+
+                Divider(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 5.dp,
+                        end = 16.dp,
+                        bottom = 5.dp),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.05f),
+                    thickness = 0.4.dp
+                )
+
+                // City and Profession Rows
+                UserInfoItem(icon = painterResource(id = R.drawable.ic_home), text ="City: " + profileData.city)
+                UserInfoItem(icon = painterResource(id = R.drawable.ic_profile1), text = "Specialization: " + profileData.position)
+                // Description Row
+                UserInfoItem(
+                    icon = painterResource(id = R.drawable.ic_book),
+                    text = profileData.desc
+                )
+
+                Divider(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 5.dp,
+                        end = 16.dp,
+                        bottom = 5.dp),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.05f),
+                    thickness = 0.4.dp
+                )
+
+                // Website and GitHub Rows
+                UserInfoLink(icon = painterResource(id = R.drawable.ic_link), text = "Personal Website", url = profileData.website)
+                UserInfoLink(icon = painterResource(id = R.drawable.ic_link), text = "GitHub Profile", url = profileData.github)
+
+            }
+        }
+    ) {
+        Scaffold {
             Box(
                 modifier = Modifier
-                    .align(TopCenter)
-                    .padding(top = coverHeight - roundedCornersCorrection - avatarSize / 2 - shiftIconTopBy)
-                    .background(Color.White, shape = CircleShape)
-                    .padding(0.dp)
-                    .shadow(elevation = 10.dp, shape = CircleShape)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center,
             ) {
-                // Display the avatar icon which overlaps the cover and the white card
-                if (profileData.avatar != "") {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = profileData.avatar),
-                        contentDescription = "Avatar",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(avatarSize)
-                            .clip(CircleShape)
-                            .align(Alignment.TopCenter)
-                    )
-                } else {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(0.dp, 0.dp)
+                        .verticalScroll(rememberScrollState())
+                        .background(background_gray100),
+                ) {
                     Box(
-                        Modifier
-                            .size(avatarSize)
-                            .clip(CircleShape)
-                            .background(purple)
-                            .align(TopCenter),
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        Text(
-                            text = profileData.name.take(1).toUpperCase(),
-                            fontSize = 26.sp,
-                            color = Color.White,
-                            modifier = Modifier.align(Alignment.Center)
+                        // Display the cover image
+                        Image(
+                            painter = rememberAsyncImagePainter(model = profileData.avatar),
+                            contentDescription = "Cover Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(coverHeight)
                         )
+
+                        // Back Button
+                        Button(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .align(Alignment.TopStart)
+                                .width(40.dp)
+                                .height(40.dp),
+                            onClick = { navController.popBackStack() },
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = white),
+                            elevation = ButtonDefaults.elevation(10.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_arrow),
+                                contentDescription = null,
+                                tint = accent,
+                                modifier = Modifier.size(60.dp)
+                            )
+                        }
+
+                        // Display the white card with rounded corners
+                        Card(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .fillMaxWidth()
+                                .padding(
+                                    top = coverHeight - roundedCornersCorrection,
+                                    bottom = 4.dp
+                                )
+                                .clip(RoundedCornerShape(Constants.CARD_ROUNDED_CORNERS))
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = avatarSize / 2),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = profileData.name,
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.align(CenterHorizontally),
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.Black,
+                                    fontFamily = poppins
+                                )
+                                if (profileData.city != "" || profileData.position != "") {
+                                    Text(
+                                        text = profileData.position + " " + profileData.city,
+                                        fontSize = 13.sp,
+                                        modifier = Modifier.align(CenterHorizontally),
+                                        fontWeight = FontWeight.Light,
+                                        color = typo_gray200,
+                                        fontFamily = poppins
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(0.dp))
+
+                                // Row with buttons
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp, horizontal = 5.dp)
+                                ) {
+                                    Button(
+                                        onClick = { navController.navigate(Screens.AddPostScreen.route) },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1.0F)
+                                            .padding(4.dp),
+                                        elevation = ButtonDefaults.elevation(5.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            backgroundColor = accent,
+                                            contentColor = white // clicked state
+                                        ),
+                                        shape = RoundedCornerShape(11.dp)
+                                    ) {
+                                        Text(
+                                            text = "Message",
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 12.sp,
+                                            color = white,
+                                            fontFamily = poppins,
+                                        )
+                                    }
+                                    Button(
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                if (modalSheetState.isVisible)
+                                                    modalSheetState.hide()
+                                                else
+                                                    modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .padding(4.dp),
+                                        elevation = ButtonDefaults.elevation(0.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            backgroundColor = button_gray150,
+                                            contentColor = accent // clicked state
+                                        ),
+                                        shape = RoundedCornerShape(11.dp)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_info),
+                                            contentDescription = null,
+                                            tint = accent,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                    Button(
+                                        onClick = {
+
+                                        },
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .padding(2.dp),
+                                        elevation = ButtonDefaults.elevation(0.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            backgroundColor = button_gray150,
+                                            contentColor = accent // clicked state
+                                        ),
+                                        shape = RoundedCornerShape(11.dp)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_add_user),
+                                            contentDescription = null,
+                                            tint = accent,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .align(TopCenter)
+                                .padding(top = coverHeight - roundedCornersCorrection - avatarSize / 2 - shiftIconTopBy)
+                                .background(Color.White, shape = CircleShape)
+                                .padding(0.dp)
+                                .shadow(elevation = 10.dp, shape = CircleShape)
+                        ) {
+                            // Display the avatar icon which overlaps the cover and the white card
+                            if (profileData.avatar != "") {
+                                Image(
+                                    painter = rememberAsyncImagePainter(model = profileData.avatar),
+                                    contentDescription = "Avatar",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(avatarSize)
+                                        .clip(CircleShape)
+                                        .align(Alignment.TopCenter)
+                                )
+                            } else {
+                                Box(
+                                    Modifier
+                                        .size(avatarSize)
+                                        .clip(CircleShape)
+                                        .background(purple)
+                                        .align(TopCenter),
+                                ) {
+                                    Text(
+                                        text = profileData.name.take(1).toUpperCase(),
+                                        fontSize = 26.sp,
+                                        color = Color.White,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+}
+@Composable
+fun UserInfoItem(icon: Painter, text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = "icon",
+            tint = typo_gray200,
+            modifier = Modifier
+                .size(28.dp)
+                .padding(end = 11.dp),
 
-//        Post(
-//            navController = navController,
-//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-//            ownerName = "John Kekho",
-//            publishedTime = "5 decades ago",
-//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-//            onLikeClick = { /*TODO*/ },
-//            onCommentClick = { /*TODO*/ }
-//        )
-//        Post(
-//            navController = navController,
-//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-//            ownerName = "John Kekho",
-//            publishedTime = "5 decades ago",
-//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-//            onLikeClick = { /*TODO*/ },
-//            onCommentClick = { /*TODO*/ }
-//        )
-//        Post(
-//            navController = navController,
-//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-//            ownerName = "John Kekho",
-//            publishedTime = "5 decades ago",
-//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-//            onLikeClick = { /*TODO*/ },
-//            onCommentClick = { /*TODO*/ }
-//        )
-
-//        Card(
-//            modifier = Modifier
-//                .padding(vertical = 10.dp)
-//                .fillMaxWidth()
-//                .clip(RoundedCornerShape(25.dp)),
-//        ) {
-//            Column(
-//                modifier = Modifier.padding(top = 18.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
-//            ) {
-//                Text(
-//                    text = "Contact",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold,
-//                    modifier = Modifier.padding(bottom = 16.dp)
-//                )
-//                SocialMediaLink(
-//                    name = "Twitter",
-//                    link = "https://twitter.com/yourusername"
-//                )
-//                SocialMediaLink(
-//                    name = "Instagram",
-//                    link = "https://instagram.com/yourusername"
-//                )
-//                SocialMediaLink(
-//                    name = "LinkedIn",
-//                    link = "https://linkedin.com/in/yourusername"
-//                )
-//            }
-//        }
-
-
-
+        )
+        Text(
+            text = text,
+            fontSize = 13.sp,
+            color = typo_gray100,
+            fontFamily = poppins,
+        )
     }
 }
 
 @Composable
-fun SocialMediaLink(name: String, link: String) {
-    Divider(
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.05f),
-        thickness = 0.4.dp,
-    )
+fun UserInfoLink(icon: Painter, text: String, url: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(vertical = 4.dp)
+            .fillMaxWidth()
+            .clickable { /* Open URL */ }
+            .padding(vertical = 6.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(R.drawable.ic_link),
-            contentDescription = null,
+        Icon(
+            painter = icon,
+            contentDescription = "Link",
+            tint = accent,
             modifier = Modifier
-                .size(41.dp)
-                .padding(end = 15.dp)
+                .size(36.dp)
+                .padding(end = 11.dp)
         )
         Text(
-            text = name,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Normal,
+            text = text,
+            color = title_black,
+            fontSize = 14.sp,
+            fontFamily = poppins,
+            modifier = Modifier.clickable { /* Open URL */ }
         )
     }
 }
-
-
-
-
-
-
-
-
-
-
