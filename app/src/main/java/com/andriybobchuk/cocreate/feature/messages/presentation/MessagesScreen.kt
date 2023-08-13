@@ -84,12 +84,12 @@ fun MessagesScreen(
 //            ) {
 //
 //            }
-            ConversationItem()
-            ConversationItem()
-            ConversationItem()
-            ConversationItem()
-            ConversationItem()
-            ConversationItem()
+            ConversationItem(navController)
+            ConversationItem(navController)
+            ConversationItem(navController)
+            ConversationItem(navController)
+            ConversationItem(navController)
+            ConversationItem(navController)
         }
     }
 }

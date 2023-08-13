@@ -15,15 +15,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.navigation.Screens
 
 @Composable
-fun ConversationItem() {
+fun ConversationItem(
+    navController: NavController,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = {}),
+            .clickable(onClick = { navController.navigate(Screens.ConversationScreen.route) }),
         backgroundColor = white,
     ) {
         Row(
