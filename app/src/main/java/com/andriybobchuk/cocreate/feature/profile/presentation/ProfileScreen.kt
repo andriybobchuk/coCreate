@@ -9,9 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.TopCenter
@@ -36,6 +37,10 @@ import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 
+enum class TabItem(val title: String) {
+    TAB_1("My Posts"),
+    TAB_2("Liked Posts"),
+}
 
 @Composable
 fun ProfileScreen(
@@ -49,6 +54,8 @@ fun ProfileScreen(
     val avatarSize = 110.dp
     val roundedCornersCorrection = 30.dp // We lift card & icon up by this value
     val shiftIconTopBy = 20.dp // The bigger this value is, the higher icon is from the middle
+
+    var selectedTab by remember { mutableStateOf(TabItem.TAB_1) }
 
     Column(
         Modifier
@@ -239,11 +246,36 @@ fun ProfileScreen(
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(Constants.CARD_ROUNDED_CORNERS))
         ) {
-            Text(
-                text = profileData.name.take(1).toUpperCase(),
-                fontSize = 26.sp,
-                color = typo_gray200,
-            )
+            TabRow(
+                selectedTabIndex = selectedTab.ordinal,
+                modifier = Modifier.fillMaxWidth().padding(0.dp).background(white),
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        color = accent,
+                        height = 2.dp,
+                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab.ordinal])
+                    )
+                }
+            ) {
+                TabItem.values().forEachIndexed { index, tabItem ->
+                    Tab(
+                        modifier = Modifier.background(white),
+                        selected = selectedTab == tabItem,
+                        onClick = {
+                            selectedTab = tabItem
+                            // Handle navigation or content update based on the selected tab
+                        },
+                        text = {
+                            Text(
+                                fontFamily = poppins,
+                                fontSize = 14.sp,
+                                text = tabItem.title,
+                                color = if (selectedTab == tabItem) accent else typo_gray100
+                            )
+                        }
+                    )
+                }
+            }
         }
         Column(
             modifier = Modifier
