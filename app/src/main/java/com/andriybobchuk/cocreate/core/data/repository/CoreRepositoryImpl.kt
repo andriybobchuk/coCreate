@@ -7,6 +7,7 @@ import com.andriybobchuk.cocreate.core.domain.model.Comment
 import com.andriybobchuk.cocreate.core.domain.model.Person
 import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.andriybobchuk.cocreate.util.getCurrentDateTime
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -71,6 +72,23 @@ class CoreRepositoryImpl @Inject constructor(
     override suspend fun getAllPosts(): List<Post> = withContext(Dispatchers.IO) {
         try {
             val postsCollection = firebaseFirestore.collection(Constants.POSTS).get().await()
+            val postsList = postsCollection.documents.mapNotNull { document ->
+                document.toObject(Post::class.java)
+            }
+            postsList
+        } catch (e: Exception) {
+            // Handle exceptions here
+            emptyList()
+        }
+    }
+
+    override suspend fun getMyPosts(): List<Post> = withContext(Dispatchers.IO) {
+        try {
+            val postsCollection = firebaseFirestore.collection(Constants.POSTS)
+                .whereEqualTo("author", getCurrentUserID())
+                .get()
+                .await()
+
             val postsList = postsCollection.documents.mapNotNull { document ->
                 document.toObject(Post::class.java)
             }
@@ -167,9 +185,25 @@ class CoreRepositoryImpl @Inject constructor(
     }
 
     // Create
-    override suspend fun addNewPost(post: Post): Boolean {
+    override suspend fun addNewPost(title: String, desc: String, tags: List<String>): Boolean {
         try {
-            firebaseFirestore.collection(Constants.POSTS).add(post).await()
+            val newPostRef = firebaseFirestore.collection(Constants.POSTS).document() // Generate a new document ID
+
+            newPostRef.set(Post(
+                uid = newPostRef.id,
+                author = getCurrentUserID(),
+                title = title,
+                desc = desc,
+                published = getCurrentDateTime(),
+                tags = tags,
+                likes = 0,
+                comments = 0,
+            )) // Add the post to Firebase with the generated ID
+
+//            firebaseFirestore
+//                .collection(Constants.POSTS)
+//                .add(
+//                    ).await()
             return true
         } catch (e: Exception) {
             return false

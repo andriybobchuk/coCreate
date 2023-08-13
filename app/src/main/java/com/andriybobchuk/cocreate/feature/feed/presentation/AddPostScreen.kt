@@ -18,17 +18,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
 
 @Composable
 fun AddPostScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: AddPostViewModel = hiltViewModel()
 ) {
-    var title by remember { mutableStateOf("Develop a Task Management App") }
-    var description by remember { mutableStateOf("I'm working on a task management app that helps users organize their tasks and to-do lists effectively. The app will have features like creating tasks, setting due dates, prioritizing tasks, and categorizing them into different projects. Users can also collaborate and share tasks with team members, making it ideal for both personal and team productivity") }
-    var tags by remember { mutableStateOf("Android, App Development, Productivity, Task Management") }
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var tags by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -59,16 +60,16 @@ fun AddPostScreen(
                 //.weight(1f)
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.padding(end = 10.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = "Cancel",
-                    tint = red
-                )
-            }
+//            IconButton(
+//                onClick = { navController.popBackStack() },
+//                modifier = Modifier.padding(end = 10.dp),
+//            ) {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_delete),
+//                    contentDescription = "Cancel",
+//                    tint = red
+//                )
+//            }
         }
         Column(
             modifier = Modifier
@@ -109,7 +110,12 @@ fun AddPostScreen(
 
                 Button(
                     onClick = {
-                        // Save
+                        viewModel.addPost(
+                            title = title,
+                            desc = description,
+                            tags = tags.split(Regex(",\\s*")).map { it.trim() }
+                        )
+                        navController.popBackStack()
                     },
                     modifier = Modifier
                         .fillMaxWidth()

@@ -1,7 +1,7 @@
 package com.andriybobchuk.cocreate.core.domain.model
 
 data class Post(
-    val uid: String = "",
+    var uid: String = "",
     val author: String = "",
     val title: String = "",
     val desc: String = "",

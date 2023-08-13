@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
+import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -35,6 +36,12 @@ class AddPostViewModel @Inject constructor(
                 }
             }
             state.value = postsWithAuthorInfo
+        }
+    }
+
+    fun addPost(title: String, desc: String, tags: List<String>) {
+        viewModelScope.launch {
+            repository.addNewPost(title, desc, tags)
         }
     }
 }

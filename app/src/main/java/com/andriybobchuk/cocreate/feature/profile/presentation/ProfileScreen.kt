@@ -3,6 +3,7 @@ package com.andriybobchuk.cocreate.feature.profile.presentation
 import android.view.View
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -42,6 +43,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val profileData = viewModel.state.value
+    val posts = viewModel.postsState.value
 
     val coverHeight = 180.dp
     val avatarSize = 110.dp
@@ -129,12 +131,14 @@ fun ProfileScreen(
                         modifier = Modifier.align(CenterHorizontally),
                         fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
                     )
-                    if(profileData.city != "" && profileData.position != "") {
+                    if (profileData.city != "" && profileData.position != "") {
                         Text(
                             text = profileData.position + ", " + profileData.city,
                             fontSize = 13.sp,
                             modifier = Modifier.align(CenterHorizontally),
-                            fontWeight = FontWeight.Light, color = typo_gray200, fontFamily = poppins
+                            fontWeight = FontWeight.Light,
+                            color = typo_gray200,
+                            fontFamily = poppins
                         )
                     }
                     Spacer(modifier = Modifier.height(0.dp))
@@ -229,70 +233,59 @@ fun ProfileScreen(
                 }
             }
         }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(Constants.CARD_ROUNDED_CORNERS))
+        ) {
+            Text(
+                text = profileData.name.take(1).toUpperCase(),
+                fontSize = 26.sp,
+                color = typo_gray200,
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
 
-//        Post(
-//            navController = navController,
-//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-//            ownerName = "John Kekho",
-//            publishedTime = "5 decades ago",
-//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\n\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-//            onLikeClick = { /*TODO*/ },
-//            onCommentClick = { /*TODO*/ }
-//        )
-//        Post(
-//            navController = navController,
-//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-//            ownerName = "John Kekho",
-//            publishedTime = "5 decades ago",
-//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!",
-//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-//            onLikeClick = { /*TODO*/ },
-//            onCommentClick = { /*TODO*/ }
-//        )
-//        Post(
-//            navController = navController,
-//            ownerAvatar = rememberAsyncImagePainter(model = "https://andriybobchuk.com/images/about.jpg"),
-//            ownerName = "John Kekho",
-//            publishedTime = "5 decades ago",
-//            contentText = "Hello ladies and gentlemen, this is my very first post on coCreate!\nHello ladies and gentlemen, this is my very first post on coCreate!Hello ladies and gentlemen, this is my very first post on coCreate!",
-//            tags = listOf("Android Studio", "Figma", "Notion", "Clion", "Visual Studio", "MatLab"),
-//            onLikeClick = { /*TODO*/ },
-//            onCommentClick = { /*TODO*/ }
-//        )
+            posts.forEach { post ->
+                Post(
+                    ownerAvatar = post.postAuthor.avatar,
+                    ownerName = post.postAuthor.name,
+                    publishedTime = post.postBody.published,
+                    title = post.postBody.title,
+                    contentText = post.postBody.desc,
+                    tags = post.postBody.tags,
+                    likes = post.postBody.likes,
+                    comments = post.postBody.comments,
+                    isLiked = false,
+                    onLikeClick = {
 
-//        Card(
-//            modifier = Modifier
-//                .padding(vertical = 10.dp)
-//                .fillMaxWidth()
-//                .clip(RoundedCornerShape(25.dp)),
-//        ) {
-//            Column(
-//                modifier = Modifier.padding(top = 18.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
-//            ) {
-//                Text(
-//                    text = "Contact",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold,
-//                    modifier = Modifier.padding(bottom = 16.dp)
-//                )
-//                SocialMediaLink(
-//                    name = "Twitter",
-//                    link = "https://twitter.com/yourusername"
-//                )
-//                SocialMediaLink(
-//                    name = "Instagram",
-//                    link = "https://instagram.com/yourusername"
-//                )
-//                SocialMediaLink(
-//                    name = "LinkedIn",
-//                    link = "https://linkedin.com/in/yourusername"
-//                )
-//            }
-//        }
-
-
-
+                    },
+                    onCommentClick = {
+                        System.out.println("Comment clicked")
+                        navController.navigate(
+                            "postDetail/{user}"
+                                .replace(
+                                    oldValue = "{user}",
+                                    newValue = post.postBody.uid
+                                )
+                        )
+                    },
+                    onReadMoreClick = {
+                        navController.navigate(
+                            "postDetail/{user}"
+                                .replace(
+                                    oldValue = "{user}",
+                                    newValue = post.postBody.uid
+                                )
+                        )
+                    }
+                )
+            }
+        }
     }
 }
 
