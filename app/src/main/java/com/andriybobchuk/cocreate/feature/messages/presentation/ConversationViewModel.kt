@@ -4,10 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
-import com.andriybobchuk.cocreate.feature.messages.domain.model.Conversation
 import com.andriybobchuk.cocreate.feature.messages.domain.model.FullConversation
-import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,16 +18,64 @@ class ConversationViewModel @Inject constructor(
     var state = mutableStateOf(conversationList)
 
     init {
-        getConversationList()
+        getAllConversations()
     }
 
-    private fun getConversationList() {
+    private fun getAllConversations() {
         viewModelScope.launch {
-            val convos = repository.getCurrentUserConversations()
-            for(convo in convos) {
-                conversationList += repository.getPersonByID(convo.)
+            val userUid = repository.getCurrentUserID()
+            val partialConversations = repository.getConversationsByUserId(userUid)
+
+            val conversationsWithRecipients = partialConversations.map { conversation ->
+                val recipientUid = conversation.participants.find { it != repository.getCurrentUserID() }
+                val recipientProfileData = recipientUid?.let {
+                    repository.getProfileDataById(it)
+                }
+                val lastMessageData = conversation.lastMessageId?.let {
+                    repository.getMessageById(it)
+                }
+                FullConversation(
+                    recipientData = recipientProfileData!!,
+                    lastMessage = lastMessageData!!,
+                    convoData = conversation
+                )
             }
-            state.value = friendsList
+            println("SIZE of recipientProfileData: " + partialConversations.size)
+
+            state.value = conversationsWithRecipients
         }
     }
+
+//    private fun getConversationList() {
+//        viewModelScope.launch {
+//            val convos = repository.getCurrentUserConversations()
+//            for(convo in convos) {
+//                conversationList += repository.getPersonByID(convo.)
+//            }
+//            state.value = friendsList
+//        }
+//    }
+//
+//    fun getAllConversations() {
+//        viewModelScope.launch {
+//            val userUid = getCurrentUserUid() // Implement this function to get the user's UID
+//            if (userUid != null) {
+//                val userConversations = repository.getConversationsByUserId(userUid)
+//
+//                val conversationsWithRecipients = userConversations.map { conversation ->
+//                    val recipientUid = conversation.participants.find { it != userUid }
+//                    val recipientProfileData = recipientUid?.let {
+//                        repository.getRecipientProfileData(it)
+//                    }
+//                    ConversationWithRecipient(conversation, recipientProfileData)
+//                }
+//
+//                _conversations.value = conversationsWithRecipients
+//            }
+//        }
+//    }
+
+
+
+
 }

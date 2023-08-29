@@ -10,6 +10,8 @@ object Constants {
     const val FRIENDS: String = "friends"
     const val POSTS: String = "post"
     const val COMMENTS: String = "comment"
+    const val CONVERSATION: String = "conversations"
+    const val MESSAGE: String = "messages"
 
 
 

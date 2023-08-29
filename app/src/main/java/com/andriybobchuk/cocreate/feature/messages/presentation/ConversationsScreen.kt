@@ -3,6 +3,7 @@ package com.andriybobchuk.cocreate.feature.messages.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -13,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
@@ -21,10 +23,15 @@ import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.ui.theme.title_black
 import com.andriybobchuk.cocreate.ui.theme.white
 
+val MESSAGE_TRIM_LENGTH = 30
+
 @Composable
-fun MessagesScreen(
-    navController: NavController
+fun ConversationsScreen(
+    navController: NavController,
+    viewModel: ConversationViewModel = hiltViewModel(),
 ) {
+    val conversations = viewModel.state.value
+
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -77,19 +84,31 @@ fun MessagesScreen(
                 .background(background_gray100),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            LazyColumn(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(background_gray100)
-//            ) {
-//
-//            }
-            ConversationItem(navController)
-            ConversationItem(navController)
-            ConversationItem(navController)
-            ConversationItem(navController)
-            ConversationItem(navController)
-            ConversationItem(navController)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(background_gray100)
+            ) {
+                items(conversations) { convo ->
+                    ConversationItem(
+                        navController = navController,
+                        avatar = convo.recipientData.avatar,
+                        name = convo.recipientData.name,
+                        lastMessage = if (convo.lastMessage.content.length > MESSAGE_TRIM_LENGTH) convo.lastMessage.content.substring(0, minOf(MESSAGE_TRIM_LENGTH, convo.lastMessage.content.length)) + "..." else convo.lastMessage.content,
+                        time = convo.lastMessage.time,
+                        isRead = false,
+                        onClick = {
+                            navController.navigate(
+                                "privateChat/{chatId}"
+                                    .replace(
+                                        oldValue = "{chatId}",
+                                        newValue = convo.convoData.uid
+                                    )
+                            )
+                        }
+                    )
+                }
+            }
         }
     }
 }

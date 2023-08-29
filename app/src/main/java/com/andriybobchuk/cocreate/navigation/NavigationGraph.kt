@@ -5,15 +5,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileScreen
-import com.andriybobchuk.cocreate.core.presentation.screens.ProfileDetailScreen
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.login.LoginScreen
 import com.andriybobchuk.cocreate.feature.auth.presentation.use_case.register.RegisterScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
-import com.andriybobchuk.cocreate.feature.messages.presentation.MessagesScreen
+import com.andriybobchuk.cocreate.feature.messages.presentation.ConversationsScreen
 import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.AddPostScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.PostDetailScreen
-import com.andriybobchuk.cocreate.feature.messages.presentation.ConversationScreen
+import com.andriybobchuk.cocreate.feature.messages.presentation.PrivateChatScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileEditScreen
 import com.andriybobchuk.navigation.Screens
@@ -51,15 +50,22 @@ fun NavigationGraph(
             }
         }
 
-        composable(route = Screens.MyPostsScreen.route) {
+        composable(route = Screens.CollaboratorsScreen.route) {
             MyPostsScreen(navController)
         }
         composable(route = Screens.MessagesScreen.route) {
-            MessagesScreen(navController)
+           ConversationsScreen(navController)
         }
-        composable(route = Screens.ConversationScreen.route) {
-            ConversationScreen(navController)
+        composable(route = "privateChat/{chatId}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("chatId")
+            id?.let { it->
+                PrivateChatScreen(navController, chatId = id)
+            }
         }
+
+//        composable(route = Screens.ConversationScreen.route) {
+//            PrivateChatScreen(navController)
+//        }
 
         // Profile
         composable(route = Screens.ProfileScreen.route) {

@@ -2,19 +2,17 @@ package com.andriybobchuk.cocreate.core.data.repository
 
 import android.util.Log
 import com.andriybobchuk.cocreate.core.Constants
-import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Comment
-import com.andriybobchuk.cocreate.core.domain.model.Person
 import com.andriybobchuk.cocreate.core.domain.model.Post
+import com.andriybobchuk.cocreate.feature.messages.domain.model.Conversation
+import com.andriybobchuk.cocreate.feature.messages.domain.model.Message
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.andriybobchuk.cocreate.util.ccLog
 import com.andriybobchuk.cocreate.util.getCurrentDateTime
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -209,4 +207,134 @@ class CoreRepositoryImpl @Inject constructor(
             return false
         }
     }
+
+    override suspend fun getConversationsByUserId(userId: String): List<Conversation> {
+        return try {
+            ccLog.d("CoreRepositoryImpl", "userId = $userId")
+
+            val conversationsCollection = firebaseFirestore.collection(Constants.CONVERSATION)
+                .whereArrayContains("participants", userId)
+                .get()
+                .await()
+
+            ccLog.d("CoreRepositoryImpl", "conversationsCollection.documents.size = " + conversationsCollection.documents.size)
+            val conversations = conversationsCollection.documents.mapNotNull { document ->
+                document.toObject(Conversation::class.java)
+            }
+            ccLog.d("CoreRepositoryImpl", "conversations.size = " + conversations.size)
+            return conversations
+        } catch (e: Exception) {
+            // Handle exceptions here
+            ccLog.e("CoreRepositoryImpl", e.message)
+            emptyList()
+        }
+    }
+
+    override suspend fun getConversationById(chatId: String): Conversation {
+
+        var chat = Conversation("", listOf(), "")
+        ccLog.d("CoreRepositoryImpl", "chatId = $chatId")
+
+        try {
+            chat = firebaseFirestore
+                .collection(Constants.CONVERSATION)
+                .document(chatId)
+                .get()
+                .await()
+                .toObject(Conversation::class.java)!!
+
+        } catch (e: FirebaseFirestoreException) {
+            ccLog.e("CoreRepositoryImpl", e.message)
+        }
+
+        ccLog.d("CoreRepositoryImpl", "chat = $chat")
+        return chat
+    }
+
+    override suspend fun getMessagesForChat(chatId: String): List<Message> {
+        val messagesCollection = firebaseFirestore
+            .collection(Constants.MESSAGE)
+            .whereEqualTo("convoId", chatId)
+            .get()
+            .await()
+        ccLog.d("CoreRepositoryImpl", "messagesCollection.size() = ${messagesCollection.size()}")
+
+        val messages = mutableListOf<Message>()
+
+        for (messageDocument in messagesCollection.documents) {
+            val message = messageDocument.toObject(Message::class.java)
+            if (message != null) {
+                message.isMyMessage = (message.senderId == getCurrentUserID())
+                messages.add(message)
+            } else {
+                ccLog.e("CoreRepositoryImpl", "message == null")
+            }
+        }
+
+        ccLog.d("CoreRepositoryImpl", "messages.size = ${messages.size}")
+        return messages
+    }
+
+
+
+    override suspend fun getMessageById(id: String): Message {
+
+        var message = Message("", "", "", "", "", false)
+
+        try {
+            message = firebaseFirestore
+                .collection(Constants.MESSAGE)
+                .document(id)
+                .get()
+                .await()
+                .toObject(Message::class.java)!!
+
+        } catch (e: FirebaseFirestoreException) {
+            ccLog.e("CoreRepositoryImpl", e.message)
+        }
+
+        return message
+    }
+
+
+    override suspend fun addMessageToConversation(
+        conversationId: String,
+        content: String,
+        senderId: String,
+        time: String
+    ) {
+        try {
+            val message = hashMapOf(
+                "content" to content,
+                "convoId" to conversationId,
+                "senderId" to senderId,
+                "time" to time
+            )
+
+            // Add the message document to the "messages" collection
+            firebaseFirestore
+                .collection(Constants.MESSAGE)
+                .add(message)
+                .addOnSuccessListener { documentReference ->
+                    // After adding the message, update the conversation's lastMessageId
+                    val messageDocumentId = documentReference.id
+                    firebaseFirestore
+                        .collection(Constants.CONVERSATION)
+                        .document(conversationId)
+                        .update("lastMessageId", messageDocumentId)
+                }
+                .addOnFailureListener { e ->
+                    // Handle the failure to add the message
+                    ccLog.e("CoreRepositoryImpl", e.message)
+                }
+
+        } catch (e: Exception) {
+            // Handle exceptions here
+            ccLog.e("CoreRepositoryImpl", e.message)
+        }
+    }
+
+
+
+
 }

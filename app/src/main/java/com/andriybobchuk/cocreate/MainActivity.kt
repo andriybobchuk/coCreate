@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -24,12 +25,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.navigation.BottomNavItem
 import com.andriybobchuk.cocreate.navigation.BottomNavigationBar
 import com.andriybobchuk.cocreate.navigation.NavigationGraph
 import com.andriybobchuk.cocreate.ui.theme.CoCreateTheme
+import com.andriybobchuk.cocreate.util.ccLog
 import com.andriybobchuk.navigation.Screens
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,11 +49,10 @@ class MainActivity(): ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CoCreateTheme {
+
                 // TODO: Fix this ugly way of setting the status bar in the future
                 window?.setStatusBarColor(Color.White.toArgb())
                 window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
-                val navController = rememberNavController()
 
                 var startDestination = ""
                 if(coreRepository.getCurrentUserID() != "") {
@@ -58,17 +60,26 @@ class MainActivity(): ComponentActivity() {
                 } else {
                     startDestination = Screens.LoginScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
                 }
-                //val currentDestination = startDestination
+
+                val navController = rememberNavController()
                 NavigationGraph(navController = navController, startDestination = startDestination)
-                //TODO("Fix this severe architectural problem with calling NavitagionGraph twice")
+
+                val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+                // Create a flag to determine whether to show the bottom navigation bar
+                val showBottomNavBar = currentBackStackEntry?.destination?.route in listOf(
+                    Screens.FeedScreen.route,
+                    Screens.MessagesScreen.route,
+                    Screens.ProfileScreen.route,
+                    Screens.CollaboratorsScreen.route,
+                    Screens.ConversationScreen.route
+                )
 
                 Scaffold(
                     bottomBar = {
-                        if (navController.currentDestination?.route in listOf(
-                                Screens.FeedScreen.route,
-                                Screens.MessagesScreen.route,
-                                Screens.ProfileScreen.route
-                            )) {
+                        ccLog.e("MainActivity", "Current Route: ${navController.currentDestination?.route}")
+
+                        if (showBottomNavBar) {
                             BottomNavigationBar(
                                 items = listOf(
                                     BottomNavItem(
@@ -78,7 +89,7 @@ class MainActivity(): ComponentActivity() {
                                     ),
                                     BottomNavItem(
                                         name = "Collaborators",
-                                        route = Screens.MyPostsScreen.route,
+                                        route = Screens.CollaboratorsScreen.route,
                                         icon = ImageVector.vectorResource(id = R.drawable.ic_people)
                                     ),
                                     BottomNavItem(
@@ -103,7 +114,7 @@ class MainActivity(): ComponentActivity() {
                 ) { innerPadding ->
                     // Apply the padding globally to the whole BottomNavScreensController, so that bottom nav bar does not overlap the content
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        NavigationGraph(navController = navController, startDestination = startDestination)
+                        NavigationGraph(navController = navController, startDestination = Screens.ProfileScreen.route)
                     }
                 }
             }

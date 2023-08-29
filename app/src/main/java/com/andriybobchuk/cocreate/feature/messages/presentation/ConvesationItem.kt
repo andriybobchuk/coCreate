@@ -23,20 +23,26 @@ import com.andriybobchuk.navigation.Screens
 @Composable
 fun ConversationItem(
     navController: NavController,
+    avatar: String,
+    name: String,
+    lastMessage: String,
+    time: String,
+    isRead: Boolean,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { navController.navigate(Screens.ConversationScreen.route) }),
+            .clickable(onClick = { onClick() }),
         backgroundColor = white,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)
         ) {
-            if ("imageUrl" != "") {
+            if (avatar != "") {
                 Image(
-                    painter = rememberAsyncImagePainter("https://andriybobchuk.com/images/about.jpg"),
+                    painter = rememberAsyncImagePainter(avatar),
                     contentDescription = "Cover Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -51,7 +57,7 @@ fun ConversationItem(
                         .background(purple),
                 ) {
                     Text(
-                        text = "Andrii".take(1).toUpperCase(),
+                        text = name.take(1).toUpperCase(),
                         fontSize = 16.sp,
                         color = white,
                         modifier = Modifier.align(Alignment.Center)
@@ -64,34 +70,37 @@ fun ConversationItem(
                     .weight(1f)
             ) {
                 Text(
-                    text = "Jeffrey Bezos",
+                    text = name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
                     color = title_black,
                     fontFamily = poppins
                 )
                 Text(
-                    text = "Hey, nice to meet you! Could yo...",
+                    text = lastMessage,
                     fontSize = 13.sp,
-                    color = typo_gray100,
+                    color = if(isRead) { typo_gray100 } else { title_black},
+                    fontWeight = if(isRead) { FontWeight.Normal } else { FontWeight.Bold},
                     fontFamily = poppins,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
             Spacer(modifier = Modifier.width(8.dp)) // Add space between message excerpt and timestamp
             Text(
-                text = "1h ago", // Replace with the actual timestamp
+                text = time, // Replace with the actual timestamp
                 fontSize = 12.sp,
                 color = typo_gray100,
                 fontFamily = poppins
             )
             Spacer(modifier = Modifier.width(16.dp))
             // Add a blue circle indicating an unread message
-            Spacer(
-                modifier = Modifier
-                    .size(8.dp)
-                    .background(accent, CircleShape)
-            )
+            if(!isRead) {
+                Spacer(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(accent, CircleShape)
+                )
+            }
         }
     }
 
