@@ -10,4 +10,5 @@ data class Post(
     var isLiked: Boolean = false,
     var likes: Int = 0,
     val comments: Int = 0,
+    var isMine: Boolean = false,
 )

@@ -293,6 +293,7 @@ fun ProfileScreen(
                     likes = post.postBody.likes,
                     comments = post.postBody.comments,
                     isLiked = false,
+                    isMine = true,
                     onLikeClick = {
 
                     },

@@ -266,7 +266,11 @@ class CoreRepositoryImpl @Inject constructor(
         try {
             val postsCollection = firebaseFirestore.collection(Constants.POSTS).get().await()
             val postsList = postsCollection.documents.mapNotNull { document ->
-                document.toObject(Post::class.java)
+                val post = document.toObject(Post::class.java)
+                if (post != null && post.author == getCurrentUserID()) {
+                    post.isMine = true
+                }
+                post
             }
             postsList
         } catch (e: Exception) {

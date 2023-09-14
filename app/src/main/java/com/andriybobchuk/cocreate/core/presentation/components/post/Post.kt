@@ -45,6 +45,7 @@ fun Post(
     likes: Int,
     comments: Int,
     isLiked: Boolean,
+    isMine: Boolean,
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
     onReadMoreClick: () -> Unit
@@ -109,18 +110,28 @@ fun Post(
                         color = typo_gray100,
                     )
                 }
-//                Column(Modifier.wrapContentHeight()) {
-//                    IconButton(
-//                        onClick = { },
-//                        modifier = Modifier.padding(end = 10.dp),
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_edit),
-//                            tint = typo_gray100,
-//                            contentDescription = "Edit"
-//                        )
-//                    }
-//                }
+                if(isMine) {
+                    Column(Modifier.wrapContentHeight()) {
+                        IconButton(
+                            onClick = {
+//                                navController.navigate(
+//                                    "postEdit/{post}"
+//                                        .replace(
+//                                            oldValue = "{post}",
+//                                            newValue = post.postBody.uid
+//                                        )
+//                                )
+                            },
+                            modifier = Modifier.padding(end = 10.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_edit),
+                                tint = accent,
+                                contentDescription = "Edit"
+                            )
+                        }
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text(

@@ -35,8 +35,8 @@ class FeedViewModel @Inject constructor(
             val postsWithAuthorInfo = allPosts.map { post ->
                 if (post.author.isNotEmpty()) {
                     val authorProfile = repository.getProfileDataById(post.author)
-                    post.isLiked = repository.isPostLikedByCurrentUser(post.uid)
-                    post.likes = repository.getLikeCountForPost(post.uid)
+//                    post.isLiked = repository.isPostLikedByCurrentUser(post.uid)
+//                    post.likes = repository.getLikeCountForPost(post.uid)
                     AuthorPost(post, authorProfile)
                 } else {
                     AuthorPost(post, ProfileData())
