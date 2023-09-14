@@ -23,9 +23,13 @@ class CollaboratorsViewModel @Inject constructor(
     var exploreList = listOf<ProfileData>()
     var exploreState = mutableStateOf(exploreList)
 
+    var requestList = listOf<ProfileData>()
+    var requestState = mutableStateOf(requestList)
+
     init {
         getFriendsList()
         getExploreList()
+        getRequestList()
     }
 
     private fun getFriendsList() {
@@ -38,10 +42,43 @@ class CollaboratorsViewModel @Inject constructor(
         }
     }
 
-    private fun getExploreList() {
+    private fun getRequestList() {
         viewModelScope.launch {
-            val people = repository.getAllPeople()
-            exploreState.value = people
+            val requests = repository.getRequestorUids()
+            for(request in requests) {
+                requestList += repository.getPersonByID(request)
+            }
+            requestState.value = requestList
         }
     }
+
+    private fun getExploreList() {
+        viewModelScope.launch {
+            val people = repository.getNewPeopleIds()
+            for(person in people) {
+                exploreList += repository.getPersonByID(person)
+            }
+            exploreState.value = exploreList
+        }
+    }
+
+    fun requestFriend(requestedUid: String) {
+        viewModelScope.launch {
+            repository.requestFriend(requestedUid)
+        }
+    }
+
+    fun approveFriend(requestorUid: String) {
+        viewModelScope.launch {
+            repository.approveFriend(requestorUid)
+        }
+    }
+
+
+
+//    fun isFriend(profileUid: String): Boolean {
+//        viewModelScope.launch {
+//            return repository.isFriend(profileUid)
+//        }
+//    }
 }

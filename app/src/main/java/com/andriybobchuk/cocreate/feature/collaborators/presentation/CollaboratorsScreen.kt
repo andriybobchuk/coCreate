@@ -38,8 +38,8 @@ fun MyPostsScreen(
     viewModel: CollaboratorsViewModel = hiltViewModel()
 ) {
     val friendsList = viewModel.state.value
-
     val exploreList = viewModel.exploreState.value
+    val requestList = viewModel.requestState.value
 
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -138,14 +138,35 @@ fun MyPostsScreen(
                                         newValue = friend.uid
                                     )
                             )
-                        }) {
-                    }
+                        },
+                        onMessageClick = {
+
+                        }
+                    )
                 }
             } else if(selectedTab == TabItem.TAB_2) {
-
+                items(requestList) { requestor ->
+                    Requester(
+                        name = requestor.name,
+                        description = requestor.position + " " + requestor.city,
+                        imageUrl = requestor.avatar,
+                        onProfileClick = {
+                            navController.navigate(
+                                "detail/{user}"
+                                    .replace(
+                                        oldValue = "{user}",
+                                        newValue = requestor.uid
+                                    )
+                            )
+                        },
+                        onAcceptClick = {
+                            viewModel.approveFriend(requestor.uid)
+                        }
+                    )
+                }
             } else {
                 items(exploreList) { friend ->
-                    Collaborator(
+                    Suggestion(
                         name = friend.name,
                         description = friend.position + " " + friend.city,
                         imageUrl = friend.avatar,
@@ -157,8 +178,11 @@ fun MyPostsScreen(
                                         newValue = friend.uid
                                     )
                             )
-                        }) {
-                    }
+                        },
+                        onRequestClick = {
+                            viewModel.requestFriend(friend.uid)
+                        }
+                    )
                 }
             }
         }

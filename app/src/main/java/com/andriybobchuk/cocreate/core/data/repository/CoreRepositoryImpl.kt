@@ -68,6 +68,200 @@ class CoreRepositoryImpl @Inject constructor(
         return emptyList()
     }
 
+    override suspend fun getRequestorUids(): List<String> {
+        try {
+            // Query the Firestore "requests" collection for requestors of the current user
+            val querySnapshot = firebaseFirestore
+                .collection(Constants.REQUESTS)
+                .whereEqualTo("requested", getCurrentUserID())
+                .get()
+                .await()
+
+            // Extract UIDs of requestors from the query results
+            val requestorUids = mutableListOf<String>()
+            for (document in querySnapshot.documents) {
+                val requestorUid = document.getString("requestor")
+                if (requestorUid != null) {
+                    requestorUids.add(requestorUid)
+                }
+            }
+
+            return requestorUids
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+        }
+        // Return an empty list if the current user is not signed in or an error occurs
+        return emptyList()
+    }
+
+    // Check if the user with the given ID is a friend of the current user
+//    override suspend fun isUserAFriend(userId: String): Boolean {
+//        val currentUserUid = getCurrentUserID() // Replace with your method to get the current user's ID
+//
+//        try {
+//            val friendsSnapshot = firebaseFirestore.collection("friends")
+//                .whereArrayContains("profiles", currentUserUid)
+//                .get()
+//                .await()
+//
+//            // Check if the given user ID is in the list of friends
+//            return friendsSnapshot.documents.any { document ->
+//                val profiles = document.get("profiles") as? List<String>
+//                profiles?.contains(userId) == true
+//            }
+//        } catch (e: Exception) {
+//            // Handle exceptions (e.g., Firestore network errors)
+//            e.printStackTrace()
+//            return false // Return false on error
+//        }
+//    }
+
+    // Check if the user with the given ID sent a friend request to the current user
+    override suspend fun didUserSendFriendRequest(userId: String): Boolean {
+        val currentUserUid = getCurrentUserID() // Replace with your method to get the current user's ID
+
+        try {
+            val requestsSnapshot = firebaseFirestore.collection("requests")
+                .whereEqualTo("requestor", userId)
+                .whereEqualTo("requested", currentUserUid)
+                .get()
+                .await()
+
+            // Check if there is a request from the given user to the current user
+            return !requestsSnapshot.isEmpty
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+            return false // Return false on error
+        }
+    }
+
+    override suspend fun getNewPeopleIds(): List<String> {
+        try {
+            // Get the UID of the currently signed-in user
+            val currentUserUid = getCurrentUserID()
+
+            // Get a list of all users from Firestore
+            val allUsers = getAllPeople()
+
+            // Fetch friends and requests data for the current user
+            val friendsQuery = firebaseFirestore.collection("friends")
+                .whereEqualTo("profile1", currentUserUid)
+                .get()
+                .await()
+
+            val requestsQuery = firebaseFirestore.collection("requests")
+                .whereEqualTo("requestor", currentUserUid)
+                .get()
+                .await()
+
+            val friendUids = friendsQuery.documents.mapNotNull { it.getString("profile2") }
+            val requestUids = requestsQuery.documents.mapNotNull { it.getString("requested") }
+
+            // Filter out user IDs of people who are neither friends nor have had any previous requests with the current user
+            val filteredUserIds = allUsers.filter { user ->
+                val userUid = user.uid
+
+                val isFriend = userUid !in friendUids && currentUserUid !in friendUids
+                val hasNoRequests = userUid !in requestUids && currentUserUid !in requestUids
+
+                isFriend && hasNoRequests
+            }.map { it.uid }
+
+            return filteredUserIds
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+            return emptyList()
+        }
+    }
+
+
+    override suspend fun requestFriend(requestedUid: String) {
+        try {
+            // Add a request to the "requests" collection
+            firebaseFirestore.collection("requests").add(mapOf("requestor" to getCurrentUserID(), "requested" to requestedUid))
+                .await()
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun approveFriend(requestorUid: String) {
+        try {
+            // Add both users as friends in the "friends" collection
+            firebaseFirestore.collection("friends").add(mapOf("profile1" to requestorUid, "profile2" to getCurrentUserID()))
+                .await()
+
+            // Remove the request from the "requests" collection
+            val querySnapshot = firebaseFirestore
+                .collection("requests")
+                .whereEqualTo("requestor", requestorUid)
+                .whereEqualTo("requested", getCurrentUserID())
+                .get()
+                .await()
+
+            for (document in querySnapshot.documents) {
+                document.reference.delete().await()
+            }
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun removeFriend(friendUid: String) {
+        // Assuming a user can remove a friend
+        try {
+            // Remove both friends from the "friends" collection
+            firebaseFirestore.collection("friends")
+                .whereEqualTo("profile1", getCurrentUserID())
+                .whereEqualTo("profile2", friendUid)
+                .get()
+                .await()
+                .documents
+                .forEach { it.reference.delete().await() }
+
+            firebaseFirestore.collection("friends")
+                .whereEqualTo("profile1", friendUid)
+                .whereEqualTo("profile2", getCurrentUserID())
+                .get()
+                .await()
+                .documents
+                .forEach { it.reference.delete().await() }
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun isFriend(profileUid: String): Boolean {
+        try {
+            // Check if there is a friendship document between the current user and the given profile in the "friends" collection
+            val querySnapshot = firebaseFirestore
+                .collection("friends")
+                .whereEqualTo("profile1", getCurrentUserID())
+                .whereEqualTo("profile2", profileUid)
+                .get()
+                .await()
+
+            val querySnapshot2 = firebaseFirestore
+                .collection("friends")
+                .whereEqualTo("profile1", profileUid)
+                .whereEqualTo("profile2", getCurrentUserID())
+                .get()
+                .await()
+
+            return !querySnapshot.isEmpty || !querySnapshot2.isEmpty
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+            return false
+        }
+    }
+
     override suspend fun getAllPosts(): List<Post> = withContext(Dispatchers.IO) {
         try {
             val postsCollection = firebaseFirestore.collection(Constants.POSTS).get().await()

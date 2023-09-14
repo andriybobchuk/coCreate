@@ -1,14 +1,14 @@
 package com.andriybobchuk.cocreate.core.presentation.screens
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.TopCenter
@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ import com.andriybobchuk.navigation.Screens
 import kotlinx.coroutines.launch
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "RememberReturnType")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SomeonesProfileScreen(
@@ -48,6 +49,11 @@ fun SomeonesProfileScreen(
     val avatarSize = 110.dp
     val roundedCornersCorrection = 30.dp // We lift card & icon up by this value
     val shiftIconTopBy = 20.dp // The bigger this value is, the higher icon is from the middle
+
+    var isFriend by remember { mutableStateOf(true) }
+    LaunchedEffect(profileData.uid) {
+        isFriend = viewModel.isUserAFriend(profileData.uid)
+    }
 
     ///
 
@@ -302,26 +308,54 @@ fun SomeonesProfileScreen(
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
-                                    Button(
-                                        onClick = {
 
-                                        },
-                                        modifier = Modifier
-                                            .wrapContentWidth()
-                                            .padding(2.dp),
-                                        elevation = ButtonDefaults.elevation(0.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            backgroundColor = button_gray150,
-                                            contentColor = accent // clicked state
-                                        ),
-                                        shape = RoundedCornerShape(11.dp)
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_add_user),
-                                            contentDescription = null,
-                                            tint = accent,
-                                            modifier = Modifier.size(20.dp)
-                                        )
+                                    if(isFriend) {
+                                        Button(
+                                            onClick = {
+                                                isFriend = false
+                                                viewModel.removeFriend(profileData.uid)
+                                            },
+                                            modifier = Modifier
+                                                .wrapContentWidth()
+                                                .padding(2.dp),
+                                            elevation = ButtonDefaults.elevation(0.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                backgroundColor = button_gray150,
+                                                contentColor = accent // clicked state
+                                            ),
+                                            shape = RoundedCornerShape(11.dp)
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_remove_user),
+                                                contentDescription = null,
+                                                tint = red,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+                                    } else {
+                                        Button(
+                                            onClick = {
+                                                isFriend = true
+                                                viewModel.requestFriend(profileData.uid)
+                                                //Toast.makeText(LocalContext.current, "You have sent this user a friend request.", Toast.LENGTH_LONG).show()
+                                            },
+                                            modifier = Modifier
+                                                .wrapContentWidth()
+                                                .padding(2.dp),
+                                            elevation = ButtonDefaults.elevation(0.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                backgroundColor = button_gray150,
+                                                contentColor = accent // clicked state
+                                            ),
+                                            shape = RoundedCornerShape(11.dp)
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_add_user),
+                                                contentDescription = null,
+                                                tint = accent,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }

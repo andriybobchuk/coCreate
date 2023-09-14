@@ -11,6 +11,12 @@ interface CoreRepository {
     // Read
     fun getCurrentUserID(): String
     suspend fun getCurrentUserFriends(): List<String>
+    suspend fun getRequestorUids(): List<String>
+    suspend fun getNewPeopleIds(): List<String>
+    suspend fun requestFriend(requestedUid: String)
+    suspend fun approveFriend(requestorUid: String)
+    suspend fun removeFriend(friendUid: String)
+    suspend fun isFriend(profileUid: String): Boolean
     suspend fun getAllPosts(): List<Post>
     suspend fun getMyPosts(): List<Post>
     suspend fun getAllPeople(): List<ProfileData>
@@ -22,6 +28,9 @@ interface CoreRepository {
     suspend fun getMessageById(id: String): Message
     suspend fun getConversationById(chatId: String): Conversation
     suspend fun getMessagesForChat(chatId: String): List<Message>
+
+    //suspend fun isUserAFriend(userId: String): Boolean
+    suspend fun didUserSendFriendRequest(userId: String): Boolean
 
     // Create
     suspend fun addNewPost(title: String, desc: String, tags: List<String>): Boolean
