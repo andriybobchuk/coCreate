@@ -380,6 +380,20 @@ class CoreRepositoryImpl @Inject constructor(
 //            }
 //    }
 
+
+//    override suspend fun getAllPosts(): List<Post> = withContext(Dispatchers.IO) {
+//        try {
+//            val postsCollection = firebaseFirestore.collection(Constants.POSTS).get().await()
+//            val postsList = postsCollection.documents.mapNotNull { document ->
+//                document.toObject(Post::class.java)
+//            }
+//            postsList
+//        } catch (e: Exception) {
+//            // Handle exceptions here
+//            emptyList()
+//        }
+//    }
+
     override suspend fun getLikeCountForPost(postId: String): Int {
         return try {
             val snapshot = firebaseFirestore
@@ -414,6 +428,53 @@ class CoreRepositoryImpl @Inject constructor(
             false // Return false as the default liked status on error
         }
     }
+
+//    override suspend fun getAllPosts(): List<Post> = withContext(Dispatchers.IO) {
+//        try {
+//            val postsCollection = firebaseFirestore.collection(Constants.POSTS).get().await()
+//            val postsList = postsCollection.documents.mapNotNull { document ->
+//                document.toObject(Post::class.java)?.apply {
+//                    // Initialize default values
+//                    isLiked = false
+//                    likes = 0
+//                }
+//            }
+//            ccLog.e("CoreRepositoryImpl/getAllPosts", "postsList.size = ${postsList.size}")
+//            // Fetch likes for all posts
+//            val likesQuery = firebaseFirestore.collectionGroup("likes")
+//                .whereIn("post", postsList.map { it.uid })
+//                .get()
+//                .await()
+//            ccLog.e("CoreRepositoryImpl/getAllPosts", "likesQuery = ${likesQuery}")
+//
+//            // Process like data and update posts
+//            val postLikesMap = mutableMapOf<String, Int>()
+//            val likedPostIds = mutableSetOf<String>()
+//
+//            for (likeDocument in likesQuery.documents) {
+//                val postId = likeDocument.getString("post") ?: continue
+//                postLikesMap[postId] = postLikesMap.getOrDefault(postId, 0) + 1
+//
+//                if (likeDocument.getString("user") == getCurrentUserID()) {
+//                    likedPostIds.add(postId)
+//                }
+//            }
+//            ccLog.e("CoreRepositoryImpl/getAllPosts", "postLikesMap.size = ${postLikesMap.size}")
+//            ccLog.e("CoreRepositoryImpl/getAllPosts", "likedPostIds.size = ${likedPostIds.size}")
+//
+//            // Update post data with like count and liked status
+//            for (post in postsList) {
+//                post.likes = postLikesMap[post.uid] ?: 0
+//                post.isLiked = post.uid in likedPostIds
+//            }
+//            ccLog.e("CoreRepositoryImpl/getAllPosts", "postsList.size = ${postsList.size}")
+//            postsList
+//        } catch (e: Exception) {
+//            // Handle exceptions here
+//            emptyList()
+//        }
+//    }
+
 
 
 

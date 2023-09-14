@@ -31,6 +31,8 @@ import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileViewM
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.LiveData
+import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 
 @Composable
 fun FeedScreen(
@@ -38,6 +40,11 @@ fun FeedScreen(
     viewModel: FeedViewModel = hiltViewModel(),
 ) {
     val posts = viewModel.state.value
+
+    // State for storing the message text
+    //val isUpdated = remember { mutableStateOf(true) }
+
+    //val posts by viewModel.state.collectAsState()
 
 //    // State variable to trigger recomposition when a like action occurs
 //    var likeActionState by remember { mutableStateOf(false) }
@@ -102,6 +109,8 @@ fun FeedScreen(
                 .background(background_gray100)
         ) {
             items(posts) { post ->
+                var isLiked by remember { mutableStateOf(post.postBody.isLiked) }
+                var likes by remember { mutableStateOf(post.postBody.likes) }
                 Post(
                     ownerAvatar = post.postAuthor.avatar,
                     ownerName = post.postAuthor.name,
@@ -109,11 +118,17 @@ fun FeedScreen(
                     title = post.postBody.title,
                     contentText = post.postBody.desc,
                     tags = post.postBody.tags,
-                    likes = post.postBody.likes,
+                    likes = likes,
                     comments = post.postBody.comments,
-                    isLiked = post.postBody.isLiked,
+                    isLiked = isLiked,
                     onLikeClick = {
                         viewModel.likeOrUnlikePost(post.postBody.uid)
+                        isLiked = !isLiked
+                        if(isLiked) {
+                            likes++
+                        } else {
+                            likes--
+                        }
                     },
                     onCommentClick = {
                         System.out.println("Comment clicked")
