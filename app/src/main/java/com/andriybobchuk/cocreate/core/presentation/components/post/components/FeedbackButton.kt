@@ -7,6 +7,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -24,6 +25,8 @@ fun FeedbackButton(
     isHighlighted: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val isLikedState = rememberUpdatedState(isHighlighted)
+
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = background_gray100),
@@ -33,7 +36,7 @@ fun FeedbackButton(
             .height(36.dp)
             .padding(end = 8.dp),
     ) {
-        if(isHighlighted) {
+        if(isLikedState.value) {
             Icon(
                 painter = painter,
                 contentDescription = null,

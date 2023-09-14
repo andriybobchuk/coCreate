@@ -7,6 +7,7 @@ data class Post(
     val desc: String = "",
     val published: String = "",
     val tags: List<String> = listOf(),
-    val likes: Int = 0,
+    var isLiked: Boolean = false,
+    var likes: Int = 0,
     val comments: Int = 0,
 )

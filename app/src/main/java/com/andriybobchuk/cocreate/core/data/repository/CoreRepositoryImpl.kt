@@ -10,6 +10,7 @@ import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.ccLog
 import com.andriybobchuk.cocreate.util.getCurrentDateTime
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
@@ -333,6 +334,88 @@ class CoreRepositoryImpl @Inject constructor(
             ccLog.e("CoreRepositoryImpl", e.message)
         }
     }
+
+    override suspend fun likePost(postId: String) {
+        val likeData = mapOf(
+            "post" to postId,
+            "user" to getCurrentUserID()
+        )
+
+        try {
+            // Add a like entry to the Firestore Likes collection
+            firebaseFirestore.collection("likes").add(likeData).await()
+        } catch (e: Exception) {
+            // Handle the error if liking the post fails
+
+        }
+    }
+
+    override suspend fun unlikePost(postId: String) {
+        try {
+            // Find and delete the like document for this post by the current user
+            val querySnapshot = firebaseFirestore.collection("likes")
+                .whereEqualTo("post", postId)
+                .whereEqualTo("user", getCurrentUserID())
+                .get().await()
+
+            if (!querySnapshot.isEmpty) {
+                val likeDocument = querySnapshot.documents[0]
+                likeDocument.reference.delete().await()
+            }
+
+        } catch (e: Exception) {
+            // Handle the error if unliking the post fails
+
+        }
+    }
+
+//    // Update like count for a post
+//    fun updateLikeCount(postId: String, change: Int) {
+//        val postsCollection = firebaseFirestore.collection("posts")
+//        postsCollection.document(postId)
+//            .update("likesCount", FieldValue.increment(change.toDouble()))
+//            .addOnFailureListener { e ->
+//                // Handle the error
+//                Log.e("CoreRepositoryImpl",  "Error updating like count: $e")
+//            }
+//    }
+
+    override suspend fun getLikeCountForPost(postId: String): Int {
+        return try {
+            val snapshot = firebaseFirestore
+                .collection("likes")
+                .whereEqualTo("post", postId)
+                .get()
+                .await()
+
+            // Return the count of documents (likes) for the specified post
+            snapshot.size()
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+            -1 // Return -1 as the default like count on error
+        }
+    }
+
+    override suspend fun isPostLikedByCurrentUser(postId: String): Boolean {
+        return try {
+            val snapshot = firebaseFirestore
+                .collection("likes")
+                .whereEqualTo("post", postId)
+                .whereEqualTo("user", getCurrentUserID())
+                .get()
+                .await()
+
+            // Return true if a like document for the current user and post exists
+            snapshot.size() != 0
+        } catch (e: Exception) {
+            // Handle exceptions (e.g., Firestore network errors)
+            e.printStackTrace()
+            false // Return false as the default liked status on error
+        }
+    }
+
+
 
 
 

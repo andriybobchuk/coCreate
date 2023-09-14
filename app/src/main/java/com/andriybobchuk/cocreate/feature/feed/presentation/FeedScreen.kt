@@ -30,6 +30,7 @@ import com.andriybobchuk.cocreate.core.presentation.components.search_bar.Search
 import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileViewModel
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun FeedScreen(
@@ -37,6 +38,9 @@ fun FeedScreen(
     viewModel: FeedViewModel = hiltViewModel(),
 ) {
     val posts = viewModel.state.value
+
+//    // State variable to trigger recomposition when a like action occurs
+//    var likeActionState by remember { mutableStateOf(false) }
 
     var isSearchBarActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -107,9 +111,9 @@ fun FeedScreen(
                     tags = post.postBody.tags,
                     likes = post.postBody.likes,
                     comments = post.postBody.comments,
-                    isLiked = false,
+                    isLiked = post.postBody.isLiked,
                     onLikeClick = {
-
+                        viewModel.likeOrUnlikePost(post.postBody.uid)
                     },
                     onCommentClick = {
                         System.out.println("Comment clicked")

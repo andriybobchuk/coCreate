@@ -4,5 +4,5 @@ import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 
 data class AuthorPost(
     val postBody: Post = Post(),
-    val postAuthor: ProfileData = ProfileData()
+    val postAuthor: ProfileData = ProfileData(),
 )

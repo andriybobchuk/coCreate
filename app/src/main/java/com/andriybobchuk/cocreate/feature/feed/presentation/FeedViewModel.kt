@@ -1,5 +1,6 @@
 package com.andriybobchuk.cocreate.feature.feed.presentation
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,6 +35,8 @@ class FeedViewModel @Inject constructor(
             val postsWithAuthorInfo = allPosts.map { post ->
                 if (post.author.isNotEmpty()) {
                     val authorProfile = repository.getProfileDataById(post.author)
+                    post.isLiked = repository.isPostLikedByCurrentUser(post.uid)
+                    post.likes = repository.getLikeCountForPost(post.uid)
                     AuthorPost(post, authorProfile)
                 } else {
                     AuthorPost(post, ProfileData())
@@ -42,4 +45,33 @@ class FeedViewModel @Inject constructor(
             state.value = postsWithAuthorInfo
         }
     }
+
+    fun likeOrUnlikePost(postId: String) {
+        viewModelScope.launch {
+            val isLiked = repository.isPostLikedByCurrentUser(postId)
+
+            if (isLiked) {
+                // Unlike the post
+                repository.unlikePost(postId)
+                state.value.find { it.postBody.uid == postId }?.apply {
+                    postBody.isLiked = false
+                    postBody.likes -= 1
+                }
+            } else {
+                // Like the post
+                repository.likePost(postId)
+                state.value.find { it.postBody.uid == postId }?.apply {
+                    postBody.isLiked = true
+                    postBody.likes += 1
+                }
+            }
+        }
+    }
+
+
+
+
+//    fun likePost(postId: String) {
+//        repository.likePost(postId)
+//    }
 }

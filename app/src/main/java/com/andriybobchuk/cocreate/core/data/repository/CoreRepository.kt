@@ -32,4 +32,10 @@ interface CoreRepository {
         senderId: String,
         time: String
     )
+
+    suspend fun likePost(postId: String)
+    suspend fun unlikePost(postId: String)
+
+    suspend fun getLikeCountForPost(postId: String): Int
+    suspend fun isPostLikedByCurrentUser(postId: String): Boolean
 }
