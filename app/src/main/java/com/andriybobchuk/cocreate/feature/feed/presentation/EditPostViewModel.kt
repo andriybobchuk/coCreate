@@ -1,16 +1,19 @@
 package com.andriybobchuk.cocreate.feature.feed.presentation
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
-import com.andriybobchuk.cocreate.core.domain.model.AuthorComment
-import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
-import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class PostDetailState(
+    val title: String = "",
+    val desc: String = "",
+    val tags: List<String> = listOf()
+)
 
 @HiltViewModel
 class EditPostViewModel @Inject constructor(
@@ -18,48 +21,69 @@ class EditPostViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    var postDataState = mutableStateOf(AuthorPost())
+    private val title = savedStateHandle.getStateFlow("title", "")
+    private val desc = savedStateHandle.getStateFlow("desc", "")
+    private val tags = savedStateHandle.getStateFlow("tags", emptyList<String>())
 
-    fun updateTitle(title: String) {
-        postDataState.value.postBody.title = title
+    val state = combine(
+        title,
+        desc,
+        tags
+    ) { title, desc, tags ->
+        PostDetailState(
+            title = title,
+            desc = desc,
+            tags = tags
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PostDetailState())
+
+    private val _hasPostBeenSaved = MutableStateFlow(false)
+    val hasPostBeenSaved = _hasPostBeenSaved.asStateFlow()
+
+    private var existingPostId: String = ""
+
+    init {
+        savedStateHandle.get<String>("id")?.let { existingPostId ->
+            this.existingPostId = existingPostId
+            viewModelScope.launch {
+                getPostById(existingPostId)
+            }
+        }
     }
 
     fun getPostById(id: String) {
         viewModelScope.launch {
             val postBody = repository.getPostDataById(id)
-            val authorProfile = repository.getProfileDataById(postBody.author)
-
-            postDataState.value = AuthorPost(postBody, authorProfile)
+            savedStateHandle["title"] = postBody.title
+            savedStateHandle["desc"] = postBody.desc
+            savedStateHandle["tags"] = postBody.tags
         }
     }
 
-    fun updatePost(id: String, title: String, desc: String, tags: List<String>) {
+    fun onTitleChanged(text: String) {
+        savedStateHandle["title"] = text
+    }
+
+    fun onDescChanged(text: String) {
+        savedStateHandle["desc"] = text
+    }
+
+    fun onTagsChanged(tags: List<String>) {
+        savedStateHandle["tags"] = tags
+    }
+
+    fun updatePost() {
         viewModelScope.launch {
-            repository.updatePost(id, title, desc, tags)
+            repository.updatePost(existingPostId, title.value, desc.value, tags.value)
+            _hasPostBeenSaved.value = true
         }
     }
 
-    fun deletePost(id: String) {
+    fun deletePost() {
         viewModelScope.launch {
-            repository.deletePost(id)
+            repository.deletePost(existingPostId)
         }
     }
-
-//    fun getCommentsByPostId(id: String) {
-//        viewModelScope.launch {
-//            val comments = repository.getCommentsByPostId(id)
-//
-//            val postsWithAuthorInfo = comments.map { comment ->
-//                if (comment.author.isNotEmpty()) {
-//                    val authorProfile = repository.getProfileDataById(comment.author)
-//                    AuthorComment(comment, authorProfile)
-//                } else {
-//                    AuthorComment(comment, ProfileData())
-//                }
-//            }
-//            commentsState.value = postsWithAuthorInfo
-//        }
-//    }
 }
 
 

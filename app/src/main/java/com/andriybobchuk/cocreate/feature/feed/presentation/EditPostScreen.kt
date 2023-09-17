@@ -21,6 +21,7 @@ import com.andriybobchuk.cocreate.core.presentation.components.ccSnackbar
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.cocreate.util.ccLog
+import com.andriybobchuk.navigation.Screens
 
 @Composable
 fun EditPostScreen(
@@ -28,22 +29,15 @@ fun EditPostScreen(
     viewModel: EditPostViewModel = hiltViewModel(),
     id: String
 ) {
-    viewModel.getPostById(id)
-    val postData = viewModel.postDataState.value
 
-    ccLog.e("EditPostSrceen", "postData.title = " + postData.postBody.title)
+    val state by viewModel.state.collectAsState()
+    val hasPostBeenUpdated by viewModel.hasPostBeenSaved.collectAsState()
 
-//    var title by remember { mutableStateOf("") }
-//    var description by remember { mutableStateOf("") }
-//    var tags by remember { mutableStateOf("") }
-//
-//    var titleString: String = postData.postBody.title
-//    var descString: String = postData.postBody.desc
-//    var tagsString: String = postData.postBody.tags.joinToString(", ")
-//
-//    title = titleString
-//    description = descString
-//    tags = tagsString
+    LaunchedEffect(key1 = hasPostBeenUpdated) {
+        if(hasPostBeenUpdated) {
+            navController.popBackStack()
+        }
+    }
 
     var snackbarVisible by remember { mutableStateOf(false) }
     var snackbarMessage by remember { mutableStateOf("") }
@@ -87,7 +81,7 @@ fun EditPostScreen(
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
                 onClick = {
-                    viewModel.deletePost(id)
+                    viewModel.deletePost()
                     navController.popBackStack()
                           },
                 modifier = Modifier.padding(end = 10.dp),
@@ -117,38 +111,34 @@ fun EditPostScreen(
                 // Editable Fields
                 CcInputField(
                     title = "Proposal Title",
-                    value = viewModel.postDataState.value.postBody.title,
+                    value = state.title,
                     isSingleLine = true,
-                    onValueChange = { viewModel.postDataState.value.postBody.title = it }
+                    onValueChange = { viewModel.onTitleChanged(it.trim()) }
                 )
 
-//                CcInputField(
-//                    title = "Description",
-//                    value = description,
-//                    isSingleLine = false,
-//                    onValueChange = { description = it }
-//                )
-//
-//                CcInputField(
-//                    title = "Tags (Comma-separated)",
-//                    value = tags,
-//                    isSingleLine = false,
-//                    onValueChange = { tags = it }
-//                )
+                CcInputField(
+                    title = "Description",
+                    value = state.desc,
+                    isSingleLine = false,
+                    onValueChange = { viewModel.onDescChanged(it.trim()) }
+                )
+
+                CcInputField(
+                    title = "Tags (Comma-separated)",
+                    value = state.tags.joinToString(", "),
+                    isSingleLine = false,
+                    onValueChange = { viewModel.onTagsChanged(it.split(Regex(",\\s*")).map { it.trim() }) }
+                )
 
                 Button(
                     onClick = {
-//                        if(title.isEmpty() || description.isEmpty() || tags.isEmpty()) {
-//                            showSnackbar("No fields can be empty!", "OK", {})
-//                        } else {
-//                            viewModel.updatePost(
-//                                id = id,
-//                                title = title,
-//                                desc = description,
-//                                tags = tags.split(Regex(",\\s*")).map { it.trim() }
-//                            )
-//                            navController.popBackStack()
-//                        }
+                        if(state.title.trim().isEmpty() || state.desc.trim().isEmpty() || state.tags.isEmpty()) {
+                            showSnackbar("No fields can be empty!", "Ok", {})
+                        } else {
+                            viewModel.updatePost()
+                            //navController.popBackStack()
+                            navController.navigate(Screens.FeedScreen.route)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
