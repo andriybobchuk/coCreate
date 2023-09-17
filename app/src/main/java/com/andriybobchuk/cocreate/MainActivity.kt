@@ -57,8 +57,10 @@ class MainActivity(): ComponentActivity() {
                 var startDestination = ""
                 if(coreRepository.getCurrentUserID() != "") {
                     startDestination = Screens.ProfileScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                    ccLog.e("Entry", "User logged in, userID: " + coreRepository.getCurrentUserID())
                 } else {
                     startDestination = Screens.LoginScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                    ccLog.e("Entry", "User not logged in")
                 }
 
                 val navController = rememberNavController()
@@ -114,7 +116,14 @@ class MainActivity(): ComponentActivity() {
                 ) { innerPadding ->
                     // Apply the padding globally to the whole BottomNavScreensController, so that bottom nav bar does not overlap the content
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        NavigationGraph(navController = navController, startDestination = Screens.ProfileScreen.route)
+                        if(coreRepository.getCurrentUserID() != "") {
+                            startDestination = Screens.ProfileScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                            ccLog.e("Entry", "User logged in, userID: " + coreRepository.getCurrentUserID())
+                        } else {
+                            startDestination = Screens.LoginScreen.route // TODO("Change to Screens.RegisterScreen.route in startDestination in RELEASE MODE")
+                            ccLog.e("Entry", "User not logged in")
+                        }
+                        NavigationGraph(navController = navController, startDestination = startDestination)
                     }
                 }
             }

@@ -36,14 +36,11 @@ fun Comment(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.Top
     ) {
-        // Avatar
-        Image(
-            painter = rememberAsyncImagePainter(imageUrl),
-            contentDescription = "Avatar",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(38.dp)
-                .clip(CircleShape)
+        Avatar(
+            radius = 38.dp,
+            font = 14.sp,
+            avatarUrl = imageUrl,
+            name = username
         )
 
         Spacer(modifier = Modifier.width(12.dp))

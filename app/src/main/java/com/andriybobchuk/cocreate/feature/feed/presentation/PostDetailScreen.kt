@@ -51,6 +51,13 @@ fun PostDetailScreen(
         viewModel.getCommentsByPostId(id)
     }
 
+    val hasCommentBeenAdded by viewModel.hasCommentBeenAdded.collectAsState()
+    LaunchedEffect(key1 = hasCommentBeenAdded) {
+        if(hasCommentBeenAdded) {
+            viewModel.getCommentsByPostId(id)
+        }
+    }
+
     Column(
         modifier = Modifier
             .background(background_gray100)
@@ -199,41 +206,40 @@ fun PostDetailScreen(
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
+        }
+        var commentMessage by remember { mutableStateOf("") }
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(white)
+                .padding(vertical = 6.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BasicTextField(
+                value = commentMessage,
+                onValueChange = {
+                    commentMessage = it
+                },
+                textStyle = TextStyle(color = title_black, fontFamily = poppins),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BasicTextField(
-                    value = "Message",
-                    onValueChange = {
-                            //newText -> messageTextState.value = newText
-                                    },
-                    textStyle = TextStyle(color = title_black, fontFamily = poppins),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 8.dp)
-                        .border(0.5.dp, background_gray100, RoundedCornerShape(16.dp))
-                        .padding(8.dp)
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_send),
-                    contentDescription = "Send",
-                    tint = title_black,
-                    modifier = Modifier.clickable {
-//                        val messageText = messageTextState.value
-//                        if (messageText.isNotBlank()) {
-//                            viewModel.send(
-//                                convoId = chatId,
-//                                content = messageTextState.value )
-//                            messageTextState.value = ""
-//                        }
-                    }
-                )
-            }
+                    .weight(1f)
+                    .padding(end = 8.dp)
+                    .border(1.dp, background_gray200, RoundedCornerShape(16.dp))
+                    .padding(8.dp)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_send),
+                contentDescription = "Send",
+                tint = accent,
+                modifier = Modifier.clickable {
+                        if (commentMessage.isNotBlank()) {
+                            viewModel.addComment(postData.postBody.uid, commentMessage)
+                            commentMessage = ""
+                        }
+                }
+            )
         }
     }
 }

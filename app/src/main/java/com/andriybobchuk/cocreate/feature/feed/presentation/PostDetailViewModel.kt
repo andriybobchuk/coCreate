@@ -9,9 +9,7 @@ import com.andriybobchuk.cocreate.core.domain.model.AuthorComment
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,6 +32,9 @@ class PostDetailViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), State())
 
     val postDataState = mutableStateOf(AuthorPost())
+
+    private val _hasCommentBeenAdded = MutableStateFlow(false)
+    val hasCommentBeenAdded = _hasCommentBeenAdded.asStateFlow()
 
     fun getPostById(id: String) {
         viewModelScope.launch {
@@ -61,11 +62,18 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-//    fun addComment() {
-//        viewModelScope.launch {
-//            repository.addComment()
-//        }
-//    }
+    fun addComment(postUid: String, desc: String) {
+        viewModelScope.launch {
+            repository.addComment(postUid, desc)
+            _hasCommentBeenAdded.value = true
+        }
+    }
+
+    fun removeComment(id: String) {
+        viewModelScope.launch {
+            repository.removeComment(id)
+        }
+    }
 }
 
 data class State(

@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
+import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.FeedbackButton
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.TagSection
 import com.andriybobchuk.cocreate.ui.theme.*
@@ -69,30 +70,12 @@ fun Post(
                 }
                 //verticalAlignment = Alignment.CenterVertically
             ) {
-                if (ownerAvatar != "") {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = ownerAvatar),
-                        contentDescription = "Avatar",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(41.dp)
-                            .clip(CircleShape)
-                    )
-                } else {
-                    Box(
-                        Modifier
-                            .size(41.dp)
-                            .clip(CircleShape)
-                            .background(purple)
-                    ) {
-                        Text(
-                            text = ownerName.take(1).toUpperCase(),
-                            fontSize = 16.sp,
-                            color = Color.White,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                }
+                Avatar(
+                    radius = 41.dp,
+                    font = 16.sp,
+                    avatarUrl = ownerAvatar,
+                    name = ownerName
+                )
 
                 Spacer(modifier = Modifier.width(11.dp))
                 Column(
