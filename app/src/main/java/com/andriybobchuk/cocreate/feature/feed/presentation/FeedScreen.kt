@@ -31,6 +31,7 @@ import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileViewM
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import androidx.compose.runtime.collectAsState
+import com.andriybobchuk.cocreate.core.presentation.ShimmerListItem
 
 @Composable
 fun FeedScreen(
@@ -39,10 +40,12 @@ fun FeedScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    //var isLoading by remember { mutableStateOf(true) }
+
     LaunchedEffect(key1 = true) {
         viewModel.loadPosts()
+        //isLoading = false
     }
-
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -103,58 +106,67 @@ fun FeedScreen(
                 items = state.posts,
                 key = { it.postBody.uid }
             ) { post ->
-                var isLiked by remember { mutableStateOf(post.postBody.isLiked) }
-                var likes by remember { mutableStateOf(post.postBody.likes) }
-                Post(
-                    ownerAvatar = post.postAuthor.avatar,
-                    ownerName = post.postAuthor.name,
-                    publishedTime = post.postBody.published,
-                    title = post.postBody.title,
-                    contentText = post.postBody.desc,
-                    tags = post.postBody.tags,
-                    likes = likes,
-                    comments = post.postBody.comments,
-                    isLiked = isLiked,
-                    isMine = post.postBody.isMine,
-                    onLikeClick = {
-                        //viewModel.likeOrUnlikePost(post.postBody.uid)
-                        isLiked = !isLiked
-                        if(isLiked) {
-                            likes++
-                        } else {
-                            likes--
-                        }
-                    },
-                    onCommentClick = {
-                        System.out.println("Comment clicked")
-                        navController.navigate(
-                            "postDetail/{user}"
-                                .replace(
-                                    oldValue = "{user}",
-                                    newValue = post.postBody.uid
+
+                ShimmerListItem(
+                    isLoading = state.isLoading,
+                    contentAfterLoading = {
+                        var isLiked by remember { mutableStateOf(post.postBody.isLiked) }
+                        var likes by remember { mutableStateOf(post.postBody.likes) }
+                        Post(
+                            ownerAvatar = post.postAuthor.avatar,
+                            ownerName = post.postAuthor.name,
+                            publishedTime = post.postBody.published,
+                            title = post.postBody.title,
+                            contentText = post.postBody.desc,
+                            tags = post.postBody.tags,
+                            likes = likes,
+                            comments = post.postBody.comments,
+                            isLiked = isLiked,
+                            isMine = post.postBody.isMine,
+                            onLikeClick = {
+                                //viewModel.likeOrUnlikePost(post.postBody.uid)
+                                isLiked = !isLiked
+                                if(isLiked) {
+                                    likes++
+                                } else {
+                                    likes--
+                                }
+                            },
+                            onCommentClick = {
+                                System.out.println("Comment clicked")
+                                navController.navigate(
+                                    "postDetail/{user}"
+                                        .replace(
+                                            oldValue = "{user}",
+                                            newValue = post.postBody.uid
+                                        )
                                 )
-                        )
-                    },
-                    onReadMoreClick = {
-                        navController.navigate(
-                            "postDetail/{user}"
-                                .replace(
-                                    oldValue = "{user}",
-                                    newValue = post.postBody.uid
+                            },
+                            onReadMoreClick = {
+                                navController.navigate(
+                                    "postDetail/{user}"
+                                        .replace(
+                                            oldValue = "{user}",
+                                            newValue = post.postBody.uid
+                                        )
                                 )
-                        )
-                    },
-                    onEditClick = {
-                        if(post.postBody.isMine) {
-                            navController.navigate(
-                                "postEdit/{post}"
-                                    .replace(
-                                        oldValue = "{post}",
-                                        newValue = post.postBody.uid
+                            },
+                            onEditClick = {
+                                if(post.postBody.isMine) {
+                                    navController.navigate(
+                                        "postEdit/{post}"
+                                            .replace(
+                                                oldValue = "{post}",
+                                                newValue = post.postBody.uid
+                                            )
                                     )
-                            )
-                        }
-                    }
+                                }
+                            }
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 )
             }
         }

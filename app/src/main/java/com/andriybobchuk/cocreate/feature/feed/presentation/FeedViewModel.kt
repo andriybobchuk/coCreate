@@ -27,12 +27,14 @@ class FeedViewModel @Inject constructor(
     private val posts = savedStateHandle.getStateFlow("posts", emptyList<AuthorPost>())
     private val searchText = savedStateHandle.getStateFlow("searchText", "")
     private val isSearchActive = savedStateHandle.getStateFlow("isSearchActive", false)
+    private val isLoading = savedStateHandle.getStateFlow("isLoading", true)
 
-    val state = combine(posts, searchText, isSearchActive) { posts, searchText, isSearchActive ->
+    val state = combine(posts, searchText, isSearchActive, isLoading) { posts, searchText, isSearchActive, isLoading ->
         FeedState(
             posts = searchPosts.execute(posts, searchText),
             searchText = searchText,
-            isSearchActive = isSearchActive
+            isSearchActive = isSearchActive,
+            isLoading = isLoading
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedState())
 
@@ -50,6 +52,7 @@ class FeedViewModel @Inject constructor(
                 }
             }
             savedStateHandle["posts"] = postsWithAuthorInfo
+            savedStateHandle["isLoading"] = false
         }
     }
 
@@ -120,5 +123,6 @@ class SearchPosts {
 data class FeedState(
     val posts: List<AuthorPost> = emptyList(),
     val searchText: String = "",
-    val isSearchActive: Boolean = false
+    val isSearchActive: Boolean = false,
+    val isLoading: Boolean = true,
 )
