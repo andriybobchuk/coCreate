@@ -37,6 +37,9 @@ interface CoreRepository {
     suspend fun updatePost(postId: String, updatedTitle: String, updatedDesc: String, updatedTags: List<String>): Boolean
     suspend fun deletePost(postId: String): Boolean
 
+    suspend fun addComment(postUid: String, desc: String): Boolean
+    suspend fun removeComment(id: String): Boolean
+
     suspend fun addMessageToConversation(
         conversationId: String,
         content: String,

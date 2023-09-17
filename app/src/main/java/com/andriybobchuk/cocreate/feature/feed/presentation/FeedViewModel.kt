@@ -2,15 +2,15 @@ package com.andriybobchuk.cocreate.feature.feed.presentation
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -18,20 +18,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val repository: CoreRepository
+    private val repository: CoreRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    var posts = listOf<AuthorPost>()
-    var state = mutableStateOf(posts)
+    private val searchPosts = SearchPosts()
 
-    init {
-        getAllPosts()
-    }
+    private val posts = savedStateHandle.getStateFlow("posts", emptyList<AuthorPost>())
+    private val searchText = savedStateHandle.getStateFlow("searchText", "")
+    private val isSearchActive = savedStateHandle.getStateFlow("isSearchActive", false)
 
-    private fun getAllPosts() {
+    val state = combine(posts, searchText, isSearchActive) { posts, searchText, isSearchActive ->
+        FeedState(
+            posts = searchPosts.execute(posts, searchText),
+            searchText = searchText,
+            isSearchActive = isSearchActive
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedState())
+
+    fun loadPosts() {
         viewModelScope.launch {
             val allPosts = repository.getAllPosts()
-
             val postsWithAuthorInfo = allPosts.map { post ->
                 if (post.author.isNotEmpty()) {
                     val authorProfile = repository.getProfileDataById(post.author)
@@ -42,36 +49,47 @@ class FeedViewModel @Inject constructor(
                     AuthorPost(post, ProfileData())
                 }
             }
-            state.value = postsWithAuthorInfo
+            savedStateHandle["posts"] = postsWithAuthorInfo
         }
     }
 
+    fun onSearchTextChange(text: String) {
+        savedStateHandle["searchText"] = text
+    }
 
-
-
-
-
-    fun likeOrUnlikePost(postId: String) {
-        viewModelScope.launch {
-            val isLiked = repository.isPostLikedByCurrentUser(postId)
-
-            if (isLiked) {
-                // Unlike the post
-                repository.unlikePost(postId)
-                state.value.find { it.postBody.uid == postId }?.apply {
-                    postBody.isLiked = false
-                    postBody.likes -= 1
-                }
-            } else {
-                // Like the post
-                repository.likePost(postId)
-                state.value.find { it.postBody.uid == postId }?.apply {
-                    postBody.isLiked = true
-                    postBody.likes += 1
-                }
-            }
+    fun onToggleSearch() {
+        savedStateHandle["isSearchActive"] = !isSearchActive.value
+        if(!isSearchActive.value) {
+            savedStateHandle["searchText"] = ""
         }
     }
+
+//    init {
+//        getAllPosts()
+//    }
+
+
+//    fun likeOrUnlikePost(postId: String) {
+//        viewModelScope.launch {
+//            val isLiked = repository.isPostLikedByCurrentUser(postId)
+//
+//            if (isLiked) {
+//                // Unlike the post
+//                repository.unlikePost(postId)
+//                state.value.find { it.postBody.uid == postId }?.apply {
+//                    postBody.isLiked = false
+//                    postBody.likes -= 1
+//                }
+//            } else {
+//                // Like the post
+//                repository.likePost(postId)
+//                state.value.find { it.postBody.uid == postId }?.apply {
+//                    postBody.isLiked = true
+//                    postBody.likes += 1
+//                }
+//            }
+//        }
+//    }
 
 
 
@@ -80,3 +98,27 @@ class FeedViewModel @Inject constructor(
 //        repository.likePost(postId)
 //    }
 }
+
+/**
+ * This is a use caase for searching posts by a criteria
+ */
+class SearchPosts {
+    fun execute(notes: List<AuthorPost>, query: String): List<AuthorPost> {
+        if(query.isBlank()) {
+            return notes
+        }
+        return notes.filter {
+            it.postBody.title.trim().lowercase().contains(query.lowercase()) ||
+                    it.postBody.desc.trim().lowercase().contains(query.lowercase())
+        }
+//            .sortedBy {
+//            DateTimeUtil.toEpochMillis(it.created)
+//        }
+    }
+}
+
+data class FeedState(
+    val posts: List<AuthorPost> = emptyList(),
+    val searchText: String = "",
+    val isSearchActive: Boolean = false
+)

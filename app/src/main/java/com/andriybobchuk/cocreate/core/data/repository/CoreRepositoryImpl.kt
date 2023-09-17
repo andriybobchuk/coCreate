@@ -695,7 +695,36 @@ class CoreRepositoryImpl @Inject constructor(
 //        }
 //    }
 
+    override suspend fun addComment(postUid: String, desc: String): Boolean {
+        try {
+            val newCommentRef = firebaseFirestore.collection(Constants.COMMENTS).document() // Generate a new document ID
+            newCommentRef.set(Comment(
+                uid = newCommentRef.id,
+                postUid = postUid,
+                author = getCurrentUserID(),
+                desc = desc,
+                published = getCurrentDateTime()
+            )) // Add the post to Firebase with the generated ID
 
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
+    override suspend fun removeComment(id: String): Boolean {
+        try {
+            // Delete the comment document with the specified UID
+            firebaseFirestore.collection(Constants.COMMENTS).document(id)
+                .delete()
+                .await()
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+    }
 
 
 

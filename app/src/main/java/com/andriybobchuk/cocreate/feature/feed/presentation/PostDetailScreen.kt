@@ -5,14 +5,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,14 +40,16 @@ import javax.inject.Inject
 @Composable
 fun PostDetailScreen(
     navController: NavController,
-    viewModel: PostDetailViewMOdel = hiltViewModel(),
+    viewModel: PostDetailViewModel = hiltViewModel(),
     id: String
 ) {
     viewModel.getPostById(id)
     val postData = viewModel.postDataState.value
 
-    viewModel.getCommentsByPostId(id)
-    val comments = viewModel.commentsState.value
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(key1 = true) {
+        viewModel.getCommentsByPostId(id)
+    }
 
     Column(
         modifier = Modifier
@@ -170,13 +174,14 @@ fun PostDetailScreen(
                     }
                 }
             }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(background_gray100)
                     .padding(vertical = 10.dp)
             ) {
-                comments.forEach { comment ->
+                state.comments.forEach { comment ->
                     Comment(
                         imageUrl = comment.authorData.avatar,
                         username = comment.authorData.name,
@@ -193,6 +198,41 @@ fun PostDetailScreen(
                         }
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BasicTextField(
+                    value = "Message",
+                    onValueChange = {
+                            //newText -> messageTextState.value = newText
+                                    },
+                    textStyle = TextStyle(color = title_black, fontFamily = poppins),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                        .border(0.5.dp, background_gray100, RoundedCornerShape(16.dp))
+                        .padding(8.dp)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_send),
+                    contentDescription = "Send",
+                    tint = title_black,
+                    modifier = Modifier.clickable {
+//                        val messageText = messageTextState.value
+//                        if (messageText.isNotBlank()) {
+//                            viewModel.send(
+//                                convoId = chatId,
+//                                content = messageTextState.value )
+//                            messageTextState.value = ""
+//                        }
+                    }
+                )
             }
         }
     }

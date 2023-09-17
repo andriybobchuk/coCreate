@@ -31,39 +31,28 @@ import com.andriybobchuk.cocreate.core.presentation.screens.SomeonesProfileViewM
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.LiveData
-import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 
 @Composable
 fun FeedScreen(
     navController: NavController,
     viewModel: FeedViewModel = hiltViewModel(),
 ) {
-    val posts = viewModel.state.value
+    val state by viewModel.state.collectAsState()
 
-    // State for storing the message text
-    //val isUpdated = remember { mutableStateOf(true) }
+    LaunchedEffect(key1 = true) {
+        viewModel.loadPosts()
+    }
 
-    //val posts by viewModel.state.collectAsState()
-
-//    // State variable to trigger recomposition when a like action occurs
-//    var likeActionState by remember { mutableStateOf(false) }
-
-    var isSearchBarActive by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (isSearchBarActive) {
+        if (state.isSearchActive) {
             // Search input field with icon and hint
             SearchBar(
-                searchQuery = searchQuery,
-                onSearchQueryChange = { query -> searchQuery = query },
-                onCancelSearch = {
-                    isSearchBarActive = false
-                    searchQuery = "" // Clear the search query when canceling
-                }
+                searchQuery = state.searchText,
+                onSearchQueryChange = { viewModel.onSearchTextChange(it) },
+                onCancelSearch = { viewModel.onToggleSearch() }
             )
         } else {
             Row(
@@ -92,7 +81,9 @@ fun FeedScreen(
                     )
                 }
                 IconButton(
-                    onClick = { isSearchBarActive = true },
+                    onClick = {
+                        viewModel.onToggleSearch()
+                        },
                     modifier = Modifier.padding(end = 10.dp),
                 ) {
                     Icon(
@@ -108,7 +99,10 @@ fun FeedScreen(
                 .padding(top = 50.dp)
                 .background(background_gray100)
         ) {
-            items(posts) { post ->
+            items(
+                items = state.posts,
+                key = { it.postBody.uid }
+            ) { post ->
                 var isLiked by remember { mutableStateOf(post.postBody.isLiked) }
                 var likes by remember { mutableStateOf(post.postBody.likes) }
                 Post(
@@ -123,7 +117,7 @@ fun FeedScreen(
                     isLiked = isLiked,
                     isMine = post.postBody.isMine,
                     onLikeClick = {
-                        viewModel.likeOrUnlikePost(post.postBody.uid)
+                        //viewModel.likeOrUnlikePost(post.postBody.uid)
                         isLiked = !isLiked
                         if(isLiked) {
                             likes++

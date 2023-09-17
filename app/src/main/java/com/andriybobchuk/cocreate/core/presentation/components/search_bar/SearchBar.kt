@@ -1,15 +1,19 @@
 package com.andriybobchuk.cocreate.core.presentation.components.search_bar
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,14 +54,14 @@ fun SearchBar(
                 contentDescription = "Search",
                 tint = typo_gray100
             )
-            if (searchQuery.isEmpty()) {
-                Text(
-                    text = "Search tools, profession, city",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+//            if (searchQuery.isEmpty()) {
+//                Text(
+//                    text = "Search tools, profession, city",
+//                    fontSize = 14.sp,
+//                    color = Color.Gray,
+//                    modifier = Modifier.padding(start = 8.dp)
+//                )
+//            }
             BasicTextField(
                 value = searchQuery,
                 onValueChange = { newValue -> onSearchQueryChange(newValue) },
