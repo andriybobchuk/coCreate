@@ -41,31 +41,28 @@ class CoreRepositoryImpl @Inject constructor(
 
     override suspend fun getCurrentUserFriends(): List<String> {
         val currentUserUid = getCurrentUserID()
-        if (currentUserUid != null) {
-            val friendsCollection = firebaseFirestore.collection(Constants.FRIENDS)
-            val friendsQuery = friendsCollection
-                .whereEqualTo("profile1", currentUserUid)
-                .get()
-                .await()
+        val friendsCollection = firebaseFirestore.collection(Constants.FRIENDS)
+        val friendsQuery = friendsCollection
+            .whereEqualTo("profile1", currentUserUid)
+            .get()
+            .await()
 
-            val friendsQuery2 = friendsCollection
-                .whereEqualTo("profile2", currentUserUid)
-                .get()
-                .await()
+        val friendsQuery2 = friendsCollection
+            .whereEqualTo("profile2", currentUserUid)
+            .get()
+            .await()
 
-            val friendUidsSet = HashSet<String>() // Using HashSet to store unique UIDs
+        val friendUidsSet = HashSet<String>() // Using HashSet to store unique UIDs
 
-            for (document in friendsQuery.documents) {
-                friendUidsSet.add(document.getString("profile2") ?: "")
-            }
-
-            for (document in friendsQuery2.documents) {
-                friendUidsSet.add(document.getString("profile1") ?: "")
-            }
-
-            return friendUidsSet.toList() // Convert the set back to a list
+        for (document in friendsQuery.documents) {
+            friendUidsSet.add(document.getString("profile2") ?: "")
         }
-        return emptyList()
+
+        for (document in friendsQuery2.documents) {
+            friendUidsSet.add(document.getString("profile1") ?: "")
+        }
+
+        return friendUidsSet.toList() // Convert the set back to a list
     }
 
     override suspend fun getRequestorUids(): List<String> {
@@ -397,15 +394,40 @@ class CoreRepositoryImpl @Inject constructor(
                 comments = 0,
             )) // Add the post to Firebase with the generated ID
 
-//            firebaseFirestore
-//                .collection(Constants.POSTS)
-//                .add(
-//                    ).await()
             return true
         } catch (e: Exception) {
             return false
         }
     }
+
+    override suspend fun updatePost(postId: String, updatedTitle: String, updatedDesc: String, updatedTags: List<String>): Boolean {
+        try {
+            val postRef = firebaseFirestore.collection(Constants.POSTS).document(postId)
+            postRef.update(
+                mapOf(
+                    "title" to updatedTitle,
+                    "desc" to updatedDesc,
+                    "tags" to updatedTags,
+                    "published" to getCurrentDateTime()
+                )
+            ).await()
+            return true
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    override suspend fun deletePost(postId: String): Boolean {
+        try {
+            val postRef = firebaseFirestore.collection(Constants.POSTS).document(postId)
+            postRef.delete().await()
+            return true
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+
 
     override suspend fun getConversationsByUserId(userId: String): List<Conversation> {
         return try {

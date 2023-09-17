@@ -48,7 +48,8 @@ fun Post(
     isMine: Boolean,
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit,
-    onReadMoreClick: () -> Unit
+    onReadMoreClick: () -> Unit,
+    onEditClick: () -> Unit,
 ) {
     val isLikedState = rememberUpdatedState(isLiked)
 
@@ -114,13 +115,7 @@ fun Post(
                     Column(Modifier.wrapContentHeight()) {
                         IconButton(
                             onClick = {
-//                                navController.navigate(
-//                                    "postEdit/{post}"
-//                                        .replace(
-//                                            oldValue = "{post}",
-//                                            newValue = post.postBody.uid
-//                                        )
-//                                )
+                                onEditClick()
                             },
                             modifier = Modifier.padding(end = 10.dp),
                         ) {

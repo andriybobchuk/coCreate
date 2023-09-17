@@ -34,6 +34,8 @@ interface CoreRepository {
 
     // Create
     suspend fun addNewPost(title: String, desc: String, tags: List<String>): Boolean
+    suspend fun updatePost(postId: String, updatedTitle: String, updatedDesc: String, updatedTags: List<String>): Boolean
+    suspend fun deletePost(postId: String): Boolean
 
     suspend fun addMessageToConversation(
         conversationId: String,

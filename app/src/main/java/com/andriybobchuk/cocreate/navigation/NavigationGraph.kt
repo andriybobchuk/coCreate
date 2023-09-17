@@ -11,6 +11,7 @@ import com.andriybobchuk.cocreate.feature.feed.presentation.FeedScreen
 import com.andriybobchuk.cocreate.feature.messages.presentation.ConversationsScreen
 import com.andriybobchuk.cocreate.feature.collaborators.presentation.MyPostsScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.AddPostScreen
+import com.andriybobchuk.cocreate.feature.feed.presentation.EditPostScreen
 import com.andriybobchuk.cocreate.feature.feed.presentation.PostDetailScreen
 import com.andriybobchuk.cocreate.feature.messages.presentation.PrivateChatScreen
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileScreen
@@ -47,6 +48,14 @@ fun NavigationGraph(
             /* We check if it's not null */
             id?.let { it->
                 PostDetailScreen(navController, id = id)
+            }
+        }
+        composable(route = "postEdit/{id}") { navBackStackEntry ->
+            /* Extracting the id from the route */
+            val id = navBackStackEntry.arguments?.getString("id")
+            /* We check if it's not null */
+            id?.let { it->
+                EditPostScreen(navController, id = id)
             }
         }
 

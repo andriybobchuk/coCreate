@@ -149,6 +149,17 @@ fun FeedScreen(
                                     newValue = post.postBody.uid
                                 )
                         )
+                    },
+                    onEditClick = {
+                        if(post.postBody.isMine) {
+                            navController.navigate(
+                                "postEdit/{post}"
+                                    .replace(
+                                        oldValue = "{post}",
+                                        newValue = post.postBody.uid
+                                    )
+                            )
+                        }
                     }
                 )
             }

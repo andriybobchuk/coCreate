@@ -19,6 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.domain.model.Post
+import com.andriybobchuk.cocreate.core.presentation.components.MessageType
+import com.andriybobchuk.cocreate.core.presentation.components.ccSnackbar
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
 
@@ -30,6 +32,17 @@ fun AddPostScreen(
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var tags by remember { mutableStateOf("") }
+
+    var snackbarVisible by remember { mutableStateOf(false) }
+    var snackbarMessage by remember { mutableStateOf("") }
+    var snackbarActionText by remember { mutableStateOf("") }
+    var onSnackbarAction: () -> Unit by remember { mutableStateOf({}) }
+    fun showSnackbar(message: String, actionText: String, action: () -> Unit) {
+        snackbarMessage = message
+        snackbarActionText = actionText
+        onSnackbarAction = action
+        snackbarVisible = true
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -102,7 +115,7 @@ fun AddPostScreen(
                 )
 
                 CcInputField(
-                    title = "Tags",
+                    title = "Tags (Comma-separated)",
                     value = tags,
                     isSingleLine = false,
                     onValueChange = { newValue -> tags = newValue }
@@ -110,12 +123,16 @@ fun AddPostScreen(
 
                 Button(
                     onClick = {
-                        viewModel.addPost(
-                            title = title,
-                            desc = description,
-                            tags = tags.split(Regex(",\\s*")).map { it.trim() }
-                        )
-                        navController.popBackStack()
+                        if(title.isEmpty() || description.isEmpty() || tags.isEmpty()) {
+                            showSnackbar("No fields can be empty!", "Ok", {})
+                        } else {
+                            viewModel.addPost(
+                                title = title,
+                                desc = description,
+                                tags = tags.split(Regex(",\\s*")).map { it.trim() }
+                            )
+                            navController.popBackStack()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -134,6 +151,19 @@ fun AddPostScreen(
                         fontSize = 12.sp,
                         color = white,
                         fontFamily = poppins,
+                    )
+                }
+                // Spacer to push the Snackbar to the bottom
+                Spacer(modifier = Modifier.weight(1f))
+                if (snackbarVisible) {
+                    ccSnackbar(
+                        message = snackbarMessage,
+                        actionText = snackbarActionText,
+                        onActionClick = {
+                            onSnackbarAction()
+                            snackbarVisible = false
+                        },
+                        messageType = MessageType.Error // Specify the message type
                     )
                 }
             }
