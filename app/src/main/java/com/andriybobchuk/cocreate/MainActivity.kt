@@ -85,12 +85,12 @@ class MainActivity(): ComponentActivity() {
                             BottomNavigationBar(
                                 items = listOf(
                                     BottomNavItem(
-                                        name = "Feed",
+                                        name = "Ideas",
                                         route = Screens.FeedScreen.route,
                                         icon = ImageVector.vectorResource(id = R.drawable.ic_myposts)
                                     ),
                                     BottomNavItem(
-                                        name = "Collaborators",
+                                        name = "Contacts",
                                         route = Screens.CollaboratorsScreen.route,
                                         icon = ImageVector.vectorResource(id = R.drawable.ic_people)
                                     ),

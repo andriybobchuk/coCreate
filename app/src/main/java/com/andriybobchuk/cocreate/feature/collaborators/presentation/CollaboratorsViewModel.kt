@@ -17,19 +17,22 @@ class CollaboratorsViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
+    // ToDO: Implement proper display list
+
+    /*
+    Todo:
+     1. getContacts()
+     2. addContact()
+     3. RemoveContact()
+     */
+    
+    // Todo: Implement search
+
     var friendsList = listOf<ProfileData>()
     var state = mutableStateOf(friendsList)
 
-    var exploreList = listOf<ProfileData>()
-    var exploreState = mutableStateOf(exploreList)
-
-    var requestList = listOf<ProfileData>()
-    var requestState = mutableStateOf(requestList)
-
     init {
         getFriendsList()
-        getExploreList()
-        getRequestList()
     }
 
     private fun getFriendsList() {
@@ -39,26 +42,6 @@ class CollaboratorsViewModel @Inject constructor(
                 friendsList += repository.getPersonByID(friend)
             }
             state.value = friendsList
-        }
-    }
-
-    private fun getRequestList() {
-        viewModelScope.launch {
-            val requests = repository.getRequestorUids()
-            for(request in requests) {
-                requestList += repository.getPersonByID(request)
-            }
-            requestState.value = requestList
-        }
-    }
-
-    private fun getExploreList() {
-        viewModelScope.launch {
-            val people = repository.getNewPeopleIds()
-            for(person in people) {
-                exploreList += repository.getPersonByID(person)
-            }
-            exploreState.value = exploreList
         }
     }
 
@@ -73,12 +56,4 @@ class CollaboratorsViewModel @Inject constructor(
             repository.approveFriend(requestorUid)
         }
     }
-
-
-
-//    fun isFriend(profileUid: String): Boolean {
-//        viewModelScope.launch {
-//            return repository.isFriend(profileUid)
-//        }
-//    }
 }
