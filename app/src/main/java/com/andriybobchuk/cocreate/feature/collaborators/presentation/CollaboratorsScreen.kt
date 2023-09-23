@@ -50,7 +50,7 @@ fun MyPostsScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Collaborators",
+                    text = "Saved Contacts",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Black,
                     color = title_black,

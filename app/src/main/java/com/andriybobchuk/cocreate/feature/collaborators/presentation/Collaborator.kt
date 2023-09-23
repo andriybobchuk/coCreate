@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.ui.theme.*
 
 @Composable
@@ -36,30 +37,12 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)
         ) {
-            if (imageUrl != "") {
-                Image(
-                    painter = rememberAsyncImagePainter(imageUrl),
-                    contentDescription = "Cover Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
-                )
-            } else {
-                Box(
-                    Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
-                        .background(purple),
-                ) {
-                    Text(
-                        text = name.take(1).toUpperCase(),
-                        fontSize = 16.sp,
-                        color = Color.White,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            }
+            Avatar(
+                radius= 45.dp,
+                font = 16.sp,
+                avatarUrl = imageUrl,
+                name = name
+            )
             Column(
                 modifier = Modifier
                     .padding(start = 16.dp)
@@ -81,7 +64,10 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
             }
             IconButton(
                 modifier =
-                Modifier.width(28.dp).height(28.dp).padding(end = 10.dp),
+                Modifier
+                    .width(28.dp)
+                    .height(28.dp)
+                    .padding(end = 10.dp),
                 onClick = { /* send message */ }
             ) {
                 Icon(

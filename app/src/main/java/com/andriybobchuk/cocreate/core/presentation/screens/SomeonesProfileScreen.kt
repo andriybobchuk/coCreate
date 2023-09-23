@@ -28,8 +28,10 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
+import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.TagSection
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.cocreate.util.generateShortUserDescription
 import com.andriybobchuk.navigation.Screens
 import kotlinx.coroutines.launch
 
@@ -50,12 +52,10 @@ fun SomeonesProfileScreen(
     val roundedCornersCorrection = 30.dp // We lift card & icon up by this value
     val shiftIconTopBy = 20.dp // The bigger this value is, the higher icon is from the middle
 
-    var isFriend by remember { mutableStateOf(true) }
+    var isSavedContact by remember { mutableStateOf(true) }
     LaunchedEffect(profileData.uid) {
-        isFriend = viewModel.isUserAFriend(profileData.uid)
+        isSavedContact = viewModel.isUserSavedAsContact()
     }
-
-    ///
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -244,7 +244,7 @@ fun SomeonesProfileScreen(
                                 )
                                 if (profileData.city != "" || profileData.position != "") {
                                     Text(
-                                        text = profileData.position + " " + profileData.city,
+                                        text = generateShortUserDescription(profileData.position, profileData.city),
                                         fontSize = 13.sp,
                                         modifier = Modifier.align(CenterHorizontally),
                                         fontWeight = FontWeight.Light,
@@ -309,11 +309,11 @@ fun SomeonesProfileScreen(
                                         )
                                     }
 
-                                    if(isFriend) {
+                                    if(isSavedContact) {
                                         Button(
                                             onClick = {
-                                                isFriend = false
-                                                viewModel.removeFriend(profileData.uid)
+                                                isSavedContact = false
+                                                viewModel.removeContact()
                                             },
                                             modifier = Modifier
                                                 .wrapContentWidth()
@@ -335,8 +335,8 @@ fun SomeonesProfileScreen(
                                     } else {
                                         Button(
                                             onClick = {
-                                                isFriend = true
-                                                viewModel.requestFriend(profileData.uid)
+                                                isSavedContact = true
+                                                viewModel.addContact()
                                                 //Toast.makeText(LocalContext.current, "You have sent this user a friend request.", Toast.LENGTH_LONG).show()
                                             },
                                             modifier = Modifier
@@ -370,32 +370,12 @@ fun SomeonesProfileScreen(
                                 .shadow(elevation = 10.dp, shape = CircleShape)
                         ) {
                             // Display the avatar icon which overlaps the cover and the white card
-                            if (profileData.avatar != "") {
-                                Image(
-                                    painter = rememberAsyncImagePainter(model = profileData.avatar),
-                                    contentDescription = "Avatar",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(avatarSize)
-                                        .clip(CircleShape)
-                                        .align(Alignment.TopCenter)
-                                )
-                            } else {
-                                Box(
-                                    Modifier
-                                        .size(avatarSize)
-                                        .clip(CircleShape)
-                                        .background(purple)
-                                        .align(TopCenter),
-                                ) {
-                                    Text(
-                                        text = profileData.name.take(1).toUpperCase(),
-                                        fontSize = 26.sp,
-                                        color = Color.White,
-                                        modifier = Modifier.align(Alignment.Center)
-                                    )
-                                }
-                            }
+                            Avatar(
+                                radius = avatarSize,
+                                font = 35.sp,
+                                avatarUrl = profileData.avatar,
+                                name = profileData.name
+                            )
                         }
                     }
                 }

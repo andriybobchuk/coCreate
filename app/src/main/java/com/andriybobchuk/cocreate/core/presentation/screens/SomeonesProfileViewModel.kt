@@ -25,31 +25,17 @@ class SomeonesProfileViewModel @Inject constructor(
         }
     }
 
-    // ViewModel function to check if a user is a friend
-    suspend fun isUserAFriend(userId: String): Boolean {
-        return repository.isFriend(userId)
+    suspend fun isUserSavedAsContact(): Boolean {
+        return repository.getProfileDataById(repository.getCurrentUserID()).contacts.contains(state.value.uid)
     }
-
-    fun removeFriend(friendUid: String) {
+    fun addContact() {
         viewModelScope.launch {
-            repository.removeFriend(friendUid)
+            repository.addContact(state.value.uid)
         }
     }
-
-    fun requestFriend(requestedUid: String) {
+    fun removeContact() {
         viewModelScope.launch {
-            repository.requestFriend(requestedUid)
+            repository.removeContact(state.value.uid)
         }
-    }
-
-    fun approveFriend(requestorUid: String) {
-        viewModelScope.launch {
-            repository.approveFriend(requestorUid)
-        }
-    }
-
-    // ViewModel function to check if a user sent a friend request
-    suspend fun didUserSendFriendRequest(userId: String): Boolean {
-        return repository.didUserSendFriendRequest(userId)
     }
 }

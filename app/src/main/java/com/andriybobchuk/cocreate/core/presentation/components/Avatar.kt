@@ -22,8 +22,8 @@ import kotlin.random.Random
 
 @Composable
 fun Avatar(
-    radius: Dp = 41.dp,
-    font: TextUnit = 16.sp,
+    radius: Dp,
+    font: TextUnit,
     avatarUrl: String,
     name: String
 ) {
@@ -41,7 +41,7 @@ fun Avatar(
             modifier = Modifier
                 .size(radius)
                 .clip(CircleShape)
-                .background(getRandomColor())
+                .background(purple)
         ) {
             Text(
                 text = name.take(1).toUpperCase(),
@@ -53,8 +53,8 @@ fun Avatar(
     }
 }
 
-fun getRandomColor(): Color {
-    val colors = listOf(orange, red, green, accent, purple) // Add more colors as needed
-    val randomIndex = Random.nextInt(colors.size)
-    return colors[randomIndex]
-}
+//fun getRandomColor(): Color {
+//    val colors = listOf(orange, red, green, accent, purple) // Add more colors as needed
+//    val randomIndex = Random.nextInt(colors.size)
+//    return colors[randomIndex]
+//}
