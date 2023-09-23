@@ -116,11 +116,8 @@ fun FeedScreen(
                             title = post.postBody.title,
                             contentText = post.postBody.desc,
                             tags = post.postBody.tags,
-                            likes = likes,
-                            comments = post.postBody.comments,
-                            isLiked = isLiked,
                             isMine = post.postBody.isMine,
-                            onLikeClick = {
+                            onSaveClick = {
                                 //viewModel.likeOrUnlikePost(post.postBody.uid)
                                 isLiked = !isLiked
                                 if(isLiked) {

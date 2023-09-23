@@ -43,16 +43,13 @@ fun Post(
     title: String,
     contentText: String,
     tags: List<String>,
-    likes: Int,
-    comments: Int,
-    isLiked: Boolean,
     isMine: Boolean,
-    onLikeClick: () -> Unit,
+    onSaveClick: () -> Unit,
     onCommentClick: () -> Unit,
     onReadMoreClick: () -> Unit,
     onEditClick: () -> Unit,
 ) {
-    val isLikedState = rememberUpdatedState(isLiked)
+   // val isLikedState = rememberUpdatedState(isLiked)
 
     Card(
         modifier = Modifier
@@ -145,14 +142,14 @@ fun Post(
             ) {
                 FeedbackButton(
                     painter = painterResource(id = R.drawable.ic_like),
-                    isHighlighted = isLikedState.value,
-                    count = likes,
-                    onClick = { onLikeClick() }
+                    text = "Save",
+                    onClick = {  }
                 )
                 FeedbackButton(
                     painter = painterResource(id = R.drawable.ic_messages),
-                    count = comments,
-                    onClick = { onCommentClick() })
+                    text = "Comment",
+                    onClick = {  }
+                )
 
                 // Read More button
                 if (contentText.length > POST_TRIM_LENGTH) {

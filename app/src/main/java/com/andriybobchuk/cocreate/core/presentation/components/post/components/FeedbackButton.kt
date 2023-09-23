@@ -21,11 +21,10 @@ import com.andriybobchuk.cocreate.ui.theme.*
 @Composable
 fun FeedbackButton(
     painter: Painter,
-    count: Int,
-    isHighlighted: Boolean = false,
+    text: String,
     onClick: () -> Unit,
 ) {
-    val isLikedState = rememberUpdatedState(isHighlighted)
+   // val isLikedState = rememberUpdatedState(isHighlighted)
 
     Button(
         onClick = onClick,
@@ -36,24 +35,15 @@ fun FeedbackButton(
             .height(36.dp)
             .padding(end = 8.dp),
     ) {
-        if(isLikedState.value) {
-            Icon(
-                painter = painter,
-                contentDescription = null,
-                tint = red,
-                modifier = Modifier.size(16.dp)
-            )
-        } else {
-            Icon(
-                painter = painter,
-                contentDescription = null,
-                tint = typo_gray200,
-                modifier = Modifier.size(16.dp)
-            )
-        }
+        Icon(
+            painter = painter,
+            contentDescription = null,
+            tint = typo_gray200,
+            modifier = Modifier.size(16.dp)
+        )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = count.toString(),
+            text = text,
             color = typo_gray200,
             fontSize = 12.sp,
             fontFamily = poppins,

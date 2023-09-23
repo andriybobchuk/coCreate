@@ -290,11 +290,8 @@ fun ProfileScreen(
                     title = post.postBody.title,
                     contentText = post.postBody.desc,
                     tags = post.postBody.tags,
-                    likes = post.postBody.likes,
-                    comments = post.postBody.comments,
-                    isLiked = false,
                     isMine = true,
-                    onLikeClick = {
+                    onSaveClick = {
 
                     },
                     onCommentClick = {

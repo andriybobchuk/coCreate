@@ -171,12 +171,11 @@ fun PostDetailScreen(
                     ) {
                         FeedbackButton(
                             painter = painterResource(id = R.drawable.ic_like),
-                            isHighlighted = true,
-                            count = postData.postBody.likes,
+                            text = "Save",
                             onClick = {})
                         FeedbackButton(
                             painter = painterResource(id = R.drawable.ic_messages),
-                            count = postData.postBody.comments,
+                            text = "Comment",
                             onClick = {})
                     }
                 }
