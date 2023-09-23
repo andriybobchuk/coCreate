@@ -52,4 +52,11 @@ interface CoreRepository {
 
     suspend fun getLikeCountForPost(postId: String): Int
     suspend fun isPostLikedByCurrentUser(postId: String): Boolean
+
+    /* ----------------------------------------------------------------------------------------- *
+     | Contacts Feature
+     * ----------------------------------------------------------------------------------------- */
+    suspend fun getContacts(): List<ProfileData>
+    suspend fun addContact(contactUid: String): Boolean
+    suspend fun removeContact(contactUid: String): Boolean
 }

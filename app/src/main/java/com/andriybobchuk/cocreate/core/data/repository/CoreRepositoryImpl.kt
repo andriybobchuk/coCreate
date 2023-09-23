@@ -726,6 +726,63 @@ class CoreRepositoryImpl @Inject constructor(
         }
     }
 
+    /* ----------------------------------------------------------------------------------------- *
+     | Contacts Feature
+     * ----------------------------------------------------------------------------------------- */
+    /*
+    Get a list of user's contacts
+     */
+    override suspend fun getContacts(): List<ProfileData> {
+        // Fetch the list of contact UIDs from the current user's document
+        val currentUserUid = getCurrentUserID() // Implement this function to get the current user's UID
+        val userDocument = firebaseFirestore.collection(Constants.PROFILE_DATA).document(currentUserUid).get().await()
+        val contactUids = userDocument.toObject(ProfileData::class.java)?.contacts ?: emptyList()
+
+        // Fetch the profile data for each contact UID
+        val contacts = mutableListOf<ProfileData>()
+        for (contactUid in contactUids) {
+            val contactDocument = firebaseFirestore.collection(Constants.PROFILE_DATA).document(contactUid).get().await()
+            val contactProfile = contactDocument.toObject(ProfileData::class.java)
+            contactProfile?.let { contacts.add(it) }
+        }
+
+        return contacts
+    }
+
+    /*
+    Add a contact to the current user's list of contacts
+     */
+    override suspend fun addContact(contactUid: String): Boolean {
+        val currentUserUid = getCurrentUserID() // Implement this function to get the current user's UID
+        val userRef = firebaseFirestore.collection(Constants.PROFILE_DATA).document(currentUserUid)
+
+        return try {
+            // Add the new contact UID to the contacts list
+            userRef.update("contacts", FieldValue.arrayUnion(contactUid)).await()
+            true
+        } catch (e: Exception) {
+            // Handle any errors that occur
+            false
+        }
+    }
+
+    /*
+    Remove a contact from the current user's list of contacts
+     */
+    override suspend fun removeContact(contactUid: String): Boolean {
+        val currentUserUid = getCurrentUserID() // Implement this function to get the current user's UID
+        val userRef = firebaseFirestore.collection(Constants.PROFILE_DATA).document(currentUserUid)
+
+        return try {
+            // Remove the contact UID from the contacts list
+            userRef.update("contacts", FieldValue.arrayRemove(contactUid)).await()
+            true
+        } catch (e: Exception) {
+            // Handle any errors that occur
+            false
+        }
+    }
+
 
 
 

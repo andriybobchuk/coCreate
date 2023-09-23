@@ -39,9 +39,6 @@ fun FeedScreen(
     viewModel: FeedViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-
-    //var isLoading by remember { mutableStateOf(true) }
-
     LaunchedEffect(key1 = true) {
         viewModel.loadPosts()
         //isLoading = false

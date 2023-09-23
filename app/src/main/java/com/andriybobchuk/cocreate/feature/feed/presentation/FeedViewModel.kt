@@ -7,6 +7,7 @@ import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.andriybobchuk.cocreate.util.toEpochMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -103,20 +104,24 @@ class FeedViewModel @Inject constructor(
 }
 
 /**
- * This is a use caase for searching posts by a criteria
+ * This is a use case for searching posts by a criteria
  */
 class SearchPosts {
     fun execute(notes: List<AuthorPost>, query: String): List<AuthorPost> {
         if(query.isBlank()) {
-            return notes
+            return notes.sortedByDescending {
+                toEpochMillis(it.postBody.published)
+            }
         }
         return notes.filter {
             it.postBody.title.trim().lowercase().contains(query.lowercase()) ||
-                    it.postBody.desc.trim().lowercase().contains(query.lowercase())
+                    it.postBody.desc.trim().lowercase().contains(query.lowercase()) ||
+                    it.postBody.tags.any { tag -> tag.trim().lowercase().contains(query.lowercase()) } ||
+                    it.postAuthor.name.trim().lowercase().contains(query.lowercase()) ||
+                    it.postAuthor.city.trim().lowercase().contains(query.lowercase())
+        }.sortedByDescending {
+            toEpochMillis(it.postBody.published)
         }
-//            .sortedBy {
-//            DateTimeUtil.toEpochMillis(it.created)
-//        }
     }
 }
 

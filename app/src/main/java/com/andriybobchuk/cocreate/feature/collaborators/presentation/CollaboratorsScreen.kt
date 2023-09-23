@@ -18,30 +18,29 @@ import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.presentation.components.search_bar.SearchBar
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.cocreate.util.ccLog
+import com.andriybobchuk.cocreate.util.generateShortUserDescription
 
 @Composable
 fun MyPostsScreen(
     navController: NavController,
     viewModel: CollaboratorsViewModel = hiltViewModel(),
 ) {
-    val friendsList = viewModel.state.value
-
-    // Todo: Implement search
-    var isSearchBarActive by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(key1 = true) {
+        viewModel.getContacts()
+        viewModel.getEveryone()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        if (isSearchBarActive) {
+        if (state.isSearchActive) {
             // Search input field with icon and hint
             SearchBar(
-                searchQuery = searchQuery,
-                onSearchQueryChange = { query -> searchQuery = query },
-                onCancelSearch = {
-                    isSearchBarActive = false
-                    searchQuery = "" // Clear the search query when canceling
-                },
+                searchQuery = state.searchText,
+                onSearchQueryChange = { viewModel.onSearchTextChange(it) },
+                onCancelSearch = { viewModel.onToggleSearch() }
             )
         } else {
             Row(
@@ -61,7 +60,7 @@ fun MyPostsScreen(
                         .weight(1f),
                 )
                 IconButton(
-                    onClick = { isSearchBarActive = true },
+                    onClick = { viewModel.onToggleSearch() },
                     modifier = Modifier.padding(end = 10.dp),
                 ) {
                     Icon(
@@ -76,17 +75,20 @@ fun MyPostsScreen(
                 .fillMaxSize()
                 .background(background_gray100),
         ) {
-            items(friendsList) { friend ->
+            items(
+                items = state.contacts,
+                key = { it.uid }
+            ) { contact ->
                 Collaborator(
-                    name = friend.name,
-                    description = friend.position + " " + friend.city,
-                    imageUrl = friend.avatar,
+                    name = contact.name,
+                    description = generateShortUserDescription(contact.position, contact.city),
+                    imageUrl = contact.avatar,
                     onProfileClick = {
                         navController.navigate(
                             "detail/{user}"
                                 .replace(
                                     oldValue = "{user}",
-                                    newValue = friend.uid,
+                                    newValue = contact.uid,
                                 ),
                         )
                     },

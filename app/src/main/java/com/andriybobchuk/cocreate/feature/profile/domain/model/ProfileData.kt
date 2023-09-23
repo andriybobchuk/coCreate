@@ -11,4 +11,5 @@ data class ProfileData(
     val github: String = "",
     val website: String = "",
     val tags: List<String> = listOf(),
+    val contacts: List<String> = listOf()
 )
