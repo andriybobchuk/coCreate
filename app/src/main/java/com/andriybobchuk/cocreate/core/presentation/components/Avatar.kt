@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
@@ -53,8 +54,27 @@ fun Avatar(
     }
 }
 
-//fun getRandomColor(): Color {
-//    val colors = listOf(orange, red, green, accent, purple) // Add more colors as needed
-//    val randomIndex = Random.nextInt(colors.size)
-//    return colors[randomIndex]
-//}
+@Composable
+fun ClickableAvatar(
+    radius: Dp,
+    font: TextUnit,
+    avatarUrl: String,
+    name: String,
+    onClick: () -> Unit // Callback for the click event
+) {
+    Box(
+        modifier = Modifier
+            .size(radius)
+            .clip(CircleShape)
+            .clickable { onClick() } // Use Modifier.clickable to make it clickable
+    ) {
+        // The content of your Avatar Composable goes here
+        Avatar(
+            radius = radius,
+            font = font,
+            avatarUrl = avatarUrl,
+            name = name
+        )
+    }
+}
+

@@ -1,5 +1,9 @@
 package com.andriybobchuk.cocreate.feature.profile.presentation
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,6 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
+import com.andriybobchuk.cocreate.core.presentation.components.Avatar
+import com.andriybobchuk.cocreate.core.presentation.components.ClickableAvatar
 import com.andriybobchuk.cocreate.core.presentation.components.input_field.CcInputField
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
@@ -42,6 +48,16 @@ fun ProfileEditScreen(
     var editedGithub by remember { mutableStateOf(profileData.github) }
 
     // Add more fields as needed for links to GitHub, etc.
+
+
+    ///
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> selectedImageUri = uri }
+    )
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -91,32 +107,17 @@ fun ProfileEditScreen(
                     .shadow(elevation = 10.dp, shape = CircleShape)
             ) {
                 // Display the avatar icon which overlaps the cover and the white card
-                if (profileData.avatar != "") {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = profileData.avatar),
-                        contentDescription = "Avatar",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(90.dp)
-                            .clip(CircleShape)
-                            .align(Alignment.TopCenter)
-                    )
-                } else {
-                    Box(
-                        Modifier
-                            .size(90.dp)
-                            .clip(CircleShape)
-                            .background(purple)
-                            .align(Alignment.TopCenter),
-                    ) {
-                        Text(
-                            text = profileData.name.take(1).toUpperCase(),
-                            fontSize = 26.sp,
-                            color = Color.White,
-                            modifier = Modifier.align(Alignment.Center)
+                ClickableAvatar(
+                    radius = 90.dp,
+                    font = 26.sp,
+                    avatarUrl = selectedImageUri.toString(),
+                    name = profileData.name,
+                    onClick = {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     }
-                }
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
 
