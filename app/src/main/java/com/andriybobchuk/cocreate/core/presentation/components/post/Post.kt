@@ -141,7 +141,7 @@ fun Post(
                     .padding(vertical = 8.dp)
             ) {
                 FeedbackButton(
-                    painter = painterResource(id = R.drawable.ic_like),
+                    painter = painterResource(id = R.drawable.ic_star),
                     text = "Save",
                     onClick = {  }
                 )

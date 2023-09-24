@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
+import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.core.presentation.components.Comment
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.FeedbackButton
@@ -108,13 +109,11 @@ fun PostDetailScreen(
                         Modifier.background(white)
                         //verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(postData.postAuthor.avatar),
-                            contentDescription = "Avatar",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(41.dp)
-                                .clip(CircleShape)
+                        Avatar(
+                            radius = 41.dp,
+                            font = 16.sp,
+                            avatarUrl = postData.postAuthor.avatar,
+                            name = postData.postAuthor.name
                         )
                         Spacer(modifier = Modifier.width(11.dp))
                         Column(
@@ -132,6 +131,22 @@ fun PostDetailScreen(
                                 fontSize = 12.sp,
                                 fontFamily = poppins,
                                 color = typo_gray100,
+                            )
+                        }
+                        Button(
+                            onClick = {},
+                            colors = ButtonDefaults.buttonColors(backgroundColor = background_gray100),
+                            shape = CircleShape,
+                            elevation = ButtonDefaults.elevation(0.dp),
+                            modifier = Modifier
+                                .height(36.dp)
+                                .padding(end = 8.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_star),
+                                contentDescription = null,
+                                tint = typo_gray200,
+                                modifier = Modifier.size(16.dp)
                             )
                         }
                     }
@@ -157,27 +172,6 @@ fun PostDetailScreen(
                         sectionName = "Tags",
                         tags = postData.postBody.tags
                     )
-                    Divider(
-                        modifier = Modifier.padding(top = 10.dp),
-                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.05f),
-                        thickness = 0.4.dp
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .background(white)
-                    ) {
-                        FeedbackButton(
-                            painter = painterResource(id = R.drawable.ic_like),
-                            text = "Save",
-                            onClick = {})
-                        FeedbackButton(
-                            painter = painterResource(id = R.drawable.ic_messages),
-                            text = "Comment",
-                            onClick = {})
-                    }
                 }
             }
 

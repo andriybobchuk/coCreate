@@ -33,13 +33,15 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
+import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.cocreate.util.generateShortUserDescription
 import com.andriybobchuk.navigation.Screens
 
 enum class TabItem(val title: String) {
     TAB_1("My Posts"),
-    TAB_2("Liked Posts"),
+    TAB_2("Saved Posts"),
 }
 
 @Composable
@@ -138,9 +140,9 @@ fun ProfileScreen(
                         modifier = Modifier.align(CenterHorizontally),
                         fontWeight = FontWeight.Black, color = Color.Black, fontFamily = poppins
                     )
-                    if (profileData.city != "" && profileData.position != "") {
+                    if (profileData.city != "" || profileData.position != "") {
                         Text(
-                            text = profileData.position + ", " + profileData.city,
+                            text = generateShortUserDescription(profileData.position, profileData.city),
                             fontSize = 13.sp,
                             modifier = Modifier.align(CenterHorizontally),
                             fontWeight = FontWeight.Light,
@@ -212,32 +214,7 @@ fun ProfileScreen(
                     .shadow(elevation = 10.dp, shape = CircleShape)
             ) {
                 // Display the avatar icon which overlaps the cover and the white card
-                if (profileData.avatar != "") {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = profileData.avatar),
-                        contentDescription = "Avatar",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(avatarSize)
-                            .clip(CircleShape)
-                            .align(Alignment.TopCenter)
-                    )
-                } else {
-                    Box(
-                        Modifier
-                            .size(avatarSize)
-                            .clip(CircleShape)
-                            .background(purple)
-                            .align(TopCenter),
-                    ) {
-                        Text(
-                            text = profileData.name.take(1).toUpperCase(),
-                            fontSize = 26.sp,
-                            color = Color.White,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                }
+                Avatar(radius = avatarSize, font = 26.sp, avatarUrl = profileData.avatar, name = profileData.name)
             }
         }
         Card(
@@ -248,7 +225,10 @@ fun ProfileScreen(
         ) {
             TabRow(
                 selectedTabIndex = selectedTab.ordinal,
-                modifier = Modifier.fillMaxWidth().padding(0.dp).background(white),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp)
+                    .background(white),
                 indicator = { tabPositions ->
                     TabRowDefaults.Indicator(
                         color = accent,
