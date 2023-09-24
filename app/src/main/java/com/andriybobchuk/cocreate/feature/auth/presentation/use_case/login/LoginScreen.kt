@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.R
-import com.andriybobchuk.cocreate.feature.auth.data.data_source.Constant.SERVER_CLIENT
+import com.andriybobchuk.cocreate.feature.auth.data.data_source.AuthSecret.SERVER_CLIENT
 import com.andriybobchuk.cocreate.ui.theme.*
 import com.andriybobchuk.navigation.Screens
 import com.google.android.gms.auth.api.signin.GoogleSignIn

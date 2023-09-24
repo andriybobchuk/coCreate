@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-/app/src/main/java/com/andriybobchuk/cocreate/feature/auth/data/data_source/Constants.kt
+/app/src/main/java/com/andriybobchuk/cocreate/feature/auth/data/data_source/AuthSecret.kt
