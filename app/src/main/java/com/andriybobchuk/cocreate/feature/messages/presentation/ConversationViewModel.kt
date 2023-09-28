@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.feature.messages.domain.model.FullConversation
+import com.andriybobchuk.cocreate.feature.messages.domain.model.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,8 +41,6 @@ class ConversationViewModel @Inject constructor(
                     convoData = conversation
                 )
             }
-            println("SIZE of recipientProfileData: " + partialConversations.size)
-
             state.value = conversationsWithRecipients
         }
     }

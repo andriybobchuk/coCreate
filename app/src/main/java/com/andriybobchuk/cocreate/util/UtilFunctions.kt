@@ -1,9 +1,11 @@
 package com.andriybobchuk.cocreate.util
 
 import android.os.Build
+import android.text.format.DateUtils
 import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -29,6 +31,27 @@ fun toEpochMillis(dateTimeString: String): Long {
         0L
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatMessageDateTime(dateTime: LocalDateTime): String {
+    val currentDateTime = LocalDateTime.now()
+    val diffMillis = currentDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
+            dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+    return when {
+        DateUtils.isToday(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()) ->
+            DateUtils.getRelativeTimeSpanString(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                currentDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                DateUtils.MINUTE_IN_MILLIS).toString()
+
+        DateUtils.isToday(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + DateUtils.DAY_IN_MILLIS) ->
+            "Yesterday, ${SimpleDateFormat("HH:mm").format(dateTime)}"
+
+        else ->
+            SimpleDateFormat("HH:mm dd.MM.yy").format(dateTime)
+    }
+}
+
 
 fun generateShortUserDescription(position: String?, city: String?): String {
     fun capitalizeFirstLetter(str: String?): String {

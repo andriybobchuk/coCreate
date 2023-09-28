@@ -5,10 +5,11 @@ import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.messages.domain.model.Conversation
 import com.andriybobchuk.cocreate.feature.messages.domain.model.Message
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.google.firebase.firestore.CollectionReference
 
 interface CoreRepository {
 
-    // Read
+    fun getMessagesCollection(): CollectionReference
     fun getCurrentUserID(): String
     suspend fun getCurrentUserFriends(): List<String>
     suspend fun getRequestorUids(): List<String>

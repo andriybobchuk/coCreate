@@ -10,6 +10,7 @@ import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.ccLog
 import com.andriybobchuk.cocreate.util.getCurrentDateTime
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -431,8 +432,6 @@ class CoreRepositoryImpl @Inject constructor(
 
     override suspend fun getConversationsByUserId(userId: String): List<Conversation> {
         return try {
-            ccLog.d("CoreRepositoryImpl", "userId = $userId")
-
             val conversationsCollection = firebaseFirestore.collection(Constants.CONVERSATION)
                 .whereArrayContains("participants", userId)
                 .get()
@@ -694,6 +693,10 @@ class CoreRepositoryImpl @Inject constructor(
 //            emptyList()
 //        }
 //    }
+
+    override fun getMessagesCollection(): CollectionReference {
+        return firebaseFirestore.collection(Constants.MESSAGE)
+    }
 
     override suspend fun addComment(postUid: String, desc: String): Boolean {
         try {

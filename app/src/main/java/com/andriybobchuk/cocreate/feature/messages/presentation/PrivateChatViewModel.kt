@@ -10,7 +10,12 @@ import com.andriybobchuk.cocreate.feature.messages.domain.model.FullPrivateChat
 import com.andriybobchuk.cocreate.feature.messages.domain.model.Message
 import com.andriybobchuk.cocreate.util.ccLog
 import com.andriybobchuk.cocreate.util.getCurrentDateTime
+import com.andriybobchuk.cocreate.util.toEpochMillis
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,12 +29,16 @@ class PrivateChatViewModel @Inject constructor(
     fun getPrivateChatDataByChatId(id: String) {
         ccLog.d("PrivateChatViewModel", "ChatId = $id")
         viewModelScope.launch {
-            val chatData = repository.getConversationById(id)
+            val chatData = repository.getConversationById(id) // participants' IDs and the ID of last message
             val currentUserUid = repository.getCurrentUserID()
+
+
             val otherParticipantUid = chatData.participants.find { it != currentUserUid } ?: return@launch
-            ccLog.d("PrivateChatViewModel", "otherParticipantUid = $otherParticipantUid")
+
             val recipientProfileData = repository.getProfileDataById(otherParticipantUid)
-            ccLog.d("PrivateChatViewModel", "recipientProfileData = $recipientProfileData")
+
+
+
             val messages = repository.getMessagesForChat(id)
             ccLog.d("PrivateChatViewModel", "messages.size = ${messages.size}")
             val fullPrivateChat = FullPrivateChat(chatData, recipientProfileData, messages)
@@ -47,5 +56,43 @@ class PrivateChatViewModel @Inject constructor(
                 getCurrentDateTime()
             )
         }
+    }
+
+    fun subscribeToRealtimeUpdates(chatId: String) {
+        val currentUserUid = repository.getCurrentUserID()
+
+        repository.getMessagesCollection()
+            .whereEqualTo("convoId", chatId)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            firebaseFirestoreException?.let {
+                return@addSnapshotListener
+            }
+            querySnapshot?.let {
+                val messages = mutableListOf<Message>()
+                for(messageDocument in it) {
+                    val message = messageDocument.toObject(Message::class.java)
+                    message.isMyMessage = (message.senderId == currentUserUid)
+                    messages.add(message)
+                }
+
+                viewModelScope.launch {
+                    // participants' IDs and the ID of last message
+                    val chatData = repository.getConversationById(chatId)
+
+                    val otherParticipantUid = chatData.participants.find { it != currentUserUid } ?: return@launch
+                    val recipientProfileData = repository.getProfileDataById(otherParticipantUid)
+
+                    val fullPrivateChat = FullPrivateChat(chatData, recipientProfileData, messages)
+
+                    state.value = fullPrivateChat.sortByMessageTime()
+                }
+            }
+        }
+    }
+
+    // Extension function to sort FullPrivateChat by message time
+    private fun FullPrivateChat.sortByMessageTime(): FullPrivateChat {
+        val sortedMessages = messages.sortedBy { toEpochMillis(it.time) }
+        return copy(messages = sortedMessages)
     }
 }
