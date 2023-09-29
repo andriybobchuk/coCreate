@@ -74,6 +74,20 @@ class ConversationViewModel @Inject constructor(
 //        }
 //    }
 
+    fun markConversationAsRead(conversationId: String) {
+        viewModelScope.launch {
+            repository.markConversationAsRead(conversationId)
+        }
+    }
+
+
+    fun markConversationUnread(conversationId: String) {
+        viewModelScope.launch {
+            repository.markConversationUnread(conversationId)
+        }
+    }
+
+
 
 
 

@@ -60,4 +60,8 @@ interface CoreRepository {
     suspend fun getContacts(): List<ProfileData>
     suspend fun addContact(contactUid: String): Boolean
     suspend fun removeContact(contactUid: String): Boolean
+
+
+    suspend fun markConversationAsRead(conversationId: String)
+    suspend fun markConversationUnread(conversationId: String)
 }

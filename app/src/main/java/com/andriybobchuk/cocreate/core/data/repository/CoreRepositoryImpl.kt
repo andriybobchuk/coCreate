@@ -788,6 +788,36 @@ class CoreRepositoryImpl @Inject constructor(
 
 
 
+    override suspend fun markConversationAsRead(conversationId: String) {
+        // Assuming you have a "conversations" collection in Firestore
+        val conversationRef = firebaseFirestore.collection(Constants.CONVERSATION).document(conversationId)
+
+        // Update the isUnread field to false
+        conversationRef.update("isRead", true)
+            .addOnSuccessListener {
+                // Successfully marked as read
+            }
+            .addOnFailureListener { e ->
+                // Handle the error
+            }
+    }
+
+    override suspend fun markConversationUnread(conversationId: String) {
+        // Assuming you have a "conversations" collection in Firestore
+        val conversationRef = firebaseFirestore.collection(Constants.CONVERSATION).document(conversationId)
+
+        // Update the isUnread field to true
+        conversationRef.update("isRead", false)
+            .addOnSuccessListener {
+                // Successfully marked as unread
+            }
+            .addOnFailureListener { e ->
+                // Handle the error
+            }
+    }
+
+
+
 
 
 }

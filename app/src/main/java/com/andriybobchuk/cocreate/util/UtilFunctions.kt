@@ -32,26 +32,33 @@ fun toEpochMillis(dateTimeString: String): Long {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun formatMessageDateTime(dateTime: LocalDateTime): String {
-    val currentDateTime = LocalDateTime.now()
-    val diffMillis = currentDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
-            dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+fun formatShortTimeAgo(timestamp: String): String {
+    val formatter = SimpleDateFormat("MMM d, ''yy 'at' h:mm a", Locale.ENGLISH)
+    val date = formatter.parse(timestamp)
+    if(date == null) {
+        ccLog.e("UtilFunctions", "formatShortTimeAgo() failed to parse the string timestamp")
+    }
+    val currentTime = Calendar.getInstance().time
+    val timeDifference = currentTime.time - date.time
+
+    val seconds = timeDifference / 1000
+    val minutes = seconds / 60
+    val hours = minutes / 60
+    val days = hours / 24
+    val weeks = days / 7
+    val months = days / 30
+    val years = days / 365
 
     return when {
-        DateUtils.isToday(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()) ->
-            DateUtils.getRelativeTimeSpanString(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                currentDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                DateUtils.MINUTE_IN_MILLIS).toString()
-
-        DateUtils.isToday(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + DateUtils.DAY_IN_MILLIS) ->
-            "Yesterday, ${SimpleDateFormat("HH:mm").format(dateTime)}"
-
-        else ->
-            SimpleDateFormat("HH:mm dd.MM.yy").format(dateTime)
+        seconds < 60 -> "${seconds}m"
+        minutes < 60 -> "${minutes}m"
+        hours < 24 -> "${hours}h"
+        days < 7 -> "${days}d"
+        weeks < 4 -> "${weeks}w"
+        months < 12 -> "${months}mo"
+        else -> "${years}y"
     }
 }
-
 
 fun generateShortUserDescription(position: String?, city: String?): String {
     fun capitalizeFirstLetter(str: String?): String {

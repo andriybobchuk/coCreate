@@ -4,4 +4,5 @@ data class Conversation(
     val uid: String = "",
     val participants: List<String> = listOf(),
     val lastMessageId: String = "",
+    val isRead: Boolean = false,
 )

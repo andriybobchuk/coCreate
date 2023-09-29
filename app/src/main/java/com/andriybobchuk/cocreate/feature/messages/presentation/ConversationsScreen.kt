@@ -22,8 +22,9 @@ import com.andriybobchuk.cocreate.ui.theme.background_gray100
 import com.andriybobchuk.cocreate.ui.theme.poppins
 import com.andriybobchuk.cocreate.ui.theme.title_black
 import com.andriybobchuk.cocreate.ui.theme.white
+import com.andriybobchuk.cocreate.util.formatShortTimeAgo
 
-val MESSAGE_TRIM_LENGTH = 30
+val MESSAGE_TRIM_LENGTH = 29
 
 @Composable
 fun ConversationsScreen(
@@ -76,7 +77,6 @@ fun ConversationsScreen(
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,8 +95,8 @@ fun ConversationsScreen(
                         avatar = convo.recipientData.avatar,
                         name = convo.recipientData.name,
                         lastMessage = if (convo.lastMessage.content.length > MESSAGE_TRIM_LENGTH) convo.lastMessage.content.substring(0, minOf(MESSAGE_TRIM_LENGTH, convo.lastMessage.content.length)) + "..." else convo.lastMessage.content,
-                        time = convo.lastMessage.time,
-                        isRead = false,
+                        time = formatShortTimeAgo(convo.lastMessage.time),
+                        isRead = convo.convoData.isRead,
                         onClick = {
                             navController.navigate(
                                 "privateChat/{chatId}"
@@ -105,6 +105,7 @@ fun ConversationsScreen(
                                         newValue = convo.convoData.uid
                                     )
                             )
+                            viewModel.markConversationAsRead(convo.convoData.uid)
                         }
                     )
                 }

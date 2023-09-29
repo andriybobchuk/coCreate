@@ -26,27 +26,6 @@ class PrivateChatViewModel @Inject constructor(
 
     var state = mutableStateOf(FullPrivateChat())
 
-    fun getPrivateChatDataByChatId(id: String) {
-        ccLog.d("PrivateChatViewModel", "ChatId = $id")
-        viewModelScope.launch {
-            val chatData = repository.getConversationById(id) // participants' IDs and the ID of last message
-            val currentUserUid = repository.getCurrentUserID()
-
-
-            val otherParticipantUid = chatData.participants.find { it != currentUserUid } ?: return@launch
-
-            val recipientProfileData = repository.getProfileDataById(otherParticipantUid)
-
-
-
-            val messages = repository.getMessagesForChat(id)
-            ccLog.d("PrivateChatViewModel", "messages.size = ${messages.size}")
-            val fullPrivateChat = FullPrivateChat(chatData, recipientProfileData, messages)
-
-            state.value = fullPrivateChat
-        }
-    }
-
     fun send(convoId: String, content: String) {
         viewModelScope.launch {
             repository.addMessageToConversation(
