@@ -3,10 +3,12 @@ package com.andriybobchuk.cocreate.feature.profile.presentation
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepository
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.andriybobchuk.navigation.Screens
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -50,6 +52,26 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             postsState.value = postsWithAuthorInfo
+        }
+    }
+
+    // Todo: Boilerplate in FeedViewModel
+    fun navigateToProfileOrDetail(
+        navController: NavController,
+        userIdToNavigate: String,
+    ) {
+        if (coreRepository.getCurrentUserID() == userIdToNavigate) {
+            // Navigate to the user's own profile
+            navController.navigate(Screens.ProfileScreen.route)
+        } else {
+            // Navigate to the detail screen for another user
+            navController.navigate(
+                "detail/{user}"
+                    .replace(
+                        oldValue = "{user}",
+                        newValue = userIdToNavigate,
+                    ),
+            )
         }
     }
 

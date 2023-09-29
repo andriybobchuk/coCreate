@@ -303,6 +303,9 @@ fun ProfileScreen(
                                     )
                             )
                         }
+                    },
+                    onProfileClick = {
+                        viewModel.navigateToProfileOrDetail(navController, post.postAuthor.uid)
                     }
                 )
             }

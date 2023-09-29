@@ -62,6 +62,23 @@ interface CoreRepository {
     suspend fun removeContact(contactUid: String): Boolean
 
 
-    suspend fun markConversationAsRead(conversationId: String)
-    suspend fun markConversationUnread(conversationId: String)
+//    suspend fun markConversationAsRead(conversationId: String)
+//    suspend fun markConversationUnread(conversationId: String)
+    suspend fun createNewConversation(recipientId: String): String
+
+    suspend fun findExistingConversationWithUser(userId: String): String?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

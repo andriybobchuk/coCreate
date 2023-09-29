@@ -3,11 +3,13 @@ package com.andriybobchuk.cocreate.feature.feed.presentation
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
+import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Post
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.toEpochMillis
+import com.andriybobchuk.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -28,14 +30,12 @@ class FeedViewModel @Inject constructor(
     private val posts = savedStateHandle.getStateFlow("posts", emptyList<AuthorPost>())
     private val searchText = savedStateHandle.getStateFlow("searchText", "")
     private val isSearchActive = savedStateHandle.getStateFlow("isSearchActive", false)
-    private val isLoading = savedStateHandle.getStateFlow("isLoading", true)
 
-    val state = combine(posts, searchText, isSearchActive, isLoading) { posts, searchText, isSearchActive, isLoading ->
+    val state = combine(posts, searchText, isSearchActive) { posts, searchText, isSearchActive ->
         FeedState(
             posts = searchPosts.execute(posts, searchText),
             searchText = searchText,
             isSearchActive = isSearchActive,
-            isLoading = isLoading
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedState())
 
@@ -65,6 +65,25 @@ class FeedViewModel @Inject constructor(
         savedStateHandle["isSearchActive"] = !isSearchActive.value
         if(!isSearchActive.value) {
             savedStateHandle["searchText"] = ""
+        }
+    }
+
+    fun navigateToProfileOrDetail(
+        navController: NavController,
+        userIdToNavigate: String,
+    ) {
+        if (repository.getCurrentUserID() == userIdToNavigate) {
+            // Navigate to the user's own profile
+            navController.navigate(Screens.ProfileScreen.route)
+        } else {
+            // Navigate to the detail screen for another user
+            navController.navigate(
+                "detail/{user}"
+                    .replace(
+                        oldValue = "{user}",
+                        newValue = userIdToNavigate,
+                    ),
+            )
         }
     }
 
@@ -101,6 +120,7 @@ class FeedViewModel @Inject constructor(
 //    fun likePost(postId: String) {
 //        repository.likePost(postId)
 //    }
+
 }
 
 /**
@@ -129,5 +149,4 @@ data class FeedState(
     val posts: List<AuthorPost> = emptyList(),
     val searchText: String = "",
     val isSearchActive: Boolean = false,
-    val isLoading: Boolean = true,
 )

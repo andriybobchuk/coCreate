@@ -50,7 +50,7 @@ fun formatShortTimeAgo(timestamp: String): String {
     val years = days / 365
 
     return when {
-        seconds < 60 -> "${seconds}m"
+        seconds < 60 -> "${seconds}s"
         minutes < 60 -> "${minutes}m"
         hours < 24 -> "${hours}h"
         days < 7 -> "${days}d"

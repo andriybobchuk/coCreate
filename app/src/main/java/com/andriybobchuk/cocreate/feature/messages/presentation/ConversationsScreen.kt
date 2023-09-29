@@ -31,23 +31,25 @@ fun ConversationsScreen(
     navController: NavController,
     viewModel: ConversationViewModel = hiltViewModel(),
 ) {
-    val conversations = viewModel.state.value
+//    val conversations = viewModel.state.value
+//
+//    var isSearchBarActive by remember { mutableStateOf(false) }
+//    var searchQuery by remember { mutableStateOf("") }
 
-    var isSearchBarActive by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(key1 = true) {
+        viewModel.loadItems()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (isSearchBarActive) {
+        if (state.isSearchActive) {
             // Search input field with icon and hint
             SearchBar(
-                searchQuery = searchQuery,
-                onSearchQueryChange = { query -> searchQuery = query },
-                onCancelSearch = {
-                    isSearchBarActive = false
-                    searchQuery = "" // Clear the search query when canceling
-                }
+                searchQuery = state.searchText,
+                onSearchQueryChange = { viewModel.onSearchTextChange(it) },
+                onCancelSearch = { viewModel.onToggleSearch() }
             )
         } else {
             Row(
@@ -67,7 +69,7 @@ fun ConversationsScreen(
                         .weight(1f)
                 )
                 IconButton(
-                    onClick = { isSearchBarActive = true },
+                    onClick = { viewModel.onToggleSearch() },
                     modifier = Modifier.padding(end = 10.dp),
                 ) {
                     Icon(
@@ -89,7 +91,9 @@ fun ConversationsScreen(
                     .fillMaxSize()
                     .background(background_gray100)
             ) {
-                items(conversations) { convo ->
+                items(
+                    items = state.items
+                ) {  convo ->
                     ConversationItem(
                         navController = navController,
                         avatar = convo.recipientData.avatar,
@@ -105,7 +109,7 @@ fun ConversationsScreen(
                                         newValue = convo.convoData.uid
                                     )
                             )
-                            viewModel.markConversationAsRead(convo.convoData.uid)
+                            //viewModel.markConversationAsRead(convo.convoData.uid)
                         }
                     )
                 }

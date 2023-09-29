@@ -68,7 +68,7 @@ fun Collaborator(name: String, description: String, imageUrl: String, onProfileC
                     .width(28.dp)
                     .height(28.dp)
                     .padding(end = 10.dp),
-                onClick = { /* send message */ }
+                onClick = { onMessageClick() }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_messages),

@@ -83,17 +83,8 @@ fun MyPostsScreen(
                     name = contact.name,
                     description = generateShortUserDescription(contact.position, contact.city),
                     imageUrl = contact.avatar,
-                    onProfileClick = {
-                        navController.navigate(
-                            "detail/{user}"
-                                .replace(
-                                    oldValue = "{user}",
-                                    newValue = contact.uid,
-                                ),
-                        )
-                    },
-                    onMessageClick = {
-                    },
+                    onProfileClick = { viewModel.navigateToProfileOrDetail(navController, contact.uid) },
+                    onMessageClick = { viewModel.sendOrOpenExistingConversation(contact.uid, navController) },
                 )
             }
         }

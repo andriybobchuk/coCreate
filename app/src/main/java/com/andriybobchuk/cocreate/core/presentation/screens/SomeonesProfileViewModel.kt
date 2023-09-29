@@ -3,6 +3,7 @@ package com.andriybobchuk.cocreate.core.presentation.screens
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepository
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
@@ -36,6 +37,21 @@ class SomeonesProfileViewModel @Inject constructor(
     fun removeContact() {
         viewModelScope.launch {
             repository.removeContact(state.value.uid)
+        }
+    }
+
+    fun sendOrOpenExistingConversation(userId: String, navController: NavController) {
+        viewModelScope.launch {
+            val existingConversationId = repository.findExistingConversationWithUser(userId)
+
+            if (existingConversationId != null) {
+                // An existing conversation was found, navigate to it
+                navController.navigate("privateChat/$existingConversationId")
+            } else {
+                // No existing conversation found, create a new one
+                val newConversationId = repository.createNewConversation(userId)
+                navController.navigate("privateChat/$newConversationId")
+            }
         }
     }
 }

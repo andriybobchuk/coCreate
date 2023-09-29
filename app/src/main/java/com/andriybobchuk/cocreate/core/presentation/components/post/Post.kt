@@ -1,38 +1,24 @@
 package com.andriybobchuk.cocreate.core.presentation.components.post
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.Constants
 import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.FeedbackButton
 import com.andriybobchuk.cocreate.core.presentation.components.post.components.TagSection
 import com.andriybobchuk.cocreate.ui.theme.*
-import com.andriybobchuk.navigation.Screens
 
 const val POST_TRIM_LENGTH = 300;
 @Composable
@@ -48,6 +34,7 @@ fun Post(
     onCommentClick: () -> Unit,
     onReadMoreClick: () -> Unit,
     onEditClick: () -> Unit,
+    onProfileClick: () -> Unit,
 ) {
    // val isLikedState = rememberUpdatedState(isLiked)
 
@@ -62,9 +49,7 @@ fun Post(
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 6.dp)
         ) {
             Row(
-                modifier = Modifier.clickable {
-
-                }
+                modifier = Modifier.clickable { onProfileClick() }
                 //verticalAlignment = Alignment.CenterVertically
             ) {
                 Avatar(
@@ -148,7 +133,7 @@ fun Post(
                 FeedbackButton(
                     painter = painterResource(id = R.drawable.ic_messages),
                     text = "Comment",
-                    onClick = {  }
+                    onClick = { onCommentClick() }
                 )
 
                 // Read More button

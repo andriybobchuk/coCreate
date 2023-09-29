@@ -788,32 +788,88 @@ class CoreRepositoryImpl @Inject constructor(
 
 
 
-    override suspend fun markConversationAsRead(conversationId: String) {
-        // Assuming you have a "conversations" collection in Firestore
-        val conversationRef = firebaseFirestore.collection(Constants.CONVERSATION).document(conversationId)
+//    override suspend fun markConversationAsRead(conversationId: String) {
+//        // Assuming you have a "conversations" collection in Firestore
+//        val conversationRef = firebaseFirestore.collection(Constants.CONVERSATION).document(conversationId)
+//
+//        // Update the isUnread field to false
+//        conversationRef.update("isRead", true)
+//            .addOnSuccessListener {
+//                // Successfully marked as read
+//            }
+//            .addOnFailureListener { e ->
+//                // Handle the error
+//            }
+//    }
+//
+//    override suspend fun markConversationUnread(conversationId: String) {
+//        // Assuming you have a "conversations" collection in Firestore
+//        val conversationRef = firebaseFirestore.collection(Constants.CONVERSATION).document(conversationId)
+//
+//        // Update the isUnread field to true
+//        conversationRef.update("isRead", false)
+//            .addOnSuccessListener {
+//                // Successfully marked as unread
+//            }
+//            .addOnFailureListener { e ->
+//                // Handle the error
+//            }
+//    }
 
-        // Update the isUnread field to false
-        conversationRef.update("isRead", true)
-            .addOnSuccessListener {
-                // Successfully marked as read
-            }
-            .addOnFailureListener { e ->
-                // Handle the error
-            }
+    override suspend fun createNewConversation(recipientId: String): String {
+        try {
+            val participants = listOf(recipientId, getCurrentUserID())
+            val conversation = hashMapOf(
+                "participants" to participants,
+                "lastMessageId" to "", // Initially, there's no last message
+                "isRead" to false // Set to false for a new, unread conversation
+            )
+
+            // Add the conversation document to Firestore
+            val documentReference = firebaseFirestore
+                .collection(Constants.CONVERSATION)
+                .add(conversation)
+                .await() // Wait for the result
+
+            // Extract the generated conversationId from the document reference
+            val conversationId = documentReference.id
+
+            // Update the conversation document with its UID
+            firebaseFirestore
+                .collection(Constants.CONVERSATION)
+                .document(conversationId)
+                .update("uid", conversationId)
+                .await()
+
+            return conversationId
+        } catch (e: Exception) {
+            // Handle exceptions here
+            // You can show an error message to the user
+            return "" // Return an empty string to indicate failure
+        }
     }
 
-    override suspend fun markConversationUnread(conversationId: String) {
-        // Assuming you have a "conversations" collection in Firestore
-        val conversationRef = firebaseFirestore.collection(Constants.CONVERSATION).document(conversationId)
+    override suspend fun findExistingConversationWithUser(userId: String): String? {
+        val currentUserUid = getCurrentUserID()
 
-        // Update the isUnread field to true
-        conversationRef.update("isRead", false)
-            .addOnSuccessListener {
-                // Successfully marked as unread
+        // Query conversations where the first participant is the current user
+        val query = firebaseFirestore
+            .collection(Constants.CONVERSATION)
+            .whereArrayContains("participants", currentUserUid)
+
+        val result = query.get().await()
+
+        for (document in result.documents) {
+            val participants = document.get("participants") as? List<String>
+            val lastMessageId = document.getString("lastMessageId") ?: ""
+
+            // Check if the conversation contains the other user
+            if (participants != null && participants.contains(userId) && lastMessageId.isNotEmpty()) {
+                return document.id
             }
-            .addOnFailureListener { e ->
-                // Handle the error
-            }
+        }
+
+        return null // No existing conversation found
     }
 
 

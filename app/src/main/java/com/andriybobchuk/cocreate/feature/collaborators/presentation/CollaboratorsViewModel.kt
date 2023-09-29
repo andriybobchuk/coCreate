@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Person
@@ -14,6 +15,7 @@ import com.andriybobchuk.cocreate.feature.feed.presentation.SearchPosts
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.ccLog
 import com.andriybobchuk.cocreate.util.toEpochMillis
+import com.andriybobchuk.navigation.Screens
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -80,6 +82,41 @@ class CollaboratorsViewModel @Inject constructor(
         savedStateHandle["isSearchActive"] = !isSearchActive.value
         if(!isSearchActive.value) {
             savedStateHandle["searchText"] = ""
+        }
+    }
+
+    fun sendOrOpenExistingConversation(userId: String, navController: NavController) {
+        viewModelScope.launch {
+            val existingConversationId = repository.findExistingConversationWithUser(userId)
+
+            if (existingConversationId != null) {
+                // An existing conversation was found, navigate to it
+                navController.navigate("privateChat/$existingConversationId")
+            } else {
+                // No existing conversation found, create a new one
+                val newConversationId = repository.createNewConversation(userId)
+                navController.navigate("privateChat/$newConversationId")
+            }
+        }
+    }
+
+    // Todo: Boilerplate in FeedViewModel
+    fun navigateToProfileOrDetail(
+        navController: NavController,
+        userIdToNavigate: String,
+    ) {
+        if (repository.getCurrentUserID() == userIdToNavigate) {
+            // Navigate to the user's own profile
+            navController.navigate(Screens.ProfileScreen.route)
+        } else {
+            // Navigate to the detail screen for another user
+            navController.navigate(
+                "detail/{user}"
+                    .replace(
+                        oldValue = "{user}",
+                        newValue = userIdToNavigate,
+                    ),
+            )
         }
     }
 }

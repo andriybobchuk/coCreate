@@ -105,7 +105,7 @@ fun FeedScreen(
             ) { post ->
 
                 ShimmerListItem(
-                    isLoading = state.isLoading,
+                    isLoading = false,
                     contentAfterLoading = {
                         var isLiked by remember { mutableStateOf(post.postBody.isLiked) }
                         var likes by remember { mutableStateOf(post.postBody.likes) }
@@ -155,6 +155,9 @@ fun FeedScreen(
                                             )
                                     )
                                 }
+                            },
+                            onProfileClick = {
+                                viewModel.navigateToProfileOrDetail(navController, post.postAuthor.uid)
                             }
                         )
                     },

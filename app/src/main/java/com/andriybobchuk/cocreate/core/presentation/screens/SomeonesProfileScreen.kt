@@ -262,7 +262,7 @@ fun SomeonesProfileScreen(
                                         .padding(vertical = 8.dp, horizontal = 5.dp)
                                 ) {
                                     Button(
-                                        onClick = { navController.navigate(Screens.AddPostScreen.route) },
+                                        onClick = { viewModel.sendOrOpenExistingConversation(profileData.uid, navController) },
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .weight(1.0F)
