@@ -4,10 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorComment
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
+import com.andriybobchuk.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -72,6 +74,26 @@ class PostDetailViewModel @Inject constructor(
     fun removeComment(id: String) {
         viewModelScope.launch {
             repository.removeComment(id)
+        }
+    }
+
+    // Todo: Boilerplate in FeedViewModel
+    fun navigateToProfileOrDetail(
+        navController: NavController,
+        userIdToNavigate: String,
+    ) {
+        if (repository.getCurrentUserID() == userIdToNavigate) {
+            // Navigate to the user's own profile
+            navController.navigate(Screens.ProfileScreen.route)
+        } else {
+            // Navigate to the detail screen for another user
+            navController.navigate(
+                "detail/{user}"
+                    .replace(
+                        oldValue = "{user}",
+                        newValue = userIdToNavigate,
+                    ),
+            )
         }
     }
 }

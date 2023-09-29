@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,8 +27,10 @@ fun Comment(
     timestamp: String,
     commentText: String,
     modifier: Modifier = Modifier,
-    onProfileClick:() -> Unit
+    onProfileClick:() -> Unit,
 ) {
+    var isClicked by remember { mutableStateOf(false) }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -58,13 +60,13 @@ fun Comment(
                     fontSize = 13.sp,
                     fontFamily = poppins,
                 )
-                Spacer(modifier = Modifier.width(9.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 // Timestamp in normal
                 Text(
-                    text = timestamp,
+                    text = "on " + timestamp,
                     color = typo_gray100,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     fontFamily = poppins,
                 )
             }

@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.andriybobchuk.cocreate.R
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
+import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.presentation.components.Avatar
 import com.andriybobchuk.cocreate.core.presentation.components.Comment
 import com.andriybobchuk.cocreate.core.presentation.components.post.Post
@@ -33,6 +34,7 @@ import com.andriybobchuk.cocreate.core.presentation.components.post.components.T
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.feature.profile.presentation.ProfileViewModel
 import com.andriybobchuk.cocreate.ui.theme.*
+import com.andriybobchuk.cocreate.util.toEpochMillis
 import com.andriybobchuk.navigation.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -64,175 +66,183 @@ fun PostDetailScreen(
             .background(background_gray100)
             .fillMaxSize()
     ) {
-        // Header
-        Row(
+        Header(navController)
+        LazyColumn(
             modifier = Modifier
-                .height(50.dp)
-                .background(white),
-            verticalAlignment = Alignment.CenterVertically
+                .weight(1f)
+                .fillMaxSize()
+                .background(background_gray100)
+               // .padding(vertical = 10.dp)
         ) {
-            IconButton(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.padding(start = 10.dp),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow),
-                    contentDescription = "Back"
+            item {
+                PostBody(postData)
+            }
+            items(state.comments.sortedBy { toEpochMillis(it.body.published) }) { comment ->
+                Comment(
+                    imageUrl = comment.authorData.avatar,
+                    username = comment.authorData.name,
+                    timestamp = comment.body.published,
+                    commentText = comment.body.desc,
+                    onProfileClick = {
+                        viewModel.navigateToProfileOrDetail(navController, comment.authorData.uid)
+                    }
                 )
             }
-            Text(
-                text = "Details",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Black,
-                color = title_black,
-                fontFamily = poppins,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .weight(1f)
+        }
+        InputField(viewModel, id)
+    }
+}
+
+@Composable
+fun Header(navController: NavController) {
+    Row(
+        modifier = Modifier
+            .height(50.dp)
+            .background(white),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.padding(start = 10.dp),
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow),
+                contentDescription = "Back"
             )
         }
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Box(
-                Modifier
-                    .background(white)
-            ) {
-                // Post
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(start = 16.dp, end = 16.dp, top = (0 + 5).dp, bottom = 6.dp)
-                        .background(white),
-                    //horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row(
-                        Modifier.background(white)
-                        //verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Avatar(
-                            radius = 41.dp,
-                            font = 16.sp,
-                            avatarUrl = postData.postAuthor.avatar,
-                            name = postData.postAuthor.name
-                        )
-                        Spacer(modifier = Modifier.width(11.dp))
-                        Column(
-                            modifier = Modifier
-                                .wrapContentHeight()
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = postData.postAuthor.name,
-                                fontSize = 14.sp,
-                                fontFamily = poppins,
-                            )
-                            Text(
-                                text = postData.postBody.published,
-                                fontSize = 12.sp,
-                                fontFamily = poppins,
-                                color = typo_gray100,
-                            )
-                        }
-                        Button(
-                            onClick = {},
-                            colors = ButtonDefaults.buttonColors(backgroundColor = background_gray100),
-                            shape = CircleShape,
-                            elevation = ButtonDefaults.elevation(0.dp),
-                            modifier = Modifier
-                                .height(36.dp)
-                                .padding(end = 8.dp),
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_star),
-                                contentDescription = null,
-                                tint = typo_gray200,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = postData.postBody.title,
-                        fontSize = 15.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = postData.postBody.desc,
-                        fontSize = 14.sp,
-                        fontFamily = poppins,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    TagSection(
-                        sectionName = "Tags",
-                        tags = postData.postBody.tags
-                    )
-                }
-            }
+        Text(
+            text = "Details",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Black,
+            color = title_black,
+            fontFamily = poppins,
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .weight(1f)
+        )
+    }
+}
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(background_gray100)
-                    .padding(vertical = 10.dp)
-            ) {
-                state.comments.forEach { comment ->
-                    Comment(
-                        imageUrl = comment.authorData.avatar,
-                        username = comment.authorData.name,
-                        timestamp = comment.body.published,
-                        commentText = comment.body.desc,
-                        onProfileClick = {
-                            navController.navigate(
-                                "detail/{user}"
-                                    .replace(
-                                        oldValue = "{user}",
-                                        newValue = comment.authorData.uid
-                                    )
-                            )
-                        }
-                    )
-                }
-            }
-        }
-        var commentMessage by remember { mutableStateOf("") }
-        Spacer(modifier = Modifier.weight(1f))
-        Row(
+@Composable
+fun PostBody(postData: AuthorPost) {
+    Box(
+        Modifier
+            .background(white)
+    ) {
+        // Post
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(white)
-                .padding(vertical = 6.dp, horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(start = 16.dp, end = 16.dp, top = (0 + 5).dp, bottom = 6.dp)
+                .background(white),
+            //horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BasicTextField(
-                value = commentMessage,
-                onValueChange = {
-                    commentMessage = it
-                },
-                textStyle = TextStyle(color = title_black, fontFamily = poppins),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-                    .border(1.dp, background_gray200, RoundedCornerShape(16.dp))
-                    .padding(8.dp)
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.ic_send),
-                contentDescription = "Send",
-                tint = accent,
-                modifier = Modifier.clickable {
-                        if (commentMessage.isNotBlank()) {
-                            viewModel.addComment(postData.postBody.uid, commentMessage)
-                            commentMessage = ""
-                        }
+            Row(
+                Modifier.background(white)
+                //verticalAlignment = Alignment.CenterVertically
+            ) {
+                Avatar(
+                    radius = 41.dp,
+                    font = 16.sp,
+                    avatarUrl = postData.postAuthor.avatar,
+                    name = postData.postAuthor.name
+                )
+                Spacer(modifier = Modifier.width(11.dp))
+                Column(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = postData.postAuthor.name,
+                        fontSize = 14.sp,
+                        fontFamily = poppins,
+                    )
+                    Text(
+                        text = postData.postBody.published,
+                        fontSize = 12.sp,
+                        fontFamily = poppins,
+                        color = typo_gray100,
+                    )
                 }
+                Button(
+                    onClick = {},
+                    colors = ButtonDefaults.buttonColors(backgroundColor = background_gray100),
+                    shape = CircleShape,
+                    elevation = ButtonDefaults.elevation(0.dp),
+                    modifier = Modifier
+                        .height(36.dp)
+                        .padding(end = 8.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_star),
+                        contentDescription = null,
+                        tint = typo_gray200,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = postData.postBody.title,
+                fontSize = 15.sp,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = postData.postBody.desc,
+                fontSize = 14.sp,
+                fontFamily = poppins,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            TagSection(
+                sectionName = "Tags",
+                tags = postData.postBody.tags
             )
         }
+    }
+}
+
+@Composable
+fun InputField(viewModel: PostDetailViewModel, postUid: String) {
+    val commentMessageState = remember { mutableStateOf("") }
+    //Spacer(modifier = Modifier.weight(1f))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        BasicTextField(
+            value = commentMessageState.value,
+            onValueChange = { newText -> commentMessageState.value = newText },
+            textStyle = TextStyle(color = title_black, fontFamily = poppins),
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp)
+                .border(1.dp, background_gray200, RoundedCornerShape(16.dp))
+                .padding(8.dp)
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.ic_send),
+            contentDescription = "Send",
+            tint = title_black,
+            modifier = Modifier.clickable {
+                val messageText = commentMessageState.value
+                if (messageText.isNotBlank()) {
+                    viewModel.addComment(
+                        postUid = postUid,
+                        desc = commentMessageState.value
+                    )
+                    commentMessageState.value = ""
+                }
+            }
+        )
     }
 }
