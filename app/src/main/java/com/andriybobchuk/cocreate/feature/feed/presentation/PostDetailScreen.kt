@@ -72,7 +72,7 @@ fun PostDetailScreen(
                 .weight(1f)
                 .fillMaxSize()
                 .background(background_gray100)
-               // .padding(vertical = 10.dp)
+            // .padding(vertical = 10.dp)
         ) {
             item {
                 PostBody(postData)
@@ -85,7 +85,11 @@ fun PostDetailScreen(
                     commentText = comment.body.desc,
                     onProfileClick = {
                         viewModel.navigateToProfileOrDetail(navController, comment.authorData.uid)
-                    }
+                    },
+                    onDeleteClick = {
+                        viewModel.removeComment(comment.body.uid)
+                    },
+                    isOwnComment = viewModel.isOwnComment(comment.authorData.uid)
                 )
             }
         }
@@ -216,8 +220,9 @@ fun InputField(viewModel: PostDetailViewModel, postUid: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(white)
             .padding(vertical = 4.dp, horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicTextField(
             value = commentMessageState.value,

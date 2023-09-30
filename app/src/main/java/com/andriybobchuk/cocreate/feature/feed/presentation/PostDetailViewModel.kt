@@ -96,6 +96,10 @@ class PostDetailViewModel @Inject constructor(
             )
         }
     }
+
+    fun isOwnComment(commentAuthorId: String): Boolean {
+        return repository.getCurrentUserID() == commentAuthorId
+    }
 }
 
 data class State(
