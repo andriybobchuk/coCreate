@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Post
+import com.andriybobchuk.cocreate.feature.auth.data.repository.PostRepository
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.cocreate.util.toEpochMillis
 import com.andriybobchuk.navigation.Screens
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val repository: CoreRepository,
+    private val repository: PostRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

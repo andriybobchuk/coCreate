@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
+import com.andriybobchuk.cocreate.feature.auth.data.repository.MessengerRepository
 import com.andriybobchuk.cocreate.feature.feed.presentation.FeedState
 import com.andriybobchuk.cocreate.feature.messages.domain.model.FullConversation
 import com.andriybobchuk.cocreate.feature.messages.domain.model.Message
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConversationViewModel @Inject constructor(
-    private val repository: CoreRepository,
+    private val repository: MessengerRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

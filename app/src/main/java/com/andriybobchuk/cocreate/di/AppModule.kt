@@ -7,6 +7,12 @@ import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepositoryImpl
 import com.andriybobchuk.cocreate.feature.auth.data.repository.AuthRepository
 import com.andriybobchuk.cocreate.feature.auth.data.repository.AuthRepositoryImpl
+import com.andriybobchuk.cocreate.feature.auth.data.repository.ContactsRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.ContactsRepositoryImpl
+import com.andriybobchuk.cocreate.feature.auth.data.repository.MessengerRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.MessengerRepositoryImpl
+import com.andriybobchuk.cocreate.feature.auth.data.repository.PostRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.PostRepositoryImpl
 import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepository
 import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -69,6 +75,42 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideContactsRepositoryImpl(
+        coreRepository: CoreRepository,
+        firebaseFirestore: FirebaseFirestore,
+    ):ContactsRepository {
+        return ContactsRepositoryImpl(
+            coreRepository = coreRepository,
+            firebaseFirestore = firebaseFirestore,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providePostRepositoryImpl(
+        coreRepository: CoreRepository,
+        firebaseFirestore: FirebaseFirestore,
+    ):PostRepository {
+        return PostRepositoryImpl(
+            coreRepository = coreRepository,
+            firebaseFirestore = firebaseFirestore,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessengerRepositoryImpl(
+        coreRepository: CoreRepository,
+        firebaseFirestore: FirebaseFirestore,
+    ):MessengerRepository {
+        return MessengerRepositoryImpl(
+            coreRepository = coreRepository,
+            firebaseFirestore = firebaseFirestore,
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideCoreRepositoryImpl(
         firebaseFirestore: FirebaseFirestore,
         firebaseAuth: FirebaseAuth
@@ -78,6 +120,5 @@ object AppModule {
             firebaseAuth = firebaseAuth
         )
     }
-
 
 }

@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
+import com.andriybobchuk.cocreate.feature.auth.data.repository.MessengerRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.PostRepository
 import com.andriybobchuk.cocreate.feature.profile.data.repository.ProfileRepository
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
 import com.andriybobchuk.navigation.Screens
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository,
     private val coreRepository: CoreRepository,
+    private val postRepository: PostRepository,
     private val auth: FirebaseAuth
 ) : ViewModel() {
     val state = mutableStateOf(ProfileData())
@@ -41,11 +44,11 @@ class ProfileViewModel @Inject constructor(
 
     private fun getPosts() {
         viewModelScope.launch {
-            val posts = coreRepository.getMyPosts()
+            val posts = postRepository.getMyPosts()
 
             val postsWithAuthorInfo = posts.map { post ->
                 if (post.author.isNotEmpty()) {
-                    val authorProfile = coreRepository.getProfileDataById(post.author)
+                    val authorProfile = postRepository.getProfileDataById(post.author)
                     AuthorPost(post, authorProfile)
                 } else {
                     AuthorPost(post, ProfileData())

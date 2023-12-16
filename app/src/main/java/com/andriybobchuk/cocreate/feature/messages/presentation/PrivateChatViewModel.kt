@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.MessengerRepository
 import com.andriybobchuk.cocreate.feature.messages.domain.model.Conversation
 import com.andriybobchuk.cocreate.feature.messages.domain.model.FullConversation
 import com.andriybobchuk.cocreate.feature.messages.domain.model.FullPrivateChat
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PrivateChatViewModel @Inject constructor(
-    private val repository: CoreRepository
+    private val repository: MessengerRepository
 ) : ViewModel() {
 
     var state = mutableStateOf(FullPrivateChat())

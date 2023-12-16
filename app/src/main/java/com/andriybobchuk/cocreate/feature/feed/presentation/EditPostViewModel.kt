@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,7 +18,7 @@ data class PostDetailState(
 
 @HiltViewModel
 class EditPostViewModel @Inject constructor(
-    private val repository: CoreRepository,
+    private val repository: PostRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

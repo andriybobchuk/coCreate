@@ -10,6 +10,8 @@ import androidx.navigation.NavController
 import com.andriybobchuk.cocreate.core.data.repository.CoreRepository
 import com.andriybobchuk.cocreate.core.domain.model.AuthorPost
 import com.andriybobchuk.cocreate.core.domain.model.Person
+import com.andriybobchuk.cocreate.feature.auth.data.repository.ContactsRepository
+import com.andriybobchuk.cocreate.feature.auth.data.repository.MessengerRepository
 import com.andriybobchuk.cocreate.feature.feed.presentation.FeedState
 import com.andriybobchuk.cocreate.feature.feed.presentation.SearchPosts
 import com.andriybobchuk.cocreate.feature.profile.domain.model.ProfileData
@@ -26,7 +28,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollaboratorsViewModel @Inject constructor(
-    private val repository: CoreRepository,
+    private val coreRepository: CoreRepository,
+    private val contactsRepository: ContactsRepository,
+    private val messengerRepository: MessengerRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     companion object {
@@ -51,26 +55,26 @@ class CollaboratorsViewModel @Inject constructor(
 
     fun getEveryone() {
         viewModelScope.launch {
-            val everyone = repository.getAllPeople()
+            val everyone = coreRepository.getAllPeople()
             savedStateHandle["everyone"] = everyone
             ccLog.d(LOG_TAG, "getEveryone(), size = " + everyone.size)
         }
     }
     fun getContacts() {
         viewModelScope.launch {
-            val contacts = repository.getContacts()
+            val contacts = contactsRepository.getContacts()
             savedStateHandle["contacts"] = contacts
             ccLog.d(LOG_TAG, "getContacts(), size = " + contacts.size)
         }
     }
     fun addContact(contactUid: String) {
         viewModelScope.launch {
-            repository.addContact(contactUid)
+            contactsRepository.addContact(contactUid)
         }
     }
     fun removeContact(contactUid: String) {
         viewModelScope.launch {
-            repository.removeContact(contactUid)
+            contactsRepository.removeContact(contactUid)
         }
     }
 
@@ -87,14 +91,14 @@ class CollaboratorsViewModel @Inject constructor(
 
     fun sendOrOpenExistingConversation(userId: String, navController: NavController) {
         viewModelScope.launch {
-            val existingConversationId = repository.findExistingConversationWithUser(userId)
+            val existingConversationId = messengerRepository.findExistingConversationWithUser(userId)
 
             if (existingConversationId != null) {
                 // An existing conversation was found, navigate to it
                 navController.navigate("privateChat/$existingConversationId")
             } else {
                 // No existing conversation found, create a new one
-                val newConversationId = repository.createNewConversation(userId)
+                val newConversationId = messengerRepository.createNewConversation(userId)
                 navController.navigate("privateChat/$newConversationId")
             }
         }
@@ -105,7 +109,7 @@ class CollaboratorsViewModel @Inject constructor(
         navController: NavController,
         userIdToNavigate: String,
     ) {
-        if (repository.getCurrentUserID() == userIdToNavigate) {
+        if (coreRepository.getCurrentUserID() == userIdToNavigate) {
             // Navigate to the user's own profile
             navController.navigate(Screens.ProfileScreen.route)
         } else {
