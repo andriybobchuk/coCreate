@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -72,6 +73,7 @@ fun RegisterScreen(
             onValueChange = {
                 name = it
             },
+
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             placeholder = {
@@ -92,6 +94,7 @@ fun RegisterScreen(
             onValueChange = {
                 email = it
             },
+            visualTransformation = PasswordVisualTransformation(),
             shape = RoundedCornerShape(12.dp),
             singleLine = true,
             placeholder = {
